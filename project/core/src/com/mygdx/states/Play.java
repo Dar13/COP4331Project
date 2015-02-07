@@ -20,7 +20,7 @@ public class Play extends GameState {
     public void handleInput(){};
     public void update(float dt){};
     public void render(){
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(1, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         sb.begin();
         sb.draw(img, 0, 0);
