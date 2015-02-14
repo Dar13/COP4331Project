@@ -8,23 +8,35 @@ import com.mygdx.handlers.GameStateManager;
 /**
  * Created by James on 2/1/2015.
  */
-public class Play extends GameState {
+public class Play extends GameState
+{
     private Texture img;
 
-    public Play(GameStateManager gsm){
+    public Play(GameStateManager gsm)
+    {
         super(gsm);
         img = new Texture("badlogic.jpg");
     }
 
 
-    public void handleInput(){};
-    public void update(float dt){};
-    public void render(){
+    public void handleInput()
+    {
+    }
+
+    public void update(float deltaTime)
+    {
+    }
+
+    public void render()
+    {
         Gdx.gl.glClearColor(1, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        sb.begin();
-        sb.draw(img, 0, 0);
-        sb.end();
-    };
-    public void dispose(){};
+        spriteBatch.begin();
+        spriteBatch.draw(img, 0, 0);
+        spriteBatch.end();
+    }
+
+    public void dispose()
+    {
+    }
 }

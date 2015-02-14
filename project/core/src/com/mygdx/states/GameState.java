@@ -8,24 +8,29 @@ import com.mygdx.handlers.GameStateManager;
 /**
  * Created by James on 2/1/2015.
  */
-public abstract class GameState {
-    protected GameStateManager gsm;
+public abstract class GameState
+{
+    protected GameStateManager gameStateManager;
     protected MyGame game;
 
-    protected SpriteBatch sb;
-    protected OrthographicCamera cam;
-    protected OrthographicCamera hudCam;
+    protected SpriteBatch spriteBatch;
+    protected OrthographicCamera orthoCamera;
+    protected OrthographicCamera hudCamera;
 
-    protected GameState(GameStateManager gsm){
-        this.gsm = gsm;
-        game = gsm.getGame();
-        sb = game.getSpriteBatch();
-        cam = game.getCam();
-        hudCam = game.getHudCam();
+    protected GameState(GameStateManager gameStateManager)
+    {
+        this.gameStateManager = gameStateManager;
+        game = gameStateManager.getGame();
+        spriteBatch = game.getSpriteBatch();
+        orthoCamera = game.getCam();
+        hudCamera = game.getHudCam();
     }
 
     public abstract void handleInput();
-    public abstract void update(float dt);
+
+    public abstract void update(float deltaTime);
+
     public abstract void render();
+
     public abstract void dispose();
 }
