@@ -3,6 +3,7 @@ package com.mygdx.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.entities.Enemy;
 import com.mygdx.handlers.GameStateManager;
 
 /**
@@ -11,13 +12,15 @@ import com.mygdx.handlers.GameStateManager;
 public class Play extends GameState
 {
     private Texture img;
+    private Enemy enemy;
 
     public Play(GameStateManager gsm)
     {
         super(gsm);
-        img = new Texture("badlogic.jpg");
+        img = new Texture("EnemyDev.png");
+        enemy= new Enemy(img,0,0,3);
+        enemy.SetWayPoint(240,0);
     }
-
 
     public void handleInput()
     {
@@ -25,6 +28,8 @@ public class Play extends GameState
 
     public void update(float deltaTime)
     {
+        enemy.Move();
+        enemy.Check();
     }
 
     public void render()
@@ -33,6 +38,7 @@ public class Play extends GameState
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         spriteBatch.begin();
         spriteBatch.draw(img, 0, 0);
+        enemy.render(spriteBatch);
         spriteBatch.end();
     }
 
