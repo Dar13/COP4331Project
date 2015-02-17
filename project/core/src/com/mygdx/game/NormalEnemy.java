@@ -10,6 +10,4 @@ public class NormalEnemy extends AbstractEnemy {
         super("Normal", XCoord, YCoord, Direction);
     }
 
-
-
 }

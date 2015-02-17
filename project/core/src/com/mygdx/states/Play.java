@@ -28,16 +28,16 @@ public class Play extends GameState
 
     public void update(float deltaTime)
     {
-        enemy.Move();
-        enemy.Check();
+        if(!enemy.Check()){
+            enemy.Move();
+        }
     }
 
     public void render()
     {
-        Gdx.gl.glClearColor(1, 0, 0, 2);
+        Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         spriteBatch.begin();
-        spriteBatch.draw(img, 0, 0);
         enemy.render(spriteBatch);
         spriteBatch.end();
     }

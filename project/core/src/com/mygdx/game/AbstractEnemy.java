@@ -56,9 +56,14 @@ public abstract class AbstractEnemy {
 
         public void SetType(String type){
             String normal = new String("Normal");
+            String fast = new String("Fast");
             if (type.equals(normal)){
                 Armor = 1;
                 BaseSpeed = 1;
+            }
+            else if (type.equals(fast)){
+                Armor = 1;
+                BaseSpeed = 2;
             }
         }
 

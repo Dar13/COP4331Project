@@ -32,10 +32,22 @@ public class Enemy {
     }
 
     public void Move(){sprite.setPosition(sprite.getX()+velocity,sprite.getY());}
-    public void Check(){
-        if(sprite.getX() == wayPoints.getFirst().x && sprite.getY() == wayPoints.getFirst().y){
+    public boolean Check(){
+        /*if(sprite.getX() == wayPoints.getFirst().x && sprite.getY() == wayPoints.getFirst().y){
            velocity = -velocity;
+        }*/
+        if((sprite.getX() > (wayPoints.getFirst().x - 0.5f)) &&
+           (sprite.getX() < (wayPoints.getFirst().x + 0.5f)) &&
+           (sprite.getY() > (wayPoints.getFirst().y - 0.5f)) &&
+           (sprite.getY() < (wayPoints.getFirst().y + 0.5f)))
+        {
+
+            sprite.setPosition(sprite.getX(),sprite.getY());
+            sprite.setPosition(sprite.getX(),sprite.getY()+0.6f);
+            velocity = - velocity;
+            return true;
         }
+        return false;
     }
     public void SetWayPoint(float x, float y){wayPoints.add(new WayPoint(x,y));}
 
