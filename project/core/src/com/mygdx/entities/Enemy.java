@@ -15,29 +15,66 @@ public class Enemy {
     float x=0;
     float y=0;
     float velocity = 0;
-    LinkedList<WayPoint> wayPoints;
+    String heading;
+   public LinkedList<WayPoint> wayPoints;
 
 
     public Enemy(Texture img){
         this.sprite = new Sprite(img);
         sprite.setPosition(x,y);
     }
-    public Enemy(Texture img, float x, float y, float velocity){
+    public Enemy(Texture img, float x, float y, float velocity, String heading){
         this.sprite = new Sprite(img);
         this.x = x;
         this.y = y;
         this.velocity = velocity;
+        this.heading = heading;
         sprite.setPosition(x,y);
         wayPoints = new LinkedList<WayPoint>();
     }
 
-    public void Move(){sprite.setPosition(sprite.getX()+velocity,sprite.getY());}
-    public void Check(){
-        if(sprite.getX() == wayPoints.getFirst().x && sprite.getY() == wayPoints.getFirst().y){
-           velocity = -velocity;
+    public void Move(){
+        switch (heading){
+            case ("n"):
+                sprite.setPosition(sprite.getX(),sprite.getY()+velocity);
+                break;
+            case ("e"):
+                sprite.setPosition(sprite.getX()+velocity,sprite.getY());
+                break;
+            case ("s"):
+                sprite.setPosition(sprite.getX(),sprite.getY()-velocity);
+                break;
+            case ("w"):
+                sprite.setPosition(sprite.getX()-velocity,sprite.getY());
+                break;
         }
     }
-    public void SetWayPoint(float x, float y){wayPoints.add(new WayPoint(x,y));}
+    public void Check(){
+       switch (wayPoints.getFirst().dirction){
+           case ("n"):
+               if(sprite.getX() == wayPoints.getFirst().x && sprite.getY() == wayPoints.getFirst().y){
+                   heading = "n";
+               }
+               break;
+           case ("e"):
+               if(sprite.getX() == wayPoints.getFirst().x && sprite.getY() == wayPoints.getFirst().y){
+                   heading = "e";
+               }
+               break;
+           case ("s"):
+               if(sprite.getX() == wayPoints.getFirst().x && sprite.getY() == wayPoints.getFirst().y){
+                   heading = "s";
+               }
+               break;
+           case ("w"):
+               if(sprite.getX() == wayPoints.getFirst().x && sprite.getY() == wayPoints.getFirst().y){
+                   heading = "w";
+               }
+               break;
+       }
+
+    }
+    public void SetWayPoint(float x, float y, String direction){wayPoints.add(new WayPoint(x,y,direction));}
 
 
     public void render(SpriteBatch sb){

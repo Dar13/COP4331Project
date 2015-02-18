@@ -6,10 +6,12 @@ package com.mygdx.triggers;
 public class WayPoint {
     public float x;
     public float y;
+    public String dirction;
 
-    public  WayPoint(float x, float y){
+    public  WayPoint(float x, float y, String dirction){
         this.x = x;
         this.y = y;
+        this.dirction = dirction;
     }
 
 }
