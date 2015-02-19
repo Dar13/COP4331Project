@@ -118,6 +118,7 @@ public class Enemy extends  Entities {
                           (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
                   {
                       wayPoints.removeFirst();
+                      velocity = 0;
                       // Deconstruction of the enemy and sprite is done here.
                       return true;
                   }
