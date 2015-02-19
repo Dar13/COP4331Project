@@ -25,9 +25,10 @@ public class Play extends GameState
     {
         super(gsm);
         cam = new OrthographicCamera();
-        cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_WIDTH);
+        cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
         shapeRenderer = new ShapeRenderer();
         img = new Texture("EnemyDev.png");
+<<<<<<< Updated upstream
         EnemManager = new EnemyManager(5, 5, 5, 0, 0, "e");
         enemy= new Enemy(img,0,0,3,"e");
         enemy.SetWayPoint(240,0,"n");
@@ -37,6 +38,11 @@ public class Play extends GameState
         enemy.SetWayPoint(15,50,"n");
         enemy.SetWayPoint(15,240,"end");
 
+=======
+        enemy= new Enemy(img,18,0,2.5f,"e");
+        enemy.SetWayPoint(MyGame.V_WIDTH-32,0,"n");
+        enemy.SetWayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"s");
+>>>>>>> Stashed changes
     }
 
     public void handleInput()
@@ -60,13 +66,13 @@ public class Play extends GameState
         spriteBatch.begin();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(1,0,0,0);
-        shapeRenderer.rect(0,0,240+32,32);
+        shapeRenderer.rect(0,0,320,32);
         enemy.render(spriteBatch);
         spriteBatch.end();
         shapeRenderer.end();
+
     }
 
-    public void dispose()
-    {
-    }
+    public void dispose(){};
+
 }

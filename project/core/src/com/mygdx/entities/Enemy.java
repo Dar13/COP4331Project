@@ -10,30 +10,32 @@ import java.util.LinkedList;
 /**
  * Created by James on 2/14/2015.
  */
-public class Enemy {
+public class Enemy extends  Entities {
     public Sprite sprite;
-    float x=0;
-    float y=0;
-    float velocity = 0;
-    String heading;
+    public float x=0;
+    public float y=0;
+    public float velocity = 0;
+    public String heading;
+    private float tolerance;
     public LinkedList<WayPoint> wayPoints;
     int WaypointNum = 0;
 
 
-    public Enemy(Texture img){
-        this.sprite = new Sprite(img);
-        sprite.setPosition(x,y);
-    }
     public Enemy(Texture img, float x, float y, float velocity, String heading){
+        super(img,x, y);
         this.sprite = new Sprite(img);
         this.x = x;
         this.y = y;
         this.velocity = velocity;
+        this.tolerance = velocity/2;
         this.heading = heading;
         sprite.setPosition(x,y);
         wayPoints = new LinkedList<WayPoint>();
     }
 
+    /*
+        Move the enemy based on the enemy's heading and its velocity.
+     */
     public void Move() {
         switch (heading) {
             case ("n"):
@@ -50,79 +52,81 @@ public class Enemy {
                 break;
         }
     }
-
+    /*
+        The Check function looks at the top of wayPoints and sees if the enemy's position is within
+    wayPoints' tolerance and then moves the player in the appropriate heading out side the
+    wayPoints' tolerance.
+    */
     public boolean Check(){
-       switch (wayPoints.get(WaypointNum).dirction){
-           case ("n"):
-               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
-                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
-                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
-                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
-               {
+      if(!wayPoints.isEmpty()){
+          switch (wayPoints.getFirst().dirction){
+              case ("n"):
+                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  {
 
-                   sprite.setPosition(wayPoints.get(WaypointNum).x, wayPoints.get(WaypointNum).y);
-                   sprite.setPosition(sprite.getX(),sprite.getY()+ velocity);
-                   heading = "n";
-                   WaypointNum++;
-                   return true;
-               }
-               return false;
-           case ("e"):
-               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
-                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
-                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
-                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
-               {
+                      sprite.setPosition(wayPoints.getFirst().x,wayPoints.getFirst().y);
+                      heading = "n";
+                      wayPoints.removeFirst();
+                      return true;
+                  }
+                  return false;
+              case ("e"):
+                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  {
 
-                   sprite.setPosition(wayPoints.get(WaypointNum).x, wayPoints.get(WaypointNum).y);
-                   sprite.setPosition(sprite.getX()+ velocity,sprite.getY());
-                   heading = "e";
-                   WaypointNum++;
-                   return true;
-               }
-               return false;
-           case ("s"):
-               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
-                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
-                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
-                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
-               {
+                      sprite.setPosition(wayPoints.getFirst().x,wayPoints.getFirst().y);
+                      heading = "e";
+                      wayPoints.removeFirst();
+                      return true;
+                  }
+                  return false;
+              case ("s"):
+                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  {
 
-                   sprite.setPosition(wayPoints.get(WaypointNum).x, wayPoints.get(WaypointNum).y);
-                   sprite.setPosition(sprite.getX(),sprite.getY()- velocity);
-                   heading = "s";
-                   WaypointNum++;
-                   return true;
-               }
-               return false;
-           case ("w"):
-               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
-                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
-                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
-                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
-               {
+                      sprite.setPosition(wayPoints.getFirst().x,wayPoints.getFirst().y);
+                      heading = "s";
+                      wayPoints.removeFirst();
+                      return true;
+                  }
+                  return false;
+              case ("w"):
+                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  {
 
-                   sprite.setPosition(wayPoints.get(WaypointNum).x, wayPoints.get(WaypointNum).y);
-                   sprite.setPosition(sprite.getX()- velocity,sprite.getY());
-                   heading = "w";
-                   WaypointNum++;
-                   return true;
-               }
-               return false;
-           case ("end"):
-               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
-                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
-                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
-                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
-               {
-
-                  // Deconstruction of the enemy and sprite is done here.
-                   return true;
-               }
-       }
-        return false;
+                      sprite.setPosition(wayPoints.getFirst().x,wayPoints.getFirst().y);
+                      heading = "w";
+                      wayPoints.removeFirst();
+                      return true;
+                  }
+              case ("end"):
+                  if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
+                          (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
+                          (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
+                          (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
+                  {
+                      wayPoints.removeFirst();
+                      // Deconstruction of the enemy and sprite is done here.
+                      return true;
+                  }
+                  return false;
+          }
+      }
+      return  false;
     }
-    public void SetWayPoint(float x, float y, String direction){wayPoints.add(new WayPoint(x,y,direction));}
+    public void SetWayPoint(float x, float y, String direction){wayPoints.addLast(new WayPoint(x,y,direction));}
 
 
     public void render(SpriteBatch sb){
