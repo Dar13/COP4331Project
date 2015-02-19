@@ -17,6 +17,7 @@ public class Enemy {
     float velocity = 0;
     String heading;
     public LinkedList<WayPoint> wayPoints;
+    int WaypointNum = 0;
 
 
     public Enemy(Texture img){
@@ -51,59 +52,73 @@ public class Enemy {
     }
 
     public boolean Check(){
-       switch (wayPoints.getFirst().dirction){
+       switch (wayPoints.get(WaypointNum).dirction){
            case ("n"):
-               if((sprite.getX() > (wayPoints.getFirst().x - 0.5f)) &&
-                       (sprite.getX() < (wayPoints.getFirst().x + 0.5f)) &&
-                       (sprite.getY() > (wayPoints.getFirst().y - 0.5f)) &&
-                       (sprite.getY() < (wayPoints.getFirst().y + 0.5f)))
+               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
+                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
+                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
+                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
                {
 
-                   sprite.setPosition(sprite.getX(),sprite.getY());
-                   sprite.setPosition(sprite.getX(),sprite.getY()+0.6f);
+                   sprite.setPosition(wayPoints.get(WaypointNum).x, wayPoints.get(WaypointNum).y);
+                   sprite.setPosition(sprite.getX(),sprite.getY()+ velocity);
                    heading = "n";
+                   WaypointNum++;
                    return true;
                }
                return false;
            case ("e"):
-               if((sprite.getX() > (wayPoints.getFirst().x - 0.5f)) &&
-                       (sprite.getX() < (wayPoints.getFirst().x + 0.5f)) &&
-                       (sprite.getY() > (wayPoints.getFirst().y - 0.5f)) &&
-                       (sprite.getY() < (wayPoints.getFirst().y + 0.5f)))
+               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
+                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
+                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
+                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
                {
 
-                   sprite.setPosition(sprite.getX(),sprite.getY());
-                   sprite.setPosition(sprite.getX()+0.6f,sprite.getY());
+                   sprite.setPosition(wayPoints.get(WaypointNum).x, wayPoints.get(WaypointNum).y);
+                   sprite.setPosition(sprite.getX()+ velocity,sprite.getY());
                    heading = "e";
+                   WaypointNum++;
                    return true;
                }
                return false;
            case ("s"):
-               if((sprite.getX() > (wayPoints.getFirst().x - 0.5f)) &&
-                       (sprite.getX() < (wayPoints.getFirst().x + 0.5f)) &&
-                       (sprite.getY() > (wayPoints.getFirst().y - 0.5f)) &&
-                       (sprite.getY() < (wayPoints.getFirst().y + 0.5f)))
+               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
+                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
+                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
+                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
                {
 
-                   sprite.setPosition(sprite.getX(),sprite.getY());
-                   sprite.setPosition(sprite.getX(),sprite.getY()-0.6f);
+                   sprite.setPosition(wayPoints.get(WaypointNum).x, wayPoints.get(WaypointNum).y);
+                   sprite.setPosition(sprite.getX(),sprite.getY()- velocity);
                    heading = "s";
+                   WaypointNum++;
                    return true;
                }
                return false;
            case ("w"):
-               if((sprite.getX() > (wayPoints.getFirst().x - 0.5f)) &&
-                       (sprite.getX() < (wayPoints.getFirst().x + 0.5f)) &&
-                       (sprite.getY() > (wayPoints.getFirst().y - 0.5f)) &&
-                       (sprite.getY() < (wayPoints.getFirst().y + 0.5f)))
+               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
+                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
+                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
+                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
                {
 
-                   sprite.setPosition(sprite.getX(),sprite.getY());
-                   sprite.setPosition(sprite.getX()-0.6f,sprite.getY());
+                   sprite.setPosition(wayPoints.get(WaypointNum).x, wayPoints.get(WaypointNum).y);
+                   sprite.setPosition(sprite.getX()- velocity,sprite.getY());
                    heading = "w";
+                   WaypointNum++;
                    return true;
                }
                return false;
+           case ("end"):
+               if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
+                       (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
+                       (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
+                       (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
+               {
+
+                  // Deconstruction of the enemy and sprite is done here.
+                   return true;
+               }
        }
         return false;
     }
