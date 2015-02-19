@@ -26,7 +26,7 @@ public class Play extends GameState
         cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_WIDTH);
         shapeRenderer = new ShapeRenderer();
         img = new Texture("EnemyDev.png");
-        enemy= new Enemy(img,0,MyGame.V_WIDTH-32,0,"e");
+        enemy= new Enemy(img,0,0,3,"e");
         enemy.SetWayPoint(240,0,"n");
     }
 
@@ -36,8 +36,9 @@ public class Play extends GameState
 
     public void update(float deltaTime)
     {
-        enemy.Move();
-        enemy.Check();
+        if(!enemy.Check()){
+            enemy.Move();
+        }
     }
 
     public void render()
