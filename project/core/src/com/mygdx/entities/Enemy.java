@@ -18,7 +18,6 @@ public class Enemy extends  Entities {
     public String heading;
     private float tolerance;
     public LinkedList<WayPoint> wayPoints;
-    int WaypointNum = 0;
 
 
     public Enemy(Texture img, float x, float y, float velocity, String heading){
@@ -112,10 +111,10 @@ public class Enemy extends  Entities {
                       return true;
                   }
               case ("end"):
-                  if((sprite.getX() > (wayPoints.get(WaypointNum).x - velocity)) &&
-                          (sprite.getX() < (wayPoints.get(WaypointNum).x + velocity)) &&
-                          (sprite.getY() > (wayPoints.get(WaypointNum).y - velocity)) &&
-                          (sprite.getY() < (wayPoints.get(WaypointNum).y + velocity)))
+                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
                   {
                       wayPoints.removeFirst();
                       velocity = 0;

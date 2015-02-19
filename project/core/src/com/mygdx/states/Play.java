@@ -28,21 +28,14 @@ public class Play extends GameState
         cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
         shapeRenderer = new ShapeRenderer();
         img = new Texture("EnemyDev.png");
-//<<<<<<< Updated upstream
-        EnemManager = new EnemyManager(5, 5, 5, 0, 0, "e");
+        //EnemManager = new EnemyManager(5, 5, 5, 0, 0, "e");
         enemy= new Enemy(img,0,0,3,"e");
-        enemy.SetWayPoint(240,0,"n");
-        enemy.SetWayPoint(240,160,"w");
-        enemy.SetWayPoint(160,160,"s");
-        enemy.SetWayPoint(160,50,"w");
-        enemy.SetWayPoint(15,50,"n");
-        enemy.SetWayPoint(15,240,"end");
-
-/*=======
-        enemy= new Enemy(img,18,0,2.5f,"e");
         enemy.SetWayPoint(MyGame.V_WIDTH-32,0,"n");
-        enemy.SetWayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"s");
->>>>>>> Stashed changes*/
+        enemy.SetWayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"w");
+        enemy.SetWayPoint(0,MyGame.V_HEIGHT-32,"s");
+        enemy.SetWayPoint(0,0,"end");
+
+
     }
 
     public void handleInput()
