@@ -46,12 +46,12 @@ public class Play extends GameState
         debuger = new Debuger(wayPoints);
         shapeRenderer = new ShapeRenderer();
         img = new Texture("EnemyDev.png");
-        //EnemManager = new EnemyManager(5, 5, 5, 0, 0, "e");
 
         enemy= new Enemy(img,3,wayPoints);
         enemy.setWayPointsLL(wayPoints);
         img = new Texture("DevText_Tower.png");
         tower = new Tower(img, 50, 50);
+
 
     }
 
