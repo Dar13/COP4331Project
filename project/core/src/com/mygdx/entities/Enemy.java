@@ -20,16 +20,14 @@ public class Enemy extends  Entities {
     public LinkedList<WayPoint> wayPoints;
 
 
-    public Enemy(Texture img, float x, float y, float velocity, String heading){
-        super(img,x, y);
+    public Enemy(Texture img, float velocity, LinkedList<WayPoint> path){
+        super(img,path.getFirst().x, path.getFirst().y);
+        this.wayPoints = path;
         this.sprite = new Sprite(img);
-        this.x = x;
-        this.y = y;
         this.velocity = velocity;
         this.tolerance = velocity/2;
-        this.heading = heading;
         sprite.setPosition(x,y);
-        wayPoints = new LinkedList<WayPoint>();
+        wayPoints.getFirst();
     }
 
     /*
@@ -126,14 +124,10 @@ public class Enemy extends  Entities {
       }
       return  false;
     }
+    public void setWayPointsLL(LinkedList<WayPoint> wayPoints){this.wayPoints = wayPoints;}
+    public void SetWayPoint(float x, float y, String direction){wayPoints.addLast(new WayPoint(x,y,direction));}
+    public void render(SpriteBatch sb){
 
-    public void SetWayPoint(float x, float y, String direction)
-    {
-        wayPoints.addLast(new WayPoint(x,y,direction));
-    }
-
-    public void render(SpriteBatch sb)
-    {
         sprite.draw(sb);
     }
 

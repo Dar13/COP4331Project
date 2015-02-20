@@ -5,41 +5,53 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.mygdx.Debug.Debuger;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Tower;
-import com.mygdx.game.EnemyManager;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.GameStateManager;
+import com.mygdx.triggers.WayPoint;
+
+import java.util.LinkedList;
 
 /**
  * Created by James on 2/1/2015.
  */
 public class Play extends GameState
 {
-    private Texture enemyImage;
+
+    private  boolean debugMode_ON = true;
+    private Texture img;
     private Enemy enemy;
-    private Texture towerImage;
+
     private Tower tower;
-    private EnemyManager EnemManager;
     public ShapeRenderer shapeRenderer;
     private OrthographicCamera cam;
+    private Debuger debuger;
+    private LinkedList<WayPoint> wayPoints;
 
     public Play(GameStateManager gsm)
     {
         super(gsm);
+
+        wayPoints = new LinkedList<WayPoint>();
+        wayPoints.addLast(new WayPoint(0,0,"e"));
+        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH-32,0,"n"));
+        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"w"));
+        wayPoints.addLast(new WayPoint(0,MyGame.V_HEIGHT-32,"s"));
+        wayPoints.addLast(new WayPoint(0,0,"end"));
+
         cam = new OrthographicCamera();
         cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
+        debuger = new Debuger(wayPoints);
         shapeRenderer = new ShapeRenderer();
-        enemyImage = new Texture("EnemyDev.png");
+        img = new Texture("EnemyDev.png");
         //EnemManager = new EnemyManager(5, 5, 5, 0, 0, "e");
-        enemy= new Enemy(enemyImage,0,0,3,"e");
-        enemy.SetWayPoint(MyGame.V_WIDTH-32,0,"n");
-        enemy.SetWayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"w");
-        enemy.SetWayPoint(0,MyGame.V_HEIGHT-32,"s");
-        enemy.SetWayPoint(0,0,"end");
-        towerImage = new Texture("DevText_Tower.png");
-        tower = new Tower(towerImage, 50, 50);
 
+        enemy= new Enemy(img,3,wayPoints);
+        enemy.setWayPointsLL(wayPoints);
+        img = new Texture("DevText_Tower.png");
+        tower = new Tower(img, 50, 50);
 
     }
 
@@ -58,17 +70,18 @@ public class Play extends GameState
     {
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         cam.update();
         spriteBatch.setProjectionMatrix(cam.combined);
-        shapeRenderer.setProjectionMatrix(cam.combined);
         spriteBatch.begin();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(1,0,0,0);
-        shapeRenderer.rect(0,0,320,32);
         enemy.render(spriteBatch);
         tower.render(spriteBatch);
         spriteBatch.end();
         shapeRenderer.end();
+
+        if(debugMode_ON){
+            debuger.render();
+        }
 
     }
 
