@@ -126,8 +126,14 @@ public class Enemy extends  Entities {
       }
       return  false;
     }
-    public void SetWayPoint(float x, float y, String direction){wayPoints.addLast(new WayPoint(x,y,direction));}
-    public void render(SpriteBatch sb){
+
+    public void SetWayPoint(float x, float y, String direction)
+    {
+        wayPoints.addLast(new WayPoint(x,y,direction));
+    }
+
+    public void render(SpriteBatch sb)
+    {
         sprite.draw(sb);
     }
 

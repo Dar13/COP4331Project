@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.entities.Enemy;
+import com.mygdx.entities.Tower;
 import com.mygdx.game.EnemyManager;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.GameStateManager;
@@ -15,8 +16,10 @@ import com.mygdx.handlers.GameStateManager;
  */
 public class Play extends GameState
 {
-    private Texture img;
+    private Texture enemyImage;
     private Enemy enemy;
+    private Texture towerImage;
+    private Tower tower;
     private EnemyManager EnemManager;
     public ShapeRenderer shapeRenderer;
     private OrthographicCamera cam;
@@ -27,13 +30,15 @@ public class Play extends GameState
         cam = new OrthographicCamera();
         cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
         shapeRenderer = new ShapeRenderer();
-        img = new Texture("EnemyDev.png");
+        enemyImage = new Texture("EnemyDev.png");
         //EnemManager = new EnemyManager(5, 5, 5, 0, 0, "e");
-        enemy= new Enemy(img,0,0,3,"e");
+        enemy= new Enemy(enemyImage,0,0,3,"e");
         enemy.SetWayPoint(MyGame.V_WIDTH-32,0,"n");
         enemy.SetWayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"w");
         enemy.SetWayPoint(0,MyGame.V_HEIGHT-32,"s");
         enemy.SetWayPoint(0,0,"end");
+        towerImage = new Texture("DevText_Tower.png");
+        tower = new Tower(towerImage, 50, 50);
 
 
     }
@@ -61,6 +66,7 @@ public class Play extends GameState
         shapeRenderer.setColor(1,0,0,0);
         shapeRenderer.rect(0,0,320,32);
         enemy.render(spriteBatch);
+        tower.render(spriteBatch);
         spriteBatch.end();
         shapeRenderer.end();
 

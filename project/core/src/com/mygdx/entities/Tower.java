@@ -10,14 +10,17 @@ import java.util.LinkedList;
 /**
  * Created by Miguel on 2/20/2015.
  */
-public class Tower extends Entities {
+
+//May need to implement try catch for waypoints
+public class Tower extends Entities
+{
     public Sprite sprite;
     public float x=0;
     public float y=0;
-    private float tolerance;
     public LinkedList<WayPoint> wayPoints;
 
-    public Tower(Texture img, float x, float y, String heading){
+    public Tower(Texture img, float x, float y)
+    {
         super(img,x, y);
         this.sprite = new Sprite(img);
         this.x = x;
@@ -26,7 +29,13 @@ public class Tower extends Entities {
         wayPoints = new LinkedList<WayPoint>();
     }
 
-    public void render(SpriteBatch sb){
+    public void update(float deltaTime)
+    {
+        //blah
+    }
+
+    public void render(SpriteBatch sb)
+    {
         sprite.draw(sb);
     }
 
