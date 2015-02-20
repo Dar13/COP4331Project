@@ -10,7 +10,7 @@ import java.util.LinkedList;
 /**
  * Created by James on 2/14/2015.
  */
-public class Enemy extends  Entities {
+public class Enemy extends Entities {
     public Sprite sprite;
     public float x=0;
     public float y=0;
