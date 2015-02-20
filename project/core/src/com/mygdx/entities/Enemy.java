@@ -108,6 +108,7 @@ public class Enemy extends Entities {
                       wayPoints.removeFirst();
                       return true;
                   }
+                  return false;
               case ("end"):
                   if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
                           (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
@@ -126,8 +127,9 @@ public class Enemy extends Entities {
     }
     public void setWayPointsLL(LinkedList<WayPoint> wayPoints){this.wayPoints = wayPoints;}
     public void SetWayPoint(float x, float y, String direction){wayPoints.addLast(new WayPoint(x,y,direction));}
-    public void render(SpriteBatch sb){
 
+    public void render(SpriteBatch sb)
+    {
         sprite.draw(sb);
     }
 
