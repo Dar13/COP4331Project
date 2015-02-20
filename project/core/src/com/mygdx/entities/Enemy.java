@@ -58,7 +58,7 @@ public class Enemy extends  Entities {
     */
     public boolean Check(){
       if(!wayPoints.isEmpty()){
-          switch (wayPoints.getFirst().dirction){
+          switch (wayPoints.getFirst().direction){
               case ("n"):
                   if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
                           (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
