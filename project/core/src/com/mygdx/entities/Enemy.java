@@ -18,16 +18,18 @@ public class Enemy extends Entities {
     public String heading;
     private float tolerance;
     public LinkedList<WayPoint> wayPoints;
+    private int CurrWaypoint = 0;
 
 
     public Enemy(Texture img, float velocity, LinkedList<WayPoint> path){
         super(img,path.getFirst().x, path.getFirst().y);
+        CurrWaypoint++;
         this.wayPoints = path;
         this.sprite = new Sprite(img);
         this.velocity = velocity;
         this.tolerance = velocity/2;
         sprite.setPosition(x,y);
-        wayPoints.getFirst();
+        heading = wayPoints.getFirst().direction;
     }
 
     /*
@@ -56,66 +58,70 @@ public class Enemy extends Entities {
     */
     public boolean Check(){
       if(!wayPoints.isEmpty()){
-          switch (wayPoints.getFirst().direction){
+          switch (wayPoints.get(CurrWaypoint).direction){
               case ("n"):
-                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
-                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
-                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
-                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  if((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.get(CurrWaypoint).y + tolerance)))
                   {
 
-                      sprite.setPosition(wayPoints.getFirst().x,wayPoints.getFirst().y);
+                      sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
                       heading = "n";
-                      wayPoints.removeFirst();
+                      CurrWaypoint++;
+                      //wayPoints.removeFirst();
                       return true;
                   }
                   return false;
               case ("e"):
-                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
-                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
-                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
-                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  if((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.get(CurrWaypoint).y + tolerance)))
                   {
 
-                      sprite.setPosition(wayPoints.getFirst().x,wayPoints.getFirst().y);
+                      sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
                       heading = "e";
-                      wayPoints.removeFirst();
+                      CurrWaypoint++;
+                      //wayPoints.removeFirst();
                       return true;
                   }
                   return false;
               case ("s"):
-                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
-                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
-                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
-                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  if((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.get(CurrWaypoint).y + tolerance)))
                   {
 
-                      sprite.setPosition(wayPoints.getFirst().x,wayPoints.getFirst().y);
+                      sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
                       heading = "s";
-                      wayPoints.removeFirst();
+                      CurrWaypoint++;
+                      //wayPoints.removeFirst();
                       return true;
                   }
                   return false;
               case ("w"):
-                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
-                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
-                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
-                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  if((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.get(CurrWaypoint).y + tolerance)))
                   {
 
-                      sprite.setPosition(wayPoints.getFirst().x,wayPoints.getFirst().y);
+                      sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
                       heading = "w";
-                      wayPoints.removeFirst();
+                      CurrWaypoint++;
+                      //wayPoints.removeFirst();
                       return true;
                   }
                   return false;
               case ("end"):
-                  if((sprite.getX() > (wayPoints.getFirst().x - tolerance)) &&
-                          (sprite.getX() < (wayPoints.getFirst().x + tolerance)) &&
-                          (sprite.getY() > (wayPoints.getFirst().y - tolerance)) &&
-                          (sprite.getY() < (wayPoints.getFirst().y + tolerance)))
+                  if((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
+                          (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
+                          (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
+                          (sprite.getY() < (wayPoints.get(CurrWaypoint).y + tolerance)))
                   {
-                      wayPoints.removeFirst();
+                      //wayPoints.removeFirst();
                       velocity = 0;
                       // Deconstruction of the enemy and sprite is done here.
                       return true;

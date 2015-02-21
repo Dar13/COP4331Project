@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.Debug.Debuger;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.triggers.WayPoint;
 
@@ -21,7 +23,8 @@ public class Play extends GameState
 {
 
     private  boolean debugMode_ON = true;
-    private Texture img;
+    private Texture EnemyImg;
+    private Texture TowerImg;
     private Enemy enemy;
 
     private Tower tower;
@@ -29,11 +32,15 @@ public class Play extends GameState
     private OrthographicCamera cam;
     private Debuger debuger;
     private LinkedList<WayPoint> wayPoints;
+    public EnemyManager enemyManager;
+    float TimeSinceLastSpawn = 0;
+    int numNormEnemies = 0;
 
     public Play(GameStateManager gsm)
     {
         super(gsm);
 
+        enemyManager = new EnemyManager(0);
         wayPoints = new LinkedList<WayPoint>();
         wayPoints.addLast(new WayPoint(0,0,"e"));
         wayPoints.addLast(new WayPoint(MyGame.V_WIDTH-32,0,"n"));
@@ -45,12 +52,12 @@ public class Play extends GameState
         cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
         debuger = new Debuger(wayPoints);
         shapeRenderer = new ShapeRenderer();
-        img = new Texture("EnemyDev.png");
+        EnemyImg = new Texture("EnemyDev.png");
 
-        enemy= new Enemy(img,3,wayPoints);
-        enemy.setWayPointsLL(wayPoints);
-        img = new Texture("DevText_Tower.png");
-        tower = new Tower(img, 50, 50);
+        numNormEnemies = 3;
+        enemyManager.AddEnemy(EnemyImg,3,wayPoints);
+        TowerImg = new Texture("DevText_Tower.png");
+        tower = new Tower(TowerImg, 50, 50);
 
 
     }
@@ -61,9 +68,15 @@ public class Play extends GameState
 
     public void update(float deltaTime)
     {
-        if(!enemy.Check()){
-            enemy.Move();
+        TimeSinceLastSpawn = TimeSinceLastSpawn + deltaTime;
+
+        if(TimeSinceLastSpawn > .5 && numNormEnemies > 0){
+            enemyManager.AddEnemy(EnemyImg,3,wayPoints);
+            TimeSinceLastSpawn = 0;
+            numNormEnemies--;
         }
+
+        enemyManager.UpdateAll(deltaTime);
     }
 
     public void render()
@@ -74,7 +87,7 @@ public class Play extends GameState
         cam.update();
         spriteBatch.setProjectionMatrix(cam.combined);
         spriteBatch.begin();
-        enemy.render(spriteBatch);
+        enemyManager.RenderAll(spriteBatch);
         tower.render(spriteBatch);
         spriteBatch.end();
         shapeRenderer.end();
