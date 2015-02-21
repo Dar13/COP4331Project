@@ -19,9 +19,11 @@ public class Enemy extends Entities {
     private float tolerance;
     public LinkedList<WayPoint> wayPoints;
     private int CurrWaypoint = 0;
+    public float health = 100;
+    public float armor = 0;
 
 
-    public Enemy(Texture img, float velocity, LinkedList<WayPoint> path){
+    public Enemy(Texture img, float velocity, float armor, LinkedList<WayPoint> path){
         super(img,path.getFirst().x, path.getFirst().y);
         CurrWaypoint++;
         this.wayPoints = path;
@@ -30,6 +32,7 @@ public class Enemy extends Entities {
         this.tolerance = velocity/2;
         sprite.setPosition(x,y);
         heading = wayPoints.getFirst().direction;
+        this.armor = armor;
     }
 
     /*

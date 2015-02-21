@@ -17,14 +17,18 @@ public class Tower extends Entities
     public Sprite sprite;
     public float x=0;
     public float y=0;
+    public float damages = 0;
+    public float range = 0;
     public LinkedList<WayPoint> wayPoints;
 
-    public Tower(Texture img, float x, float y)
+    public Tower(Texture img, float x, float y, float damages, float range)
     {
         super(img,x, y);
         this.sprite = new Sprite(img);
         this.x = x;
         this.y = y;
+        this.damages = damages;
+        this.range = range;
         sprite.setPosition(x,y);
         wayPoints = new LinkedList<WayPoint>();
     }

@@ -23,8 +23,8 @@ public class EnemyManager {
         this.numEnemies = numEnemies;
     }
 
-    public void AddEnemy(Texture img, float velocity, LinkedList<WayPoint> path){
-        Enemy New = new Enemy(img, velocity, path);
+    public void AddEnemy(Texture img, float velocity, float armor, LinkedList<WayPoint> path){
+        Enemy New = new Enemy(img, velocity, armor, path);
         enemies.addLast(New);
         numEnemies++;
     }

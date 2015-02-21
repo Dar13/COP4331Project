@@ -32,6 +32,7 @@ public class Play extends GameState
     private OrthographicCamera cam;
     private Debuger debuger;
     private LinkedList<WayPoint> wayPoints;
+    private LinkedList<Tower> towers;
     public EnemyManager enemyManager;
     float TimeSinceLastSpawn = 0;
     int numNormEnemies = 0;
@@ -42,6 +43,7 @@ public class Play extends GameState
 
         enemyManager = new EnemyManager(0);
         wayPoints = new LinkedList<WayPoint>();
+        towers = new LinkedList<Tower>();
         wayPoints.addLast(new WayPoint(0,0,"e"));
         wayPoints.addLast(new WayPoint(MyGame.V_WIDTH-32,0,"n"));
         wayPoints.addLast(new WayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"w"));
@@ -50,15 +52,15 @@ public class Play extends GameState
 
         cam = new OrthographicCamera();
         cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
-        debuger = new Debuger(wayPoints);
         shapeRenderer = new ShapeRenderer();
         EnemyImg = new Texture("EnemyDev.png");
 
         numNormEnemies = 3;
-        enemyManager.AddEnemy(EnemyImg,3,wayPoints);
+        enemyManager.AddEnemy(EnemyImg,3, 1,wayPoints);
         TowerImg = new Texture("DevText_Tower.png");
-        tower = new Tower(TowerImg, 50, 50);
-
+        tower = new Tower(TowerImg, 50, 50, 5, 2);
+        towers.addLast(tower);
+        debuger = new Debuger(wayPoints, towers);
 
     }
 
@@ -71,7 +73,7 @@ public class Play extends GameState
         TimeSinceLastSpawn = TimeSinceLastSpawn + deltaTime;
 
         if(TimeSinceLastSpawn > .5 && numNormEnemies > 0){
-            enemyManager.AddEnemy(EnemyImg,3,wayPoints);
+            enemyManager.AddEnemy(EnemyImg,3, 1,wayPoints);
             TimeSinceLastSpawn = 0;
             numNormEnemies--;
         }
