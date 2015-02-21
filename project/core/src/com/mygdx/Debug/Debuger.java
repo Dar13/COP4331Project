@@ -1,5 +1,6 @@
 package com.mygdx.Debug;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.MyGame;
@@ -14,6 +15,8 @@ public class Debuger {
     public OrthographicCamera debugeCam;
     public ShapeRenderer shapeRenderer;
     private LinkedList<WayPoint> path;
+    private boolean END = false;
+    int waypointindex = 0;
 
     public Debuger(LinkedList<WayPoint> path){
         debugeCam = new OrthographicCamera();
@@ -26,8 +29,18 @@ public class Debuger {
     public void render(){
         debugeCam.update();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(1,0,0,0);
-        shapeRenderer.rect(0,0,320,32);
+        while(END != true) {
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.rect(path.get(waypointindex).x, path.get(waypointindex).y, path.get(waypointindex + 1).x - path.get(waypointindex).x + 32, path.get(waypointindex +1).y - path.get(waypointindex).y + 32);
+            switch (path.get(waypointindex+1).direction){
+                case ("end"):
+                    END = true;
+                    break;
+            }
+            waypointindex++;
+        }
         shapeRenderer.end();
+        waypointindex = 0;
+        END = false;
     }
 }

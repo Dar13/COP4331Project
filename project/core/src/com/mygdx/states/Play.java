@@ -90,12 +90,10 @@ public class Play extends GameState
         enemyManager.RenderAll(spriteBatch);
         tower.render(spriteBatch);
         spriteBatch.end();
-        shapeRenderer.end();
 
         if(debugMode_ON){
             debuger.render();
         }
-
     }
 
     public void dispose(){};
