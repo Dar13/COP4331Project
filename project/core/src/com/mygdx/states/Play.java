@@ -82,7 +82,7 @@ public class Play extends GameState
             numNormEnemies--;
         }
 
-        enemyManager.UpdateAll(deltaTime);
+        enemyManager.UpdateAll(deltaTime, towers);
     }
 
     public void render()

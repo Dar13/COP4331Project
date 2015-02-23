@@ -3,6 +3,7 @@ package com.mygdx.handlers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.Enemy;
+import com.mygdx.entities.Tower;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -15,10 +16,12 @@ public class EnemyManager {
     public int numEnemies;
     public Texture img;
     public LinkedList<Enemy> enemies;
+    public LinkedList<Tower> towers;
 
 
     public EnemyManager(int numEnemies){
         enemies = new LinkedList<Enemy>();
+        towers = new LinkedList<Tower>();
         img = new Texture("EnemyDev.png");
         this.numEnemies = numEnemies;
     }
@@ -33,7 +36,21 @@ public class EnemyManager {
 
     }
 
-    public void UpdateAll(float deltaTime){
+    public void UpdateAll(float deltaTime, LinkedList<Tower> towers){
+        this.towers = towers;
+
+        //Enemy health decrimenter, very crude atm.
+        for (int i = 0; i < numEnemies; i++){
+            for (int j = 0; j < towers.size(); j++){
+                if (Math.abs(enemies.get(i).x + 16 - towers.get(j).x + 16) < towers.get(j).range * 32 && Math.abs(enemies.get(i).y + 16 - towers.get(j).y + 16) < towers.get(j).range * 32){
+                    if(Math.sqrt(Math.pow((enemies.get(i).x + 16 - towers.get(j).x + 16), 2) + Math.pow((enemies.get(i).y + 16 - towers.get(j).y + 16), 2)) < towers.get(j).range * 32){
+                        enemies.get(i).health = enemies.get(i).health - towers.get(j).damages / enemies.get(i).armor;
+                    }
+                }
+            }
+        }
+
+
         for (int i = 0; i < numEnemies; i++){
             if(!enemies.get(i).Check()){
                 enemies.get(i).Move();
