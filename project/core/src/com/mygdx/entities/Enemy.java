@@ -20,7 +20,7 @@ public class Enemy extends Entities {
     public LinkedList<WayPoint> wayPoints;
     private int CurrWaypoint = 0;
     public float health = 100;
-    public float armor = 0;
+    public float armor = 1;
 
 
     public Enemy(Texture img, float velocity, float armor, LinkedList<WayPoint> path){
