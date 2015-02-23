@@ -42,9 +42,13 @@ public class Debuger {
             }
             waypointindex++;
         }
-        shapeRenderer.setColor(Color.CYAN);
-        shapeRenderer.circle(towers.getFirst().x + 16, towers.getFirst().y + 16, towers.getFirst().range * 32);
 
+        int i = 0;
+        while(i < towers.size()) {
+            shapeRenderer.setColor(Color.CYAN);
+            shapeRenderer.circle(towers.get(i).x + 16, towers.get(i).y + 16, towers.get(i).range * 32);
+            i++;
+        }
 
         shapeRenderer.end();
         waypointindex = 0;

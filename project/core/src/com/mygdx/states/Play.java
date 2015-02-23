@@ -12,6 +12,7 @@ import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
+import com.mygdx.handlers.TowerManager;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -34,6 +35,7 @@ public class Play extends GameState
     private LinkedList<WayPoint> wayPoints;
     private LinkedList<Tower> towers;
     public EnemyManager enemyManager;
+    public TowerManager towerManager;
     float TimeSinceLastSpawn = 0;
     int numNormEnemies = 0;
 
@@ -60,7 +62,9 @@ public class Play extends GameState
         TowerImg = new Texture("DevText_Tower.png");
         tower = new Tower(TowerImg, 50, 50, 5, 2);
         towers.addLast(tower);
-        debuger = new Debuger(wayPoints, towers);
+        towerManager = new TowerManager(towers);
+        towerManager.addTower(TowerImg, 100, 50, 5, 2);
+        debuger = new Debuger(wayPoints, towerManager.towers);
 
     }
 
@@ -90,7 +94,7 @@ public class Play extends GameState
         spriteBatch.setProjectionMatrix(cam.combined);
         spriteBatch.begin();
         enemyManager.RenderAll(spriteBatch);
-        tower.render(spriteBatch);
+        towerManager.RenderAll(spriteBatch);
         spriteBatch.end();
 
         if(debugMode_ON){
