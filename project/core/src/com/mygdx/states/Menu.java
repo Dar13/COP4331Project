@@ -56,12 +56,6 @@ public class Menu extends GameState {
         spriteBatch.begin();
         font.draw(spriteBatch,"Start",260,270);
         spriteBatch.end();
-
-
-
-        //start.render(spriteBatch);
-
-
     }
 
     public void dispose(){}
