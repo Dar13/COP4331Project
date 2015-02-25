@@ -66,10 +66,10 @@ public class Play extends GameState
         numNormEnemies = 3;
         enemyManager.AddEnemy(EnemyImg,3, 1,wayPoints);
         TowerImg = new Texture("DevText_Tower.png");
-        tower = new Tower(TowerImg, 50, 50, 7, 2);
+        tower = new Tower(TowerImg, 50, 50, 1, 2);
         towers.addLast(tower);
         towerManager = new TowerManager(towers);
-        towerManager.addTower(TowerImg, 240, 50, 3, 2);
+        towerManager.addTower(TowerImg, 240, 50, 1, 2);
         debuger = new Debuger(wayPoints, towerManager.towers, enemyManager.enemies);
 
     }
