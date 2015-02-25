@@ -12,7 +12,11 @@ import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
+<<<<<<< HEAD
 import com.mygdx.triggers.Path;
+=======
+import com.mygdx.handlers.TowerManager;
+>>>>>>> 7ee1d3e473e01346163b21c832edf3aec3fcf2b7
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -35,6 +39,7 @@ public class Play extends GameState
     private LinkedList<WayPoint> wayPoints;
     private LinkedList<Tower> towers;
     public EnemyManager enemyManager;
+    public TowerManager towerManager;
     float TimeSinceLastSpawn = 0;
     int numNormEnemies = 0;
     private LinkedList<Path> paths;
@@ -64,9 +69,11 @@ public class Play extends GameState
         numNormEnemies = 3;
         enemyManager.AddEnemy(EnemyImg,3, 1,wayPoints);
         TowerImg = new Texture("DevText_Tower.png");
-        tower = new Tower(TowerImg, 50, 50, 5, 2);
+        tower = new Tower(TowerImg, 50, 50, 7, 2);
         towers.addLast(tower);
-        debuger = new Debuger(wayPoints, towers);
+        towerManager = new TowerManager(towers);
+        towerManager.addTower(TowerImg, 240, 50, 3, 2);
+        debuger = new Debuger(wayPoints, towerManager.towers, enemyManager.enemies);
 
     }
 
@@ -83,7 +90,13 @@ public class Play extends GameState
             TimeSinceLastSpawn = 0;
             numNormEnemies--;
         }
+<<<<<<< HEAD
         enemyManager.UpdateAll(deltaTime);
+=======
+
+        enemyManager.UpdateAll(deltaTime, towers);
+        //health.update(enemyManager.enemies.get(1).x, enemyManager.enemies.get(1).y);
+>>>>>>> 7ee1d3e473e01346163b21c832edf3aec3fcf2b7
     }
 
     public void render()
@@ -95,7 +108,7 @@ public class Play extends GameState
         spriteBatch.setProjectionMatrix(cam.combined);
         spriteBatch.begin();
         enemyManager.RenderAll(spriteBatch);
-        tower.render(spriteBatch);
+        towerManager.RenderAll(spriteBatch);
         spriteBatch.end();
 
         if(debugMode_ON){

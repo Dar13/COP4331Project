@@ -33,6 +33,12 @@ public class Tower extends Entities
         wayPoints = new LinkedList<WayPoint>();
     }
 
+    public void shoot(){
+        //to calculate center of enemy sprite:
+        //public int xCenter = ( enemy.getX()+(enemy.getWidth()/2) );
+        //public int yCenter = ( enemy.getY()+(enemy.getHeight()/2) );
+    }
+
     public void update(float deltaTime)
     {
         //blah
