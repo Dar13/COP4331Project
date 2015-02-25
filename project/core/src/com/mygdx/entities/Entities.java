@@ -22,6 +22,6 @@ public abstract class Entities {
 
 
 
-    
+
     public abstract void render(SpriteBatch sb);
 }

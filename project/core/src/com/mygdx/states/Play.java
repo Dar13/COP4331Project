@@ -12,6 +12,7 @@ import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
+import com.mygdx.triggers.Path;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -36,12 +37,14 @@ public class Play extends GameState
     public EnemyManager enemyManager;
     float TimeSinceLastSpawn = 0;
     int numNormEnemies = 0;
+    private LinkedList<Path> paths;
 
     public Play(GameStateManager gsm)
     {
         super(gsm);
 
         enemyManager = new EnemyManager(0);
+        paths = new LinkedList<Path>();
         wayPoints = new LinkedList<WayPoint>();
         towers = new LinkedList<Tower>();
         wayPoints.addLast(new WayPoint(0,0,"e"));
@@ -49,6 +52,9 @@ public class Play extends GameState
         wayPoints.addLast(new WayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"w"));
         wayPoints.addLast(new WayPoint(0,MyGame.V_HEIGHT-32,"s"));
         wayPoints.addLast(new WayPoint(0,0,"end"));
+
+
+
 
         cam = new OrthographicCamera();
         cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
@@ -77,7 +83,6 @@ public class Play extends GameState
             TimeSinceLastSpawn = 0;
             numNormEnemies--;
         }
-
         enemyManager.UpdateAll(deltaTime);
     }
 

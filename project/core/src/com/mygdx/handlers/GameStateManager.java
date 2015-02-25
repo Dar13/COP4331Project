@@ -2,6 +2,7 @@ package com.mygdx.handlers;
 
 import com.mygdx.game.MyGame;
 import com.mygdx.states.GameState;
+import com.mygdx.states.Menu;
 import com.mygdx.states.Play;
 
 import java.util.Stack;
@@ -16,6 +17,7 @@ public class GameStateManager
 
     //A random number to represent PlayState.
     public static final int PLAY = 388031654;
+    public static final int MENU = 131587867;
 
     public GameStateManager(MyGame game)
     {
@@ -42,6 +44,7 @@ public class GameStateManager
     private GameState getState(int state)
     {
         if (state == PLAY) return new Play(this);
+        if (state == MENU) return new Menu(this);
 
         return null;
     }

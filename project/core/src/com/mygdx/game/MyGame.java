@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.handlers.GameStateManager;
+import com.mygdx.handlers.MyInput;
+import com.mygdx.handlers.MyInputProcessor;
 
 public class MyGame extends ApplicationAdapter {
     public static final int V_WIDTH = 320;
@@ -22,6 +24,7 @@ public class MyGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+        Gdx.input.setInputProcessor(new MyInputProcessor());
         sb = new SpriteBatch();
         gsm = new GameStateManager(this);
 	}
@@ -31,7 +34,7 @@ public class MyGame extends ApplicationAdapter {
 
         gsm.update(Gdx.graphics.getDeltaTime());
         gsm.render();
-
+        MyInput.update();
 	}
 
     public SpriteBatch getSpriteBatch(){return sb;}
