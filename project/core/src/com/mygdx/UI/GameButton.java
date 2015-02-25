@@ -16,7 +16,8 @@ public class GameButton {
     public float width;
     public float height;
 
-    private Sprite sprite;
+    public float x_offset;
+    public float y_offset;
 
     private Texture img;
     private Texture img2;
@@ -25,10 +26,11 @@ public class GameButton {
     private OrthographicCamera cam;
 
     private boolean clicked;
+    private boolean isReleased;
 
     public GameButton(float x, float y, OrthographicCamera cam)
     {
-        img = new Texture("EnemyDev.png");
+        img = new Texture("button.png");
         img2 = new Texture("button_down.png");
 
         this.x = x;
@@ -38,9 +40,12 @@ public class GameButton {
         width = img.getWidth();
         height = img.getHeight();
         vec = new Vector3();
+        x_offset = x-width/2;
+        y_offset = y-height/2;
     }
 
-    public  boolean isClicked(){return clicked;}
+    public  boolean isReleased(){return isReleased;}
+
     public void update(float dt){
         vec.set(MyInput.x,MyInput.y,0);
         cam.unproject(vec);
@@ -55,20 +60,32 @@ public class GameButton {
         {
             clicked = false;
         }
+
+        if (MyInput.isReleased() &&
+                vec.x > x - width / 2 && vec.x < x + width / 2 &&
+                vec.y > y - height / 2 && vec.y < y + height / 2)
+        {
+            isReleased =true;
+        }
+        else
+        {
+            isReleased =false;
+        }
+
     }
 
     public void render(SpriteBatch sb)
     {
-
+        sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        if(clicked){
-            if(clicked){
-                sb.draw(img2,x,y);
-            }
-            else {
-                sb.draw(img,x, y);
-            }
-        }
+       if(clicked)
+       {
+           sb.draw(img2,x_offset,y_offset);
+       }
+       else
+       {
+           sb.draw(img,x_offset, y_offset);
+       }
         sb.end();
     }
 

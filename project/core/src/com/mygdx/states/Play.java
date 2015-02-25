@@ -12,11 +12,8 @@ import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
-<<<<<<< HEAD
 import com.mygdx.triggers.Path;
-=======
 import com.mygdx.handlers.TowerManager;
->>>>>>> 7ee1d3e473e01346163b21c832edf3aec3fcf2b7
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -90,13 +87,10 @@ public class Play extends GameState
             TimeSinceLastSpawn = 0;
             numNormEnemies--;
         }
-<<<<<<< HEAD
-        enemyManager.UpdateAll(deltaTime);
-=======
+
 
         enemyManager.UpdateAll(deltaTime, towers);
-        //health.update(enemyManager.enemies.get(1).x, enemyManager.enemies.get(1).y);
->>>>>>> 7ee1d3e473e01346163b21c832edf3aec3fcf2b7
+
     }
 
     public void render()
