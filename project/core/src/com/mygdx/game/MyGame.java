@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.handlers.GameStateManager;
 
 public class MyGame extends ApplicationAdapter {
-    public static final int V_WIDTH = 320;
-    public static final int V_HEIGHT = 240;
+    public static final int V_WIDTH = 320*2;
+    public static final int V_HEIGHT = 240*2;
     public static final int SCALE = 2;
 
     private SpriteBatch sb;

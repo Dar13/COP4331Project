@@ -36,15 +36,26 @@ public class EnemyManager {
 
     }
 
-    public void UpdateAll(float deltaTime, LinkedList<Tower> towers){
+    public void UpdateAll(float deltaTime, LinkedList<Tower> towers)
+    {
         this.towers = towers;
 
         //Enemy health decrimenter, very crude atm.
         for (int i = 0; i < numEnemies; i++){
             for (int j = 0; j < towers.size(); j++){
-                if (Math.abs(enemies.get(i).x + 16 - towers.get(j).x + 16) < towers.get(j).range * 32 && Math.abs(enemies.get(i).y + 16 - towers.get(j).y + 16) < towers.get(j).range * 32){
-                    if(Math.sqrt(Math.pow((enemies.get(i).x + 16 - towers.get(j).x + 16), 2) + Math.pow((enemies.get(i).y + 16 - towers.get(j).y + 16), 2)) < towers.get(j).range * 32){
-                        enemies.get(i).health = enemies.get(i).health - towers.get(j).damages / enemies.get(i).armor;
+                if (Math.abs(enemies.get(i).sprite.getX() + 16 - towers.get(j).sprite.getX() + 16)
+                    < towers.get(j).range * 32
+                    && Math.abs(enemies.get(i).sprite.getY() + 16 - towers.get(j).sprite.getY() + 16)
+                    < towers.get(j).range * 32)
+                {
+                    if(Math.sqrt(Math.pow((enemies.get(i).sprite.getX() + 16 - towers.get(j).sprite.getX() + 16), 2)
+                        + Math.pow((enemies.get(i).sprite.getY() + 16 - towers.get(j).sprite.getY() + 16), 2))
+                        < towers.get(j).range * 32)
+                    {
+                        if(enemies.get(i).health > 0){
+                            enemies.get(i).health = enemies.get(i).health - towers.get(j).damages / enemies.get(i).armor;
+                        }
+
                     }
                 }
             }
@@ -54,6 +65,7 @@ public class EnemyManager {
         for (int i = 0; i < numEnemies; i++){
             if(!enemies.get(i).Check()){
                 enemies.get(i).Move();
+
             }
         }
     }

@@ -3,6 +3,8 @@ package com.mygdx.Debug;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.triggers.WayPoint;
@@ -17,16 +19,18 @@ public class Debuger {
     public ShapeRenderer shapeRenderer;
     private LinkedList<WayPoint> path;
     private LinkedList<Tower> towers;
+    private LinkedList<Enemy> enemies;
     private boolean END = false;
     int waypointindex = 0;
 
-    public Debuger(LinkedList<WayPoint> path, LinkedList<Tower> towers){
+    public Debuger(LinkedList<WayPoint> path, LinkedList<Tower> towers, LinkedList<Enemy> enemies){
         debugeCam = new OrthographicCamera();
         debugeCam.setToOrtho(false, MyGame.V_WIDTH,MyGame.V_HEIGHT);
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(debugeCam.combined);
         this.path = path;
         this.towers = towers;
+        this.enemies = enemies;
     }
 
     public void render(){
@@ -48,6 +52,15 @@ public class Debuger {
             shapeRenderer.setColor(Color.CYAN);
             shapeRenderer.circle(towers.get(i).x + 16, towers.get(i).y + 16, towers.get(i).range * 32);
             i++;
+        }
+
+        //shapeRenderer.end();
+        //shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        int j = 0;
+        while(j < enemies.size()){
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.line(enemies.get(j).sprite.getX(), enemies.get(j).sprite.getY()+60, enemies.get(j).sprite.getX() + enemies.get(j).health/4, enemies.get(j).sprite.getY() +60);
+            j++;
         }
 
         shapeRenderer.end();
