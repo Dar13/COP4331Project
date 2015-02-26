@@ -22,8 +22,8 @@ public abstract class GameState
         this.gameStateManager = gameStateManager;
         game = gameStateManager.getGame();
         spriteBatch = game.getSpriteBatch();
-        orthoCamera = game.getCam();
-        hudCamera = game.getHudCam();
+        orthoCamera = game.getCamera();
+        hudCamera = game.getHudCamera();
     }
 
     public abstract void handleInput();
