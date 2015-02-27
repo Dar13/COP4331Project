@@ -13,13 +13,16 @@ public class GameStateManager
 {
     private MyGame game;
     private Stack<GameState> gameStates;
+    private NetworkManager networkManager;
 
     //A random number to represent PlayState.
     public static final int PLAY = 388031654;
 
-    public GameStateManager(MyGame game)
+    public GameStateManager(MyGame game, NetworkManager networkManager)
     {
         this.game = game;
+        this.networkManager = networkManager;
+
         gameStates = new Stack<GameState>();
         pushState(PLAY);
     }
@@ -41,7 +44,7 @@ public class GameStateManager
 
     private GameState getState(int state)
     {
-        if (state == PLAY) return new Play(this);
+        if (state == PLAY) return new Play(this, networkManager);
 
         return null;
     }

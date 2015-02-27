@@ -16,32 +16,49 @@ public class MyGame extends ApplicationAdapter
     private SpriteBatch spriteBatch;
 	private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
-    private GameStateManager gsm;
+    private GameStateManager gameStateManager;
 
     private NetworkManager networkManager;
+    private Thread networkThread;
     
     public MyGame(HashMap<NetworkManager.ConnectionMode, NetworkInterface> networkImpls)
     {
-        networkManager = new NetworkManager();
-        networkManager.setNetworkImpls(networkImpls);
+        networkManager = new NetworkManager(networkImpls);
     }
 	
 	@Override
-	public void create () {
+	public void create ()
+    {
         spriteBatch = new SpriteBatch();
-        gsm = new GameStateManager(this);
+        gameStateManager = new GameStateManager(this, networkManager);
 
+        networkThread = new Thread(networkManager);
+        networkThread.start();
+        boolean success = networkManager.initialize(true,
+                                                    NetworkManager.ConnectionMode.WIFI_LAN,
+                                                    null);
 
+        if(!success)
+        {
+            System.out.println("NET: Initialize failed.");
+        }
+
+        /*
+        try
+        {
+            Thread.sleep(1000);
+        }
+        catch(InterruptedException e)
+        {
+
+        }*/
 	}
 
 	@Override
-	public void render () {
-
-        gsm.update(Gdx.graphics.getDeltaTime());
-        gsm.render();
-
-
-
+	public void render ()
+    {
+        gameStateManager.update(Gdx.graphics.getDeltaTime());
+        gameStateManager.render();
 	}
 
     public SpriteBatch getSpriteBatch(){return spriteBatch;}

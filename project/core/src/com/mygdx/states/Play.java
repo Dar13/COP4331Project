@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.handlers.GameStateManager;
+import com.mygdx.handlers.NetworkManager;
 
 /**
  * Created by James on 2/1/2015.
@@ -12,12 +13,11 @@ public class Play extends GameState
 {
     private Texture img;
 
-    public Play(GameStateManager gsm)
+    public Play(GameStateManager gameStateManager, NetworkManager networkManager)
     {
-        super(gsm);
+        super(gameStateManager, networkManager);
         img = new Texture("badlogic.jpg");
     }
-
 
     public void handleInput()
     {

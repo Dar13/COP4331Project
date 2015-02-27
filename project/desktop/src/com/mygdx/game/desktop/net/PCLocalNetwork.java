@@ -14,7 +14,7 @@ public class PCLocalNetwork implements NetworkInterface
     @Override
     public void setup()
     {
-
+        // pretty default PC networking setup. Not sure what to do here.
     }
 
     /**
@@ -25,7 +25,7 @@ public class PCLocalNetwork implements NetworkInterface
     @Override
     public boolean isReady()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -34,7 +34,6 @@ public class PCLocalNetwork implements NetworkInterface
     @Override
     public void update()
     {
-
     }
 
     /**
