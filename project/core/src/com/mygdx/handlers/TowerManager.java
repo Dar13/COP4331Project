@@ -32,9 +32,10 @@ public class TowerManager {
         }
     }
 
-    public void upgradeTower()
+    public void upgradeTower(int towerToBeUpgraded)
     {
-
+        towers.get(towerToBeUpgraded).damages = towers.get(towerToBeUpgraded).damages * 2;
+        towers.get(towerToBeUpgraded).range = towers.get(towerToBeUpgraded).range * 1.25f;
     }
 
 }

@@ -59,7 +59,7 @@ public class Debuger {
         int j = 0;
         while(j < enemies.size()){
             shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.line(enemies.get(j).sprite.getX(), enemies.get(j).sprite.getY()+60, enemies.get(j).sprite.getX() + enemies.get(j).health/4, enemies.get(j).sprite.getY() +60);
+            shapeRenderer.line(enemies.get(j).sprite.getX(), enemies.get(j).sprite.getY()+ 38, enemies.get(j).sprite.getX() + enemies.get(j).health/4, enemies.get(j).sprite.getY() + 38);
             j++;
         }
 

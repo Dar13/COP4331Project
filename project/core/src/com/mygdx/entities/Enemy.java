@@ -72,7 +72,6 @@ public class Enemy extends Entities {
                       sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
                       heading = "n";
                       CurrWaypoint++;
-                      //wayPoints.removeFirst();
                       return true;
                   }
                   return false;
@@ -86,7 +85,6 @@ public class Enemy extends Entities {
                       sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
                       heading = "e";
                       CurrWaypoint++;
-                      //wayPoints.removeFirst();
                       return true;
                   }
                   return false;
@@ -100,7 +98,6 @@ public class Enemy extends Entities {
                       sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
                       heading = "s";
                       CurrWaypoint++;
-                      //wayPoints.removeFirst();
                       return true;
                   }
                   return false;
@@ -114,7 +111,7 @@ public class Enemy extends Entities {
                       sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
                       heading = "w";
                       CurrWaypoint++;
-                      //wayPoints.removeFirst();
+
                       return true;
                   }
                   return false;
@@ -124,9 +121,9 @@ public class Enemy extends Entities {
                           (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
                           (sprite.getY() < (wayPoints.get(CurrWaypoint).y + tolerance)))
                   {
-                      //wayPoints.removeFirst();
+
                       velocity = 0;
-                      // Deconstruction of the enemy and sprite is done here.
+
                       return true;
                   }
                   return false;

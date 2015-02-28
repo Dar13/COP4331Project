@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Tower;
+import com.mygdx.states.Play;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -32,7 +33,16 @@ public class EnemyManager {
         numEnemies++;
     }
 
-    public void RemoveEnemy(){
+    public void RemoveEnemy(int toBeDeleted){
+
+        if (toBeDeleted == 0) {
+            enemies.removeFirst();
+        }
+
+        else {
+            enemies.remove(toBeDeleted);
+        }
+
 
     }
 
@@ -61,8 +71,13 @@ public class EnemyManager {
                     }
                 }
             }
+        }
 
-
+        for (int i = 0; i < enemies.size(); i++){
+            if(enemies.get(i).health <= 0){
+                RemoveEnemy(i);
+                numEnemies--;
+            }
 
         }
 
