@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.Debug.Debuger;
@@ -29,7 +30,9 @@ public class Play extends GameState
     private Texture TigerBase;
     private Texture TigerTurret;
     private Texture TowerImg;
+    private Texture Map;
     private Enemy enemy;
+    public Sprite map;
 
     private Tower tower;
     public ShapeRenderer shapeRenderer;
@@ -68,6 +71,8 @@ public class Play extends GameState
         EnemyImg = new Texture("EnemyDev.png");
         TigerBase = new Texture("tigerbase.png");
         TigerTurret = new Texture("tigerturret.png");
+        Map = new Texture("map.png");
+        map = new Sprite(Map);
 
         numNormEnemies = 15;
         numHEnemies = 1;
@@ -94,7 +99,7 @@ public class Play extends GameState
         TimeSinceLastSpawn = TimeSinceLastSpawn + deltaTime;
 
         if(TimeSinceLastSpawn > .5 && numNormEnemies > 0){
-            enemyManager.AddEnemy(EnemyImg,3, 1, wayPoints);
+            enemyManager.AddEnemy(EnemyImg, 3, 1, wayPoints);
             TimeSinceLastSpawn = 0;
             numNormEnemies--;
         }
@@ -112,8 +117,10 @@ public class Play extends GameState
         cam.update();
         spriteBatch.setProjectionMatrix(cam.combined);
         spriteBatch.begin();
+        map.draw(spriteBatch);
         enemyManager.RenderAll(spriteBatch);
         towerManager.RenderAll(spriteBatch);
+
         spriteBatch.end();
 
         if(debugMode_ON){
