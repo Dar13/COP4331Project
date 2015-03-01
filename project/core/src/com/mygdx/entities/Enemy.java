@@ -70,6 +70,7 @@ public class Enemy extends Entities {
                   {
 
                       sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
+                      changeSpriteRotation();
                       heading = "n";
                       CurrWaypoint++;
                       return true;
@@ -83,6 +84,7 @@ public class Enemy extends Entities {
                   {
 
                       sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
+                      changeSpriteRotation();
                       heading = "e";
                       CurrWaypoint++;
                       return true;
@@ -96,6 +98,7 @@ public class Enemy extends Entities {
                   {
 
                       sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
+                      changeSpriteRotation();
                       heading = "s";
                       CurrWaypoint++;
                       return true;
@@ -109,6 +112,7 @@ public class Enemy extends Entities {
                   {
 
                       sprite.setPosition(wayPoints.get(CurrWaypoint).x,wayPoints.get(CurrWaypoint).y);
+                      changeSpriteRotation();
                       heading = "w";
                       CurrWaypoint++;
 
@@ -131,6 +135,47 @@ public class Enemy extends Entities {
       }
       return  false;
     }
+
+    public void changeSpriteRotation(){
+        if(heading == "e" && wayPoints.get(CurrWaypoint).direction == "n"){
+            sprite.rotate(90);
+        }
+        if(heading == "e" && wayPoints.get(CurrWaypoint).direction == "s"){
+            sprite.rotate(-90);
+        }
+        if(heading == "e" && wayPoints.get(CurrWaypoint).direction == "w"){
+            sprite.rotate(180);
+        }
+        if(heading == "w" && wayPoints.get(CurrWaypoint).direction == "n"){
+            sprite.rotate(-90);
+        }
+        if(heading == "w" && wayPoints.get(CurrWaypoint).direction == "s"){
+            sprite.rotate(90);
+        }
+        if(heading == "w" && wayPoints.get(CurrWaypoint).direction == "e"){
+            sprite.rotate(180);
+        }
+        if(heading == "n" && wayPoints.get(CurrWaypoint).direction == "e"){
+            sprite.rotate(-90);
+        }
+        if(heading == "n" && wayPoints.get(CurrWaypoint).direction == "s"){
+            sprite.rotate(180);
+        }
+        if(heading == "n" && wayPoints.get(CurrWaypoint).direction == "w"){
+            sprite.rotate(90);
+        }
+        if(heading == "s" && wayPoints.get(CurrWaypoint).direction == "n"){
+            sprite.rotate(180);
+        }
+        if(heading == "s" && wayPoints.get(CurrWaypoint).direction == "e"){
+            sprite.rotate(90);
+        }
+        if(heading == "s" && wayPoints.get(CurrWaypoint).direction == "w"){
+            sprite.rotate(-90);
+        }
+
+    }
+
     public void setWayPointsLL(LinkedList<WayPoint> wayPoints){this.wayPoints = wayPoints;}
     public void SetWayPoint(float x, float y, String direction){wayPoints.addLast(new WayPoint(x,y,direction));}
 
