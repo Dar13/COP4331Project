@@ -66,6 +66,7 @@ public class Play extends GameState
 
         numNormEnemies = 15;
         enemyManager.AddEnemy(EnemyImg,3, 8,wayPoints);
+        enemyManager.enemies.get(0).sprite.rotate(-90);
         TowerImg = new Texture("DevText_Tower.png");
         tower = new Tower(TowerImg, 50, 50, 2, 2);
         towers.addLast(tower);
