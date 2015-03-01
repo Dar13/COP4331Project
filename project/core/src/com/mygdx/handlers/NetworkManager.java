@@ -1,5 +1,7 @@
 package com.mygdx.handlers;
 
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Server;
 import com.mygdx.net.NetworkInterface;
 
 import java.io.IOException;
@@ -11,7 +13,6 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -58,11 +59,13 @@ public class NetworkManager implements Runnable
 
     // server
     protected Boolean isServer;
+    protected Server server;
     protected ServerSocket serverSocket;
     protected ArrayList<Socket> connections;
     protected int expectedAmountClients;
 
     // client
+    protected Client client;
     protected Socket clientSocket;
     protected InetAddress hostAddress;
 
@@ -81,6 +84,8 @@ public class NetworkManager implements Runnable
         initialized = new AtomicBoolean(false);
         ready = false;
 
+        // this is the closest to a traditional mutex I could find.
+        // allows multiple reads at one time while only allowing one write lock.
         mutex = new ReentrantReadWriteLock(true);
     }
 
@@ -119,6 +124,7 @@ public class NetworkManager implements Runnable
             // this can't be null so ignore any warnings that it can be.
             if (isServer)
             {
+                connections = new ArrayList<>();
                 try
                 {
                     serverSocket = new ServerSocket();
@@ -318,6 +324,24 @@ public class NetworkManager implements Runnable
             if (isServer)
             {
                 // server is sending packets out and waiting for incoming connections.
+                if(expectedAmountClients != connections.size())
+                {
+                    Socket connection = null;
+                    try
+                    {
+                        connection = serverSocket.accept();
+                    }
+                    catch(IOException e)
+                    {
+                        connection = null;
+                        System.out.println("NET: Exception occurred during server acceptance of connection.");
+                    }
+
+                    if(connection != null)
+                    {
+
+                    }
+                }
             }
             else
             {
