@@ -56,6 +56,16 @@ public class EnemyManager {
 
     }
 
+    public void RemoveHEnemy(int toBeDeleted){
+        if (toBeDeleted == 0) {
+            Henemies.removeFirst();
+        }
+
+        else {
+            Henemies.remove(toBeDeleted);
+        }
+    }
+
     public void UpdateAll(float deltaTime, LinkedList<Tower> towers)
     {
         this.towers = towers;
@@ -64,21 +74,25 @@ public class EnemyManager {
         for (int i = 0; i < enemies.size(); i++){
             if(enemies.get(i) == null){continue;}
             for (int j = 0; j < towers.size(); j++){
-                if (Math.abs(enemies.get(i).sprite.getX() + 16 - towers.get(j).sprite.getX() + 16)
-                    < towers.get(j).range * 32
-                    && Math.abs(enemies.get(i).sprite.getY() + 16 - towers.get(j).sprite.getY() + 16)
-                    < towers.get(j).range * 32)
-                {
-                    if(Math.sqrt(Math.pow((enemies.get(i).sprite.getX() + 16 - towers.get(j).sprite.getX() + 16), 2)
-                        + Math.pow((enemies.get(i).sprite.getY() + 16 - towers.get(j).sprite.getY() + 16), 2))
-                        < towers.get(j).range * 32)
-                    {
-                        if(enemies.get(i).health > 0)
-                        {
-                            enemies.get(i).health = enemies.get(i).health - towers.get(j).damages / enemies.get(i).armor;
-                        }
-
+                if(InRange(enemies.get(i).sprite.getX(), enemies.get(i).sprite.getY(), towers.get(j).sprite.getX(), towers.get(j).sprite.getY(), towers.get(j).range)) {
+                    if (enemies.get(i).health > 0) {
+                        enemies.get(i).health = enemies.get(i).health - towers.get(j).damages / enemies.get(i).armor;
                     }
+
+
+                }
+            }
+        }
+
+        for (int i = 0; i < Henemies.size(); i++){
+            if(Henemies.get(i) == null){continue;}
+            for (int j = 0; j < towers.size(); j++){
+                if(InRange(Henemies.get(i).sprite.getX(), Henemies.get(i).sprite.getY(), towers.get(j).sprite.getX(), towers.get(j).sprite.getY(), towers.get(j).range)) {
+                    if (Henemies.get(i).health > 0) {
+                        Henemies.get(i).health = Henemies.get(i).health - towers.get(j).damages / Henemies.get(i).armor;
+                    }
+
+
                 }
             }
         }
@@ -87,6 +101,14 @@ public class EnemyManager {
             if(enemies.get(i).health <= 0){
                 RemoveEnemy(i);
                 numEnemies--;
+            }
+
+        }
+
+        for (int i = 0; i < Henemies.size(); i++){
+            if(Henemies.get(i).health <= 0){
+                RemoveHEnemy(i);
+                numHEnemies--;
             }
 
         }
@@ -107,6 +129,23 @@ public class EnemyManager {
         }
 
     }
+
+    public boolean InRange(float enemyX, float enemyY, float towerX, float towerY, float towerRange){
+        if (Math.abs(enemyX + 16 - towerX + 16)
+                < towerRange * 32
+                && Math.abs(enemyY + 16 - towerY + 16)
+                < towerRange * 32)
+        {
+            if(Math.sqrt(Math.pow((enemyX + 16 - towerX + 16), 2)
+                    + Math.pow((enemyY + 16 - towerY + 16), 2))
+                    < towerRange * 32)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void RenderAll(SpriteBatch sb){
         for (int i = 0; i < numHEnemies; i++){
