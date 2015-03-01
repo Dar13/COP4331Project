@@ -38,7 +38,8 @@ public class Debuger {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         while(END != true) {
             shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.rect(path.get(waypointindex).x, path.get(waypointindex).y, path.get(waypointindex + 1).x - path.get(waypointindex).x + 32, path.get(waypointindex +1).y - path.get(waypointindex).y + 32);
+            shapeRenderer.line(path.get(waypointindex).x + 16, path.get(waypointindex).y + 16, path.get(waypointindex + 1).x +16, path.get(waypointindex +1).y +16);
+            shapeRenderer.rect(path.get(waypointindex).x, path.get(waypointindex).y, path.get(waypointindex).x + 32, path.get(waypointindex).y +32);
             switch (path.get(waypointindex+1).direction){
                 case ("end"):
                     END = true;
@@ -54,8 +55,7 @@ public class Debuger {
             i++;
         }
 
-        //shapeRenderer.end();
-        //shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        
         int j = 0;
         while(j < enemies.size()){
             shapeRenderer.setColor(Color.GREEN);
