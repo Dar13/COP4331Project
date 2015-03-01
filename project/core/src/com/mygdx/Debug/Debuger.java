@@ -55,7 +55,7 @@ public class Debuger {
             i++;
         }
 
-        
+
         int j = 0;
         while(j < enemies.size()){
             shapeRenderer.setColor(Color.GREEN);

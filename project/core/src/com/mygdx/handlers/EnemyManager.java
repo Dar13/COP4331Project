@@ -3,6 +3,7 @@ package com.mygdx.handlers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.Enemy;
+import com.mygdx.entities.EnemyHeavy;
 import com.mygdx.entities.Tower;
 import com.mygdx.states.Play;
 import com.mygdx.triggers.WayPoint;
@@ -15,13 +16,16 @@ import java.util.LinkedList;
 public class EnemyManager {
 
     public int numEnemies;
+    public int numHEnemies;
     public Texture img;
     public LinkedList<Enemy> enemies;
+    public LinkedList<EnemyHeavy> Henemies;
     public LinkedList<Tower> towers;
 
 
-    public EnemyManager(int numEnemies){
+    public EnemyManager(int numEnemies, int numHEnemies){
         enemies = new LinkedList<Enemy>();
+        Henemies = new LinkedList<EnemyHeavy>();
         towers = new LinkedList<Tower>();
         img = new Texture("EnemyDev.png");
         this.numEnemies = numEnemies;
@@ -31,6 +35,12 @@ public class EnemyManager {
         Enemy New = new Enemy(img, velocity, armor, path);
         enemies.addLast(New);
         numEnemies++;
+    }
+
+    public void AddHeavyEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path){
+        EnemyHeavy New = new EnemyHeavy(img, img2, velocity, armor, path);
+        Henemies.addLast(New);
+        numHEnemies++;
     }
 
     public void RemoveEnemy(int toBeDeleted){
@@ -89,12 +99,24 @@ public class EnemyManager {
 
         }
 
+        for (int i = 0; i < Henemies.size(); i++){
+            if(!Henemies.get(i).Check()){
+                Henemies.get(i).Move();
+            }
+
+        }
+
     }
 
     public void RenderAll(SpriteBatch sb){
+        for (int i = 0; i < numHEnemies; i++){
+            Henemies.get(i).render(sb);
+        }
+
         for (int i = 0; i < numEnemies; i++){
             enemies.get(i).render(sb);
         }
+
     }
 
 }

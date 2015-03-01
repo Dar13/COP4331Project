@@ -26,6 +26,8 @@ public class Play extends GameState
 
     private  boolean debugMode_ON = true;
     private Texture EnemyImg;
+    private Texture TigerBase;
+    private Texture TigerTurret;
     private Texture TowerImg;
     private Enemy enemy;
 
@@ -40,13 +42,14 @@ public class Play extends GameState
     public TowerManager towerManager;
     float TimeSinceLastSpawn = 0;
     int numNormEnemies = 0;
+    int numHEnemies = 0;
     private LinkedList<Path> paths;
 
     public Play(GameStateManager gsm)
     {
         super(gsm);
 
-        enemyManager = new EnemyManager(0);
+        enemyManager = new EnemyManager(0, 0);
         paths = new LinkedList<Path>();
         wayPoints = new LinkedList<WayPoint>();
         towers = new LinkedList<Tower>();
@@ -63,9 +66,14 @@ public class Play extends GameState
         cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
         shapeRenderer = new ShapeRenderer();
         EnemyImg = new Texture("EnemyDev.png");
+        TigerBase = new Texture("tigerbase.png");
+        TigerTurret = new Texture("tigerturret.png");
 
         numNormEnemies = 15;
+        numHEnemies = 1;
+
         enemyManager.AddEnemy(EnemyImg,3, 8,wayPoints);
+        enemyManager.AddHeavyEnemy(TigerBase, TigerTurret, 2, 15, wayPoints);
         TowerImg = new Texture("DevText_Tower.png");
         tower = new Tower(TowerImg, 50, 50, 2, 2);
         towers.addLast(tower);
