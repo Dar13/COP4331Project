@@ -46,8 +46,14 @@ public class GameStateManager
 
     private GameState getState(int state)
     {
-        if (state == PLAY) return new Play(this, networkManager);
-        if (state == MENU) return new Menu(this, networkManager);
+        if (state == PLAY)
+        {
+            return new Play(this, networkManager);
+        }
+        if (state == MENU)
+        {
+            return new Menu(this, networkManager);
+        }
 
         return null;
     }

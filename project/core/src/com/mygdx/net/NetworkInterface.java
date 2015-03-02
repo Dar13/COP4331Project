@@ -12,6 +12,7 @@ public interface NetworkInterface
 
     /**
      * Returns if the interface is ready to be used.
+     *
      * @return true if ready, false if not
      */
     public boolean isReady();

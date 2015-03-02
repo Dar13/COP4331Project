@@ -5,17 +5,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.mygdx.Debug.Debuger;
+import com.mygdx.Debug.Debugger;
 import com.mygdx.entities.Enemy;
+import com.mygdx.entities.EnemyHeavy;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.NetworkManager;
-import com.mygdx.triggers.Path;
 import com.mygdx.handlers.TowerManager;
+import com.mygdx.triggers.Path;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -26,7 +26,8 @@ import java.util.LinkedList;
 public class Play extends GameState
 {
 
-    private  boolean debugMode_ON = true;
+    public static final int MAGIC_NUMBER = 32;
+    private boolean debugMode_ON = true;
     private Texture EnemyImg;
     private Texture TigerBase;
     private Texture TigerTurret;
@@ -38,7 +39,7 @@ public class Play extends GameState
     private Tower tower;
     public ShapeRenderer shapeRenderer;
     private OrthographicCamera cam;
-    private Debuger debuger;
+    private Debugger debugger;
     private int gold = 0;
     private LinkedList<WayPoint> wayPoints;
     private LinkedList<Tower> towers;
@@ -57,17 +58,15 @@ public class Play extends GameState
         paths = new LinkedList<Path>();
         wayPoints = new LinkedList<WayPoint>();
         towers = new LinkedList<Tower>();
-        wayPoints.addLast(new WayPoint(0,0,"e"));
-        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH-32,0,"n"));
-        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH-32,MyGame.V_HEIGHT-32,"w"));
-        wayPoints.addLast(new WayPoint(0,MyGame.V_HEIGHT-32,"s"));
-        wayPoints.addLast(new WayPoint(0,0,"end"));
-
-
+        wayPoints.addLast(new WayPoint(0, 0, "e"));
+        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - MAGIC_NUMBER, 0, "n"));
+        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - MAGIC_NUMBER, MyGame.V_HEIGHT - MAGIC_NUMBER, "w"));
+        wayPoints.addLast(new WayPoint(0, MyGame.V_HEIGHT - MAGIC_NUMBER, "s"));
+        wayPoints.addLast(new WayPoint(0, 0, "end"));
 
 
         cam = new OrthographicCamera();
-        cam.setToOrtho(false,MyGame.V_WIDTH,MyGame.V_HEIGHT);
+        cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
         shapeRenderer = new ShapeRenderer();
         EnemyImg = new Texture("EnemyDev.png");
         TigerBase = new Texture("tigerbase.png");
@@ -78,16 +77,18 @@ public class Play extends GameState
         numNormEnemies = 15;
         numHEnemies = 1;
 
-        enemyManager.AddEnemy(EnemyImg,3, 8,wayPoints);
-        enemyManager.AddHeavyEnemy(TigerBase, TigerTurret, 2, 15, wayPoints);
+        enemyManager.AddEnemy(EnemyImg, Enemy.VELOCITY, Enemy.ARMOR, wayPoints);
+        enemyManager.AddHeavyEnemy(TigerBase, TigerTurret, EnemyHeavy.VELOCITY, EnemyHeavy.ARMOR, wayPoints);
         TowerImg = new Texture("DevText_Tower.png");
+
+        // need to create concrete tower types to remove magic number constants in code.
         tower = new Tower(TowerImg, 50, 50, 2, 2);
         towers.addLast(tower);
         towerManager = new TowerManager(towers);
         towerManager.addTower(TowerImg, 240, 50, 2, 3);
         towerManager.addTower(TowerImg, 480, 50, 3, 3);
         towerManager.addTower(TowerImg, 560, 150, 7, 3);
-        debuger = new Debuger(wayPoints, towerManager.towers, enemyManager.enemies);
+        debugger = new Debugger(wayPoints, towerManager.towers, enemyManager.enemies);
 
     }
 
@@ -99,7 +100,8 @@ public class Play extends GameState
     {
         TimeSinceLastSpawn = TimeSinceLastSpawn + deltaTime;
 
-        if(TimeSinceLastSpawn > .5 && numNormEnemies > 0){
+        if (TimeSinceLastSpawn > .5 && numNormEnemies > 0)
+        {
             enemyManager.AddEnemy(EnemyImg, 3, 1, wayPoints);
             TimeSinceLastSpawn = 0;
             numNormEnemies--;
@@ -124,11 +126,16 @@ public class Play extends GameState
 
         spriteBatch.end();
 
-        if(debugMode_ON){
-            debuger.render();
+        if (debugMode_ON)
+        {
+            debugger.render();
         }
     }
 
-    public void dispose(){};
+    public void dispose()
+    {
+    }
+
+    ;
 
 }

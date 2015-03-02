@@ -31,6 +31,7 @@ public class NetworkManager implements Runnable
         NONE(-1);
 
         public int index;
+
         ConnectionMode(int idx)
         {
             index = idx;
@@ -38,7 +39,7 @@ public class NetworkManager implements Runnable
 
         public static ConnectionMode fromIndex(int idx)
         {
-            switch(idx)
+            switch (idx)
             {
             case -1:
                 return NONE;
@@ -111,7 +112,7 @@ public class NetworkManager implements Runnable
         {
             // secondary mode is allowed to be null
             if (isServer == null ||
-                primaryMode == null)
+                    primaryMode == null)
             {
                 initialized.set(false);
                 return false;
@@ -262,14 +263,14 @@ public class NetworkManager implements Runnable
     public void run()
     {
         // wait for initialization
-        while(!isInitialized())
+        while (!isInitialized())
         {
             // sleep for 5 milliseconds
             try
             {
                 Thread.sleep(50);
             }
-            catch(InterruptedException e)
+            catch (InterruptedException e)
             {
                 // not really sure how to handle this.
                 // terminate?
@@ -280,7 +281,7 @@ public class NetworkManager implements Runnable
 
         boolean run = true;
 
-        while(run)
+        while (run)
         {
             if (!ready)
             {
@@ -306,7 +307,7 @@ public class NetworkManager implements Runnable
                     try
                     {
                         run = setupClient();
-                        if(!run)
+                        if (!run)
                         {
                             continue;
                         }
@@ -324,20 +325,20 @@ public class NetworkManager implements Runnable
             if (isServer)
             {
                 // server is sending packets out and waiting for incoming connections.
-                if(expectedAmountClients != connections.size())
+                if (expectedAmountClients != connections.size())
                 {
                     Socket connection = null;
                     try
                     {
                         connection = serverSocket.accept();
                     }
-                    catch(IOException e)
+                    catch (IOException e)
                     {
                         connection = null;
                         System.out.println("NET: Exception occurred during server acceptance of connection.");
                     }
 
-                    if(connection != null)
+                    if (connection != null)
                     {
 
                     }

@@ -9,18 +9,20 @@ import java.util.LinkedList;
 /**
  * Created by LordNeah on 2/23/2015.
  */
-public class TowerManager {
+public class TowerManager
+{
+    protected static final int MAGIC_NUMBER = 2;
+    protected static final float MAGIC_NUMBER_2 = 1.25f;
     public LinkedList<Tower> towers;
-
 
     public TowerManager(LinkedList<Tower> towers)
     {
         this.towers = towers;
     }
 
-    public void addTower(Texture img, float x, float y, float damages, float range)
+    public void addTower(Texture img, float x, float y, float damage, float range)
     {
-        Tower New = new Tower(img, x, y, damages, range);
+        Tower New = new Tower(img, x, y, damage, range);
         towers.addLast(New);
     }
 
@@ -34,8 +36,8 @@ public class TowerManager {
 
     public void upgradeTower(int towerToBeUpgraded)
     {
-        towers.get(towerToBeUpgraded).damages = towers.get(towerToBeUpgraded).damages * 2;
-        towers.get(towerToBeUpgraded).range = towers.get(towerToBeUpgraded).range * 1.25f;
+        towers.get(towerToBeUpgraded).damages = towers.get(towerToBeUpgraded).damages * MAGIC_NUMBER;
+        towers.get(towerToBeUpgraded).range = towers.get(towerToBeUpgraded).range * MAGIC_NUMBER_2;
     }
 
 }

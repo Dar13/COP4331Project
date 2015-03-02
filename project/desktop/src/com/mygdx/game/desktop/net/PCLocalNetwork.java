@@ -33,7 +33,7 @@ public class PCLocalNetwork implements NetworkInterface
         try
         {
             Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
-            while(interfaces.hasMoreElements())
+            while(interfaces.hasMoreElements() && !ready)
             {
                 java.net.NetworkInterface networkInterface = interfaces.nextElement();
                 if(networkInterface.isUp() && !networkInterface.isLoopback())

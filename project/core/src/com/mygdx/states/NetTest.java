@@ -4,7 +4,6 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.NetworkManager;
@@ -40,7 +39,7 @@ public class NetTest extends GameState
         // Very basic render state for now.
         Gdx.gl.glClearColor(1, 0, 1, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if(connected)
+        if (connected)
         {
             spriteBatch.begin();
             spriteBatch.draw(image, 0, 0);
