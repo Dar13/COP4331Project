@@ -12,6 +12,7 @@ import com.mygdx.UI.GameButton;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.MyInput;
+import com.mygdx.handlers.NetworkManager;
 
 /**
  * Created by James on 2/22/2015.
@@ -24,9 +25,9 @@ public class Menu extends GameState {
     private Texture EnemyImg;
     private BitmapFont font;
 
-    public Menu(GameStateManager gsm)
+    public Menu(GameStateManager gameStateManager, NetworkManager networkManager)
     {
-        super(gsm);
+        super(gameStateManager, networkManager);
         cam = new OrthographicCamera();
         cam.setToOrtho(false, MyGame.V_WIDTH,MyGame.V_HEIGHT);
         spriteBatch = new SpriteBatch();

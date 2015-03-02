@@ -26,7 +26,7 @@ public class GameButton {
     private OrthographicCamera cam;
 
     private boolean clicked;
-    private boolean isReleased;
+    private boolean isReleased = true;
 
     public GameButton(float x, float y, OrthographicCamera cam)
     {

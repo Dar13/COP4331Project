@@ -13,6 +13,7 @@ import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
+import com.mygdx.handlers.NetworkManager;
 import com.mygdx.triggers.Path;
 import com.mygdx.handlers.TowerManager;
 import com.mygdx.triggers.WayPoint;
@@ -48,9 +49,9 @@ public class Play extends GameState
     int numHEnemies = 0;
     private LinkedList<Path> paths;
 
-    public Play(GameStateManager gsm)
+    public Play(GameStateManager gameStateManager, NetworkManager networkManager)
     {
-        super(gsm);
+        super(gameStateManager, networkManager);
 
         enemyManager = new EnemyManager(0, 0);
         paths = new LinkedList<Path>();
