@@ -42,8 +42,6 @@ public class MyInputProcessor extends InputAdapter
         return true;
     }
 
-    ;
-
     public boolean keyUp(int k)
     {
         return true;

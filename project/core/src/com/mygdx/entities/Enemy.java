@@ -19,7 +19,7 @@ public class Enemy extends Entities
     public float x = 0;
     public float y = 0;
     public float velocity = 0;
-    public String heading; // NOTE: needs to change to use enum rather than string. more efficient that way
+    public WayPoint.Direction heading;
     private float tolerance;
     public LinkedList<WayPoint> wayPoints;
     private int currentWaypoint = 0;
@@ -47,16 +47,16 @@ public class Enemy extends Entities
     {
         switch (heading)
         {
-        case ("n"):
+        case NORTH:
             sprite.setPosition(sprite.getX(), sprite.getY() + velocity);
             break;
-        case ("e"):
+        case EAST:
             sprite.setPosition(sprite.getX() + velocity, sprite.getY());
             break;
-        case ("s"):
+        case SOUTH:
             sprite.setPosition(sprite.getX(), sprite.getY() - velocity);
             break;
-        case ("w"):
+        case WEST:
             sprite.setPosition(sprite.getX() - velocity, sprite.getY());
             break;
         }
@@ -73,7 +73,7 @@ public class Enemy extends Entities
         {
             switch (wayPoints.get(currentWaypoint).direction)
             {
-            case ("n"):
+            case NORTH:
                 if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
@@ -82,12 +82,12 @@ public class Enemy extends Entities
 
                     sprite.setPosition(wayPoints.get(currentWaypoint).x, wayPoints.get(currentWaypoint).y);
                     changeSpriteRotation();
-                    heading = "n";
+                    heading = WayPoint.Direction.NORTH;
                     currentWaypoint++;
                     return true;
                 }
                 return false;
-            case ("e"):
+            case EAST:
                 if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
@@ -96,12 +96,12 @@ public class Enemy extends Entities
 
                     sprite.setPosition(wayPoints.get(currentWaypoint).x, wayPoints.get(currentWaypoint).y);
                     changeSpriteRotation();
-                    heading = "e";
+                    heading = WayPoint.Direction.EAST;
                     currentWaypoint++;
                     return true;
                 }
                 return false;
-            case ("s"):
+            case SOUTH:
                 if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
@@ -110,12 +110,12 @@ public class Enemy extends Entities
 
                     sprite.setPosition(wayPoints.get(currentWaypoint).x, wayPoints.get(currentWaypoint).y);
                     changeSpriteRotation();
-                    heading = "s";
+                    heading = WayPoint.Direction.SOUTH;
                     currentWaypoint++;
                     return true;
                 }
                 return false;
-            case ("w"):
+            case WEST:
                 if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
@@ -124,13 +124,13 @@ public class Enemy extends Entities
 
                     sprite.setPosition(wayPoints.get(currentWaypoint).x, wayPoints.get(currentWaypoint).y);
                     changeSpriteRotation();
-                    heading = "w";
+                    heading = WayPoint.Direction.WEST;
                     currentWaypoint++;
 
                     return true;
                 }
                 return false;
-            case ("end"):
+            case END:
                 if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
@@ -150,51 +150,63 @@ public class Enemy extends Entities
     public void changeSpriteRotation()
     {
         // NOTE: this needs to be changed to use enums instead of strings. This is comparing references, not value!
-        if (heading == "e" && wayPoints.get(currentWaypoint).direction == "n")
+        if (heading == WayPoint.Direction.EAST &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.NORTH)
         {
             sprite.rotate(90);
         }
-        if (heading == "e" && wayPoints.get(currentWaypoint).direction == "s")
+        if (heading == WayPoint.Direction.EAST &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.SOUTH)
         {
             sprite.rotate(-90);
         }
-        if (heading == "e" && wayPoints.get(currentWaypoint).direction == "w")
+        if (heading == WayPoint.Direction.EAST &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.WEST)
         {
             sprite.rotate(180);
         }
-        if (heading == "w" && wayPoints.get(currentWaypoint).direction == "n")
+        if (heading == WayPoint.Direction.WEST &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.NORTH)
         {
             sprite.rotate(-90);
         }
-        if (heading == "w" && wayPoints.get(currentWaypoint).direction == "s")
+        if (heading == WayPoint.Direction.WEST &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.SOUTH)
         {
             sprite.rotate(90);
         }
-        if (heading == "w" && wayPoints.get(currentWaypoint).direction == "e")
+        if (heading == WayPoint.Direction.WEST &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.EAST)
         {
             sprite.rotate(180);
         }
-        if (heading == "n" && wayPoints.get(currentWaypoint).direction == "e")
+        if (heading == WayPoint.Direction.NORTH &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.EAST)
         {
             sprite.rotate(-90);
         }
-        if (heading == "n" && wayPoints.get(currentWaypoint).direction == "s")
+        if (heading == WayPoint.Direction.NORTH &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.SOUTH)
         {
             sprite.rotate(180);
         }
-        if (heading == "n" && wayPoints.get(currentWaypoint).direction == "w")
+        if (heading == WayPoint.Direction.NORTH &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.WEST)
         {
             sprite.rotate(90);
         }
-        if (heading == "s" && wayPoints.get(currentWaypoint).direction == "n")
+        if (heading == WayPoint.Direction.SOUTH &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.NORTH)
         {
             sprite.rotate(180);
         }
-        if (heading == "s" && wayPoints.get(currentWaypoint).direction == "e")
+        if (heading == WayPoint.Direction.SOUTH &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.EAST)
         {
             sprite.rotate(90);
         }
-        if (heading == "s" && wayPoints.get(currentWaypoint).direction == "w")
+        if (heading == WayPoint.Direction.SOUTH &&
+            wayPoints.get(currentWaypoint).direction == WayPoint.Direction.WEST)
         {
             sprite.rotate(-90);
         }
@@ -206,7 +218,7 @@ public class Enemy extends Entities
         this.wayPoints = wayPoints;
     }
 
-    public void SetWayPoint(float x, float y, String direction)
+    public void SetWayPoint(float x, float y, WayPoint.Direction direction)
     {
         wayPoints.addLast(new WayPoint(x, y, direction));
     }

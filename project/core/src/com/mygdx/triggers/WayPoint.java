@@ -7,9 +7,19 @@ public class WayPoint
 {
     public float x;
     public float y;
-    public String direction; // NOTE: change to use enum rather than string. More efficient that way
+    public enum Direction
+    {
+        NORTH,
+        SOUTH,
+        EAST,
+        WEST,
+        END, // NOTE: Discussion is needed
+        NONE
+    }
 
-    public WayPoint(float x, float y, String direction)
+    public Direction direction;
+
+    public WayPoint(float x, float y, Direction direction)
     {
         this.x = x;
         this.y = y;

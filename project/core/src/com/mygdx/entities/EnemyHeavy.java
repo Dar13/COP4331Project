@@ -20,7 +20,7 @@ public class EnemyHeavy extends Entities
     public float x = 0;
     public float y = 0;
     public float velocity = 0;
-    public String heading;
+    public WayPoint.Direction heading;
     private float tolerance;
     public LinkedList<WayPoint> wayPoints;
     private int CurrWaypoint = 0;
@@ -51,19 +51,19 @@ public class EnemyHeavy extends Entities
     {
         switch (heading)
         {
-        case ("n"):
+        case NORTH:
             sprite.setPosition(sprite.getX(), sprite.getY() + velocity);
             sprite2.setPosition(sprite2.getX(), sprite2.getY() + velocity);
             break;
-        case ("e"):
+        case EAST:
             sprite.setPosition(sprite.getX() + velocity, sprite.getY());
             sprite2.setPosition(sprite2.getX() + velocity, sprite2.getY());
             break;
-        case ("s"):
+        case SOUTH:
             sprite.setPosition(sprite.getX(), sprite.getY() - velocity);
             sprite2.setPosition(sprite2.getX(), sprite2.getY() - velocity);
             break;
-        case ("w"):
+        case WEST:
             sprite.setPosition(sprite.getX() - velocity, sprite.getY());
             sprite2.setPosition(sprite2.getX() - velocity, sprite2.getY());
             break;
@@ -81,7 +81,7 @@ public class EnemyHeavy extends Entities
         {
             switch (wayPoints.get(CurrWaypoint).direction)
             {
-            case ("n"):
+            case NORTH:
                 if ((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
@@ -90,12 +90,12 @@ public class EnemyHeavy extends Entities
 
                     sprite.setPosition(wayPoints.get(CurrWaypoint).x, wayPoints.get(CurrWaypoint).y);
                     changeSpriteRotation();
-                    heading = "n";
+                    heading = WayPoint.Direction.NORTH;
                     CurrWaypoint++;
                     return true;
                 }
                 return false;
-            case ("e"):
+            case EAST:
                 if ((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
@@ -104,12 +104,12 @@ public class EnemyHeavy extends Entities
 
                     sprite.setPosition(wayPoints.get(CurrWaypoint).x, wayPoints.get(CurrWaypoint).y);
                     changeSpriteRotation();
-                    heading = "e";
+                    heading = WayPoint.Direction.EAST;
                     CurrWaypoint++;
                     return true;
                 }
                 return false;
-            case ("s"):
+            case SOUTH:
                 if ((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
@@ -118,12 +118,12 @@ public class EnemyHeavy extends Entities
 
                     sprite.setPosition(wayPoints.get(CurrWaypoint).x, wayPoints.get(CurrWaypoint).y);
                     changeSpriteRotation();
-                    heading = "s";
+                    heading = WayPoint.Direction.SOUTH;
                     CurrWaypoint++;
                     return true;
                 }
                 return false;
-            case ("w"):
+            case WEST:
                 if ((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
@@ -132,13 +132,13 @@ public class EnemyHeavy extends Entities
 
                     sprite.setPosition(wayPoints.get(CurrWaypoint).x, wayPoints.get(CurrWaypoint).y);
                     changeSpriteRotation();
-                    heading = "w";
+                    heading = WayPoint.Direction.WEST;
                     CurrWaypoint++;
 
                     return true;
                 }
                 return false;
-            case ("end"):
+            case END:
                 if ((sprite.getX() > (wayPoints.get(CurrWaypoint).x - tolerance)) &&
                         (sprite.getX() < (wayPoints.get(CurrWaypoint).x + tolerance)) &&
                         (sprite.getY() > (wayPoints.get(CurrWaypoint).y - tolerance)) &&
@@ -157,67 +157,67 @@ public class EnemyHeavy extends Entities
 
     public void changeSpriteRotation()
     {
-        if (heading == "e")
+        if (heading == WayPoint.Direction.EAST)
         {
             switch (wayPoints.get(CurrWaypoint).direction)
             {
-            case "n":
+            case NORTH:
                 sprite.rotate(90);
                 sprite.setPosition(wayPoints.get(CurrWaypoint).x - 16, wayPoints.get(CurrWaypoint).y);
                 sprite2.rotate(90);
                 sprite2.setPosition(wayPoints.get(CurrWaypoint).x - 8, wayPoints.get(CurrWaypoint).y + 6);
                 break;
-            case "s":
+            case SOUTH:
                 sprite.rotate(-90);
                 sprite.setPosition(wayPoints.get(CurrWaypoint).x + 16, wayPoints.get(CurrWaypoint).y);
                 sprite2.rotate(-90);
                 sprite2.setPosition(wayPoints.get(CurrWaypoint).x - 8, wayPoints.get(CurrWaypoint).y + 6);
                 break;
-            case "w":
+            case WEST:
                 sprite.rotate(180);
                 sprite2.rotate(180);
                 break;
             }
         }
 
-        if (heading == "w")
+        if (heading == WayPoint.Direction.WEST)
         {
             switch (wayPoints.get(CurrWaypoint).direction)
             {
-            case "n":
+            case NORTH:
                 sprite.rotate(-90);
                 sprite.setPosition(wayPoints.get(CurrWaypoint).x + 16, wayPoints.get(CurrWaypoint).y);
                 sprite2.rotate(-90);
                 sprite2.setPosition(wayPoints.get(CurrWaypoint).x - 8, wayPoints.get(CurrWaypoint).y + 6);
                 break;
-            case "s":
+            case SOUTH:
                 sprite.rotate(90);
                 sprite.setPosition(wayPoints.get(CurrWaypoint).x - 16, wayPoints.get(CurrWaypoint).y);
                 sprite2.rotate(90);
                 sprite2.setPosition(wayPoints.get(CurrWaypoint).x - 8, wayPoints.get(CurrWaypoint).y - 2);
                 break;
-            case "e":
+            case EAST:
                 sprite.rotate(180);
                 sprite2.rotate(180);
                 break;
             }
         }
 
-        if (heading == "n")
+        if (heading == WayPoint.Direction.NORTH)
         {
             switch (wayPoints.get(CurrWaypoint).direction)
             {
-            case "e":
+            case EAST:
                 sprite.rotate(-90);
                 sprite.setPosition(wayPoints.get(CurrWaypoint).x + 16, wayPoints.get(CurrWaypoint).y);
                 sprite2.rotate(-90);
                 sprite2.setPosition(wayPoints.get(CurrWaypoint).x - 8, wayPoints.get(CurrWaypoint).y + 2);
                 break;
-            case "s":
+            case SOUTH:
                 sprite.rotate(180);
                 sprite2.rotate(180);
                 break;
-            case "w":
+            case WEST:
                 sprite.rotate(90);
                 sprite.setPosition(wayPoints.get(CurrWaypoint).x - 16, wayPoints.get(CurrWaypoint).y);
                 sprite2.rotate(90);
@@ -226,21 +226,21 @@ public class EnemyHeavy extends Entities
             }
         }
 
-        if (heading == "s")
+        if (heading == WayPoint.Direction.SOUTH)
         {
             switch (wayPoints.get(CurrWaypoint).direction)
             {
-            case "n":
+            case NORTH:
                 sprite.rotate(180);
                 sprite2.rotate(180);
                 break;
-            case "e":
+            case EAST:
                 sprite.rotate(90);
                 sprite.setPosition(wayPoints.get(CurrWaypoint).x + 16, wayPoints.get(CurrWaypoint).y);
                 sprite2.rotate(90);
                 sprite2.setPosition(wayPoints.get(CurrWaypoint).x - 8, wayPoints.get(CurrWaypoint).y + 6);
                 break;
-            case "w":
+            case WEST:
                 sprite.rotate(-90);
                 sprite.setPosition(wayPoints.get(CurrWaypoint).x + 16, wayPoints.get(CurrWaypoint).y);
                 sprite2.rotate(-90);
@@ -255,7 +255,7 @@ public class EnemyHeavy extends Entities
         this.wayPoints = wayPoints;
     }
 
-    public void SetWayPoint(float x, float y, String direction)
+    public void SetWayPoint(float x, float y, WayPoint.Direction direction)
     {
         wayPoints.addLast(new WayPoint(x, y, direction));
     }

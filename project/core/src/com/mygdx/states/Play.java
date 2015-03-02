@@ -27,7 +27,7 @@ public class Play extends GameState
 {
 
     public static final int MAGIC_NUMBER = 32;
-    private boolean debugMode_ON = true;
+    private boolean debugModeOn = true;
     private Texture EnemyImg;
     private Texture TigerBase;
     private Texture TigerTurret;
@@ -46,7 +46,7 @@ public class Play extends GameState
     public EnemyManager enemyManager;
     public TowerManager towerManager;
     float TimeSinceLastSpawn = 0;
-    int numNormEnemies = 0;
+    int numNormalEnemies = 0;
     int numHEnemies = 0;
     private LinkedList<Path> paths;
 
@@ -55,14 +55,14 @@ public class Play extends GameState
         super(gameStateManager, networkManager);
 
         enemyManager = new EnemyManager(0, 0);
-        paths = new LinkedList<Path>();
+        paths = new LinkedList<Path>(); // NOTE: what is a path? This is never used. Is this for pathfinding?
         wayPoints = new LinkedList<WayPoint>();
         towers = new LinkedList<Tower>();
-        wayPoints.addLast(new WayPoint(0, 0, "e"));
-        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - MAGIC_NUMBER, 0, "n"));
-        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - MAGIC_NUMBER, MyGame.V_HEIGHT - MAGIC_NUMBER, "w"));
-        wayPoints.addLast(new WayPoint(0, MyGame.V_HEIGHT - MAGIC_NUMBER, "s"));
-        wayPoints.addLast(new WayPoint(0, 0, "end"));
+        wayPoints.addLast(new WayPoint(0, 0, WayPoint.Direction.EAST));
+        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - MAGIC_NUMBER, 0, WayPoint.Direction.NORTH));
+        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - MAGIC_NUMBER, MyGame.V_HEIGHT - MAGIC_NUMBER, WayPoint.Direction.WEST));
+        wayPoints.addLast(new WayPoint(0, MyGame.V_HEIGHT - MAGIC_NUMBER, WayPoint.Direction.SOUTH));
+        wayPoints.addLast(new WayPoint(0, 0, WayPoint.Direction.END));
 
 
         cam = new OrthographicCamera();
@@ -74,14 +74,14 @@ public class Play extends GameState
         Map = new Texture("map.png");
         map = new Sprite(Map);
 
-        numNormEnemies = 15;
+        numNormalEnemies = 15;
         numHEnemies = 1;
 
         enemyManager.AddEnemy(EnemyImg, Enemy.VELOCITY, Enemy.ARMOR, wayPoints);
         enemyManager.AddHeavyEnemy(TigerBase, TigerTurret, EnemyHeavy.VELOCITY, EnemyHeavy.ARMOR, wayPoints);
         TowerImg = new Texture("DevText_Tower.png");
 
-        // need to create concrete tower types to remove magic number constants in code.
+        // NOTE: need to create concrete tower types to remove magic number constants in code.
         tower = new Tower(TowerImg, 50, 50, 2, 2);
         towers.addLast(tower);
         towerManager = new TowerManager(towers);
@@ -100,11 +100,11 @@ public class Play extends GameState
     {
         TimeSinceLastSpawn = TimeSinceLastSpawn + deltaTime;
 
-        if (TimeSinceLastSpawn > .5 && numNormEnemies > 0)
+        if (TimeSinceLastSpawn > .5 && numNormalEnemies > 0)
         {
             enemyManager.AddEnemy(EnemyImg, 3, 1, wayPoints);
             TimeSinceLastSpawn = 0;
-            numNormEnemies--;
+            numNormalEnemies--;
         }
 
 
@@ -126,7 +126,7 @@ public class Play extends GameState
 
         spriteBatch.end();
 
-        if (debugMode_ON)
+        if (debugModeOn)
         {
             debugger.render();
         }
@@ -135,7 +135,4 @@ public class Play extends GameState
     public void dispose()
     {
     }
-
-    ;
-
 }

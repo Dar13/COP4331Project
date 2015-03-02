@@ -20,7 +20,7 @@ public class Debugger
     private LinkedList<WayPoint> path;
     private LinkedList<Tower> towers;
     private LinkedList<Enemy> enemies;
-    private boolean END = false;
+    private boolean finished = false;
     int waypointindex = 0;
 
     public Debugger(LinkedList<WayPoint> path, LinkedList<Tower> towers, LinkedList<Enemy> enemies)
@@ -38,15 +38,15 @@ public class Debugger
     {
         debugeCam.update();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        while (END != true)
+        while (!finished)
         {
             shapeRenderer.setColor(Color.GREEN);
             shapeRenderer.line(path.get(waypointindex).x + 16, path.get(waypointindex).y + 16, path.get(waypointindex + 1).x + 16, path.get(waypointindex + 1).y + 16);
             shapeRenderer.rect(path.get(waypointindex).x, path.get(waypointindex).y, path.get(waypointindex).x + 32, path.get(waypointindex).y + 32);
             switch (path.get(waypointindex + 1).direction)
             {
-            case ("end"):
-                END = true;
+            case END:
+                finished = true;
                 break;
             }
             waypointindex++;
@@ -71,6 +71,6 @@ public class Debugger
 
         shapeRenderer.end();
         waypointindex = 0;
-        END = false;
+        finished = false;
     }
 }

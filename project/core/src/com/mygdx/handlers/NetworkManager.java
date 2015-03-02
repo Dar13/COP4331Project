@@ -325,28 +325,12 @@ public class NetworkManager implements Runnable
             if (isServer)
             {
                 // server is sending packets out and waiting for incoming connections.
-                if (expectedAmountClients != connections.size())
-                {
-                    Socket connection = null;
-                    try
-                    {
-                        connection = serverSocket.accept();
-                    }
-                    catch (IOException e)
-                    {
-                        connection = null;
-                        System.out.println("NET: Exception occurred during server acceptance of connection.");
-                    }
-
-                    if (connection != null)
-                    {
-
-                    }
-                }
+                runServer();
             }
             else
             {
                 // client is waiting for packets to come in.
+                runClient();
             }
         }
     }
@@ -373,6 +357,15 @@ public class NetworkManager implements Runnable
         return true;
     }
 
+
+    /**
+     * Runs the server logic while maintaining thread-safety.
+     */
+    private void runServer()
+    {
+
+    }
+
     private boolean setupClient()
     {
         // if hostAddress is set, attempt to connect. Otherwise wait for it to be set.
@@ -396,5 +389,13 @@ public class NetworkManager implements Runnable
         }
 
         return true;
+    }
+
+    /**
+     * Runs the client network synchronization while maintaining thread safety.
+     */
+    private void runClient()
+    {
+
     }
 }
