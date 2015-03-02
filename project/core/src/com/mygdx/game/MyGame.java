@@ -33,11 +33,14 @@ public class MyGame extends ApplicationAdapter {
     }
 	
 	@Override
-    public void create ()
-    {
+    public void create () {
         Gdx.input.setInputProcessor(new MyInputProcessor());
         spriteBatch = new SpriteBatch();
         gameStateManager = new GameStateManager(this, networkManager);
+    }
+
+    @Override
+    public void render () {
 
         networkThread = new Thread(networkManager);
         networkThread.start();
@@ -64,13 +67,6 @@ public class MyGame extends ApplicationAdapter {
 
         }*/
 	}
-
-	@Override
-	public void render ()
-    {
-            gameStateManager.update(Gdx.graphics.getDeltaTime());
-            gameStateManager.render();
-    }
 
     public SpriteBatch getSpriteBatch(){return spriteBatch;}
     public OrthographicCamera getCamera(){return camera;}
