@@ -1,0 +1,154 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* LICENSE
+* README.md
+* ant.properties
+* ems/
+* ems/avc-inc/
+* ems/avc-inc/H264SwDecApi.h
+* ems/avc-inc/basetype.h
+* ems/avc.bc
+* ems/avc/
+* ems/avc/Broadway.c
+* ems/avc/DecTestBench.c
+* ems/avc/Decoder.c
+* ems/avc/EvaluationTestBench.x
+* ems/avc/H264SwDecApi.c
+* ems/avc/TestBenchMultipleInstance.x
+* ems/avc/h264bsd_byte_stream.c
+* ems/avc/h264bsd_byte_stream.h
+* ems/avc/h264bsd_cavlc.c
+* ems/avc/h264bsd_cavlc.h
+* ems/avc/h264bsd_cfg.h
+* ems/avc/h264bsd_conceal.c
+* ems/avc/h264bsd_conceal.h
+* ems/avc/h264bsd_container.h
+* ems/avc/h264bsd_deblocking.c
+* ems/avc/h264bsd_deblocking.h
+* ems/avc/h264bsd_decoder.c
+* ems/avc/h264bsd_decoder.h
+* ems/avc/h264bsd_dpb.c
+* ems/avc/h264bsd_dpb.h
+* ems/avc/h264bsd_image.c
+* ems/avc/h264bsd_image.h
+* ems/avc/h264bsd_inter_prediction.c
+* ems/avc/h264bsd_inter_prediction.h
+* ems/avc/h264bsd_intra_prediction.c
+* ems/avc/h264bsd_intra_prediction.h
+* ems/avc/h264bsd_macroblock_layer.c
+* ems/avc/h264bsd_macroblock_layer.h
+* ems/avc/h264bsd_nal_unit.c
+* ems/avc/h264bsd_nal_unit.h
+* ems/avc/h264bsd_neighbour.c
+* ems/avc/h264bsd_neighbour.h
+* ems/avc/h264bsd_pic_order_cnt.c
+* ems/avc/h264bsd_pic_order_cnt.h
+* ems/avc/h264bsd_pic_param_set.c
+* ems/avc/h264bsd_pic_param_set.h
+* ems/avc/h264bsd_reconstruct.c
+* ems/avc/h264bsd_reconstruct.h
+* ems/avc/h264bsd_sei.c
+* ems/avc/h264bsd_sei.h
+* ems/avc/h264bsd_seq_param_set.c
+* ems/avc/h264bsd_seq_param_set.h
+* ems/avc/h264bsd_slice_data.c
+* ems/avc/h264bsd_slice_data.h
+* ems/avc/h264bsd_slice_group_map.c
+* ems/avc/h264bsd_slice_group_map.h
+* ems/avc/h264bsd_slice_header.c
+* ems/avc/h264bsd_slice_header.h
+* ems/avc/h264bsd_storage.c
+* ems/avc/h264bsd_storage.h
+* ems/avc/h264bsd_stream.c
+* ems/avc/h264bsd_stream.h
+* ems/avc/h264bsd_transform.c
+* ems/avc/h264bsd_transform.h
+* ems/avc/h264bsd_util.c
+* ems/avc/h264bsd_util.h
+* ems/avc/h264bsd_vlc.c
+* ems/avc/h264bsd_vlc.h
+* ems/avc/h264bsd_vui.c
+* ems/avc/h264bsd_vui.h
+* ems/g72x/
+* ems/g72x/adpcm_js.c
+* ems/g72x/g711.c
+* ems/g72x/g726_16.c
+* ems/g72x/g726_24.c
+* ems/g72x/g726_32.c
+* ems/g72x/g726_40.c
+* ems/g72x/g72x.c
+* ems/g72x/g72x.h
+* ems/g72x/private.h
+* ems/js/
+* ems/js/native_module.js
+* ems/library.js
+* ems/make.py
+* ems/obj/
+* ems/obj/avc/
+* ems/obj/avc/Decoder.o
+* ems/obj/avc/H264SwDecApi.o
+* ems/obj/avc/h264bsd_byte_stream.o
+* ems/obj/avc/h264bsd_cavlc.o
+* ems/obj/avc/h264bsd_conceal.o
+* ems/obj/avc/h264bsd_deblocking.o
+* ems/obj/avc/h264bsd_decoder.o
+* ems/obj/avc/h264bsd_dpb.o
+* ems/obj/avc/h264bsd_image.o
+* ems/obj/avc/h264bsd_inter_prediction.o
+* ems/obj/avc/h264bsd_intra_prediction.o
+* ems/obj/avc/h264bsd_macroblock_layer.o
+* ems/obj/avc/h264bsd_nal_unit.o
+* ems/obj/avc/h264bsd_neighbour.o
+* ems/obj/avc/h264bsd_pic_order_cnt.o
+* ems/obj/avc/h264bsd_pic_param_set.o
+* ems/obj/avc/h264bsd_reconstruct.o
+* ems/obj/avc/h264bsd_seq_param_set.o
+* ems/obj/avc/h264bsd_slice_data.o
+* ems/obj/avc/h264bsd_slice_group_map.o
+* ems/obj/avc/h264bsd_slice_header.o
+* ems/obj/avc/h264bsd_storage.o
+* ems/obj/avc/h264bsd_stream.o
+* ems/obj/avc/h264bsd_transform.o
+* ems/obj/avc/h264bsd_util.o
+* ems/obj/avc/h264bsd_vlc.o
+* ems/obj/avc/h264bsd_vui.o
+* ems/obj/g72x/
+* ems/obj/g72x/adpcm_js.o
+* ems/obj/g72x/g711.o
+* ems/obj/g72x/g726_32.o
+* ems/obj/g72x/g72x.o
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* assets/ => app/src/main/assets/
+* jni/ => app/src/main/jni/
+* libs/java_websocket.jar => app/libs/java_websocket.jar
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

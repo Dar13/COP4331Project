@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wifi Camera</string>
+    <string name="msg_access_local">Open with browser : </string>
+    <string name="msg_wifi_error">Error: Please enable wifi</string>
+    <string name="msg_port_error">Error: 8080 port is in used </string>
+</resources>
