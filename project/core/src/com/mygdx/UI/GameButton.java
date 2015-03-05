@@ -1,7 +1,9 @@
 package com.mygdx.UI;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.handlers.MyInput;
@@ -23,6 +25,7 @@ public class GameButton
 
     private Texture img;
     private Texture img2;
+    private BitmapFont font;
 
     private Vector3 vec;
     private OrthographicCamera cam;
@@ -34,6 +37,9 @@ public class GameButton
     {
         img = new Texture("button.png");
         img2 = new Texture("button_down.png");
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
+        font.scale(3);
 
         this.x = x;
         this.y = y;
