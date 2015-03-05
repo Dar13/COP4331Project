@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
+import com.mygdx.states.StateChange;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,6 +16,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -25,6 +27,10 @@ public class NetworkManager extends Listener implements Runnable
 {
     public static final int SERVER_PORT = 0xDDD;
     public static final int MAX_CLIENTS = 4;
+
+    //These lists will hold changes temporarily until they are either sent or applied
+    private List<StateChange> queuedLocalChanges;
+    private List<StateChange> queuedRemoteChanges;
 
     public enum ConnectionMode
     {
@@ -92,6 +98,8 @@ public class NetworkManager extends Listener implements Runnable
         // this is the closest to a traditional mutex I could find.
         // allows multiple reads at one time while only allowing one write lock.
         mutex = new ReentrantReadWriteLock(true);
+        queuedLocalChanges = new ArrayList<StateChange>();
+        queuedRemoteChanges = new ArrayList<StateChange>();
     }
 
     public HashMap<ConnectionMode, NetworkInterface> getNetworkImpls()
@@ -499,5 +507,54 @@ public class NetworkManager extends Listener implements Runnable
             System.out.println("NET: Unknown packet received. Connection ID = " + connection.getID());
             System.out.println("NET: Unknown packet source = " + connection.getRemoteAddressTCP());
         }
+    }
+
+    /**
+     * This method is to be called whenever an action happens; changes are queued locally so we
+     * can easily alter sending and receiving timings
+     */
+    public void addToSendQueue(StateChange stateChange)
+    {
+        queuedLocalChanges.add(stateChange);
+    }
+
+    /**
+     * This method is to be called from within the Game State to request the updates that were
+     * received by the network manager
+     */
+    public List<StateChange> updateGameState()
+    {
+        if(syncReady())
+            return queuedRemoteChanges;
+
+        else
+            return null;
+    }
+
+    /**
+     * This should be called locally by our sync function, whatever form that takes
+     */
+    private void sendLocalChanges()
+    {
+        /**
+         * TODO: implement this method with Kryonet, Pseudocode follows:
+         *  if (local changes are not empty or being written)
+         *      send the local change queue to Kryonet
+         */
+    }
+
+    /**
+     * This method should be called from whatever callback we use when changes come in from the
+     * network
+     */
+    private void receiveChanges(List<StateChange> changes)
+    {
+        /**
+         * TODO: this method is implmentation dependent, but should look roughly like the following:
+         * if (isServer)
+         *     check received changes for coherency with master state
+         *     push valid changes to send queue (so they can be sent back out to other clients)
+         * add all changes to update queue, so game can read them in when needed
+         */
     }
 }
