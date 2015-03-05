@@ -17,6 +17,7 @@ public class MyGame extends ApplicationAdapter
     public static final int V_WIDTH = 320 * 2;
     public static final int V_HEIGHT = 240 * 2;
     public static final int SCALE = 2;
+    public static final float fps = 60f;
 
     private SpriteBatch spriteBatch;
     private OrthographicCamera camera;
@@ -24,7 +25,7 @@ public class MyGame extends ApplicationAdapter
     private GameStateManager gameStateManager;
 
     private double accumulator;
-    private float fps = 60f;
+
 
     private NetworkManager networkManager;
     private Thread networkThread;
@@ -61,7 +62,7 @@ public class MyGame extends ApplicationAdapter
         if(Gdx.graphics.getDeltaTime() < 1f/fps)
         {
             System.out.print("DeltaTime: " + Gdx.graphics.getDeltaTime() + " s\n");
-            float sleep = (1f/fps-Gdx.graphics.getDeltaTime())*1000;
+            float sleep = (1000/fps-Gdx.graphics.getDeltaTime());
             System.out.print("sleep: " + sleep + " ms\n");
             try
             {
@@ -74,27 +75,9 @@ public class MyGame extends ApplicationAdapter
             }
         }
 
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("hi");
-
         gameStateManager.update(Gdx.graphics.getDeltaTime());
         gameStateManager.render();
         MyInput.update();
-
-        /*
-        try
-        {
-            Thread.sleep(1000);
-        }
-        catch(InterruptedException e)
-        {
-
-        }*/
     }
 
     public SpriteBatch getSpriteBatch()

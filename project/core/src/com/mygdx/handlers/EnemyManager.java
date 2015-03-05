@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.EnemyHeavy;
 import com.mygdx.entities.Tower;
+import com.mygdx.game.MyGame;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -114,54 +115,63 @@ public class EnemyManager
     {
         this.towers = towers;
 
-        if (currentWave == 1) {
-            timeSinceLastNorm = timeSinceLastNorm + deltaTime;
+        if (currentWave == 1)
+        {
+            timeSinceLastNorm++;
 
-            if (timeSinceLastNorm > .3 && waveToBeSpawnedNorm > 0) {
+            if (timeSinceLastNorm > MyGame.fps/2 && waveToBeSpawnedNorm > 0)
+            {
                 AddEnemy(EnemyImg, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
         }
 
-        else if (currentWave == 2) {
-            timeSinceLastNorm = timeSinceLastNorm + deltaTime;
-            timeSinceLastFast = timeSinceLastFast + deltaTime;
+        else if (currentWave == 2)
+        {
+            timeSinceLastNorm++;
+            timeSinceLastFast++;
 
-            if (timeSinceLastNorm > .5 && waveToBeSpawnedNorm > 0) {
+            if (timeSinceLastNorm > MyGame.fps/2 && waveToBeSpawnedNorm > 0)
+            {
                 AddEnemy(EnemyImg, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
 
-            if (timeSinceLastFast > .5 && waveToBeSpawnedFast > 0) {
+            if (timeSinceLastFast > MyGame.fps/3 && waveToBeSpawnedFast > 0)
+            {
                 AddEnemy(FastEnemy, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
             }
         }
 
-        else if (currentWave > 2) {
-            timeSinceLastNorm = timeSinceLastNorm + deltaTime;
-            timeSinceLastFast = timeSinceLastFast + deltaTime;
-            timeSinceLastHeavy = timeSinceLastHeavy + deltaTime;
+        else if (currentWave > 2)
+        {
+            timeSinceLastNorm++;
+            timeSinceLastFast++;
+            timeSinceLastHeavy++;
 
-            if (timeSinceLastNorm > .5 && waveToBeSpawnedNorm > 0) {
+            if (timeSinceLastNorm > MyGame.fps/2 && waveToBeSpawnedNorm > 0)
+            {
                 AddEnemy(EnemyImg, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
 
-            if (timeSinceLastFast > .5 && waveToBeSpawnedFast > 0) {
+            if (timeSinceLastFast > MyGame.fps/3 && waveToBeSpawnedFast > 0)
+            {
                 AddEnemy(FastEnemy, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
             }
 
-            if (timeSinceLastHeavy > 3 && waveToBeSpawnedHeavy > 0) {
+            if (timeSinceLastHeavy > MyGame.fps * 3 && waveToBeSpawnedHeavy > 0)
+            {
                 AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
                 timeSinceLastFast = 0;
-                waveToBeSpawnedFast--;
+                waveToBeSpawnedHeavy--;
             }
         }
 

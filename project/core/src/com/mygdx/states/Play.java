@@ -43,6 +43,7 @@ public class Play extends GameState
     public EnemyManager enemyManager;
     public TowerManager towerManager;
     private LinkedList<Path> paths;
+    private boolean Pause = false;
 
     public Play(GameStateManager gameStateManager, NetworkManager networkManager)
     {
@@ -84,7 +85,10 @@ public class Play extends GameState
 
     public void update(float deltaTime)
     {
-        enemyManager.Update(deltaTime, towers);
+        //Accounting for our future pause state.
+        if(!Pause) {
+            enemyManager.Update(deltaTime, towers);
+        }
     }
 
     public void render()
