@@ -58,8 +58,8 @@ nb-configuration.xml
 
 .gradle
 gradle-app.setting
-build/
 
 ## OS Specific
 .DS_Store
 *.db
+/kryonet-2.21/

@@ -1,7 +1,10 @@
 package com.mygdx.handlers;
 
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
 
 import java.io.IOException;
@@ -18,7 +21,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Abstraction away from low-level networking for use in the game states.
  */
-public class NetworkManager implements Runnable
+public class NetworkManager extends Listener implements Runnable
 {
     public static final int SERVER_PORT = 0xDDD;
     public static final int MAX_CLIENTS = 4;
@@ -61,13 +64,14 @@ public class NetworkManager implements Runnable
     // server
     protected Boolean isServer;
     protected Server server;
-    protected ServerSocket serverSocket;
-    protected ArrayList<Socket> connections;
+    //protected ServerSocket serverSocket;
+    //protected ArrayList<Socket> connections;
+    protected ArrayList<GameConnection> connections;
     protected int expectedAmountClients;
 
     // client
     protected Client client;
-    protected Socket clientSocket;
+    //protected Socket clientSocket;
     protected InetAddress hostAddress;
 
     // techniques of connecting
@@ -125,11 +129,17 @@ public class NetworkManager implements Runnable
             // this can't be null so ignore any warnings that it can be.
             if (isServer)
             {
+                // setup class members for server stuff.
                 connections = new ArrayList<>();
+
+                server = new Server();
+                server.addListener(this);
+                /*
                 try
                 {
                     serverSocket = new ServerSocket();
                     serverSocket.setReuseAddress(true);
+
                 }
                 catch (IOException e)
                 {
@@ -138,10 +148,13 @@ public class NetworkManager implements Runnable
                     initialized.set(false);
                     return false;
                 }
+                */
             }
             else
             {
-                clientSocket = new Socket();
+                //clientSocket = new Socket();
+                client = new Client();
+                client.addListener(this);
             }
 
             networkInterface = networkInterfaces.get(primaryMode);
@@ -345,11 +358,13 @@ public class NetworkManager implements Runnable
         // bind server socket to the port and do other initialization as needed.
         try
         {
-            serverSocket.bind(new InetSocketAddress(SERVER_PORT));
+            server.start();
+            server.bind(SERVER_PORT);
+            //serverSocket.bind(new InetSocketAddress(SERVER_PORT));
         }
         catch (IOException e)
         {
-            System.out.println("NET: ServerSocket failed to bind to port " + SERVER_PORT);
+            System.out.println("NET: Server failed to bind to port " + SERVER_PORT);
             e.printStackTrace();
             return false; // non-recoverable error so terminate the thread
         }
@@ -366,23 +381,41 @@ public class NetworkManager implements Runnable
 
     }
 
+    /**
+     * Sets up the client and attempts to connect it to the server.
+     *
+     * NOTE: This method will return false in the case of getHostAddress() not being set or
+     * an exception while connecting.
+     * @return
+     */
     private boolean setupClient()
     {
-        // if hostAddress is set, attempt to connect. Otherwise wait for it to be set.
-        if (getHostAddress() != null && !clientSocket.isConnected())
+        // if hostAddress isn't set, return false to force it to wait until it's set.
+        if(getHostAddress() == null)
+        {
+            return false;
+        }
+
+        // if the client isn't connected, attempt to connect. Will repeat infinitely at the moment.
+        if (!client.isConnected())
         {
             try
             {
+                /*
                 clientSocket.bind(null);
                 clientSocket.connect(new InetSocketAddress(hostAddress, SERVER_PORT), 500);
+                */
+                client.start();
+                client.connect(5000, hostAddress, SERVER_PORT);
             }
             catch (SocketTimeoutException et)
             {
                 System.out.println("NET: Client timed out trying to connect to host. Retrying...");
+                return false;
             }
             catch (IOException e)
             {
-                System.out.println("NET: Exception during client connection. Not retrying.");
+                System.out.println("NET: Exception during client connection. Not retrying. Maybe.");
                 e.printStackTrace();
                 return false; // non-recoverable error so terminate the thread
             }
@@ -396,6 +429,75 @@ public class NetworkManager implements Runnable
      */
     private void runClient()
     {
+        if(client.isConnected())
+        {
+            // handled collected messages and pass actions to server via client.sendTCP()
+        }
+    }
 
+    @Override
+    public void connected(Connection connection)
+    {
+        if(isServer)
+        {
+            if(connections.size() < expectedAmountClients)
+            {
+                GameConnection gameConnection = (GameConnection) connection;
+                connections.add(gameConnection);
+            }
+            else
+            {
+                // don't need anymore connections. (rethink if we ever do chromecast stuff)
+                connection.close();
+            }
+        }
+        else
+        {
+            // send validation packet
+            System.out.println("NET: Connected to server! Connection ID = " + connection.getID());
+        }
+    }
+
+    @Override
+    public void received(Connection connection, Object object)
+    {
+        boolean handled = false;
+
+        if(!isServer)
+        {
+            // Might want to change to hashmap<id, connection> and have the connection ID or some other UID
+            // embedded in the packet itself. Not sure if its worth it, as the connections list should
+            // fairly small (n < [4,8,12,16])
+            for (Connection conn : connections)
+            {
+                if (conn.getID() == connection.getID())
+                {
+                    handled = true;
+                    GameConnection gameConnection = (GameConnection) conn;
+                    if (!gameConnection.isValidated())
+                    {
+                        // check for validation message.
+                        // otherwise close connection
+                        // validation message should be first thing sent on the connection from the client.
+                        System.out.println("NET: TCP Packet received from Connection! ID = " + gameConnection.getID());
+                    }
+                    else
+                    {
+                        // handle normally.
+                    }
+                }
+            }
+        }
+        else // client packet handling
+        {
+            System.out.println("NET: Packet received from server!");
+        }
+
+        // mystery packet!
+        if(!handled)
+        {
+            System.out.println("NET: Unknown packet received. Connection ID = " + connection.getID());
+            System.out.println("NET: Unknown packet source = " + connection.getRemoteAddressTCP());
+        }
     }
 }
