@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.MyInputProcessor;
@@ -22,6 +23,9 @@ public class MyGame extends ApplicationAdapter
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
     private GameStateManager gameStateManager;
+
+    private double accumulator;
+    private float step = 1.0f / 60.0f;
 
     private NetworkManager networkManager;
     private Thread networkThread;
@@ -54,7 +58,15 @@ public class MyGame extends ApplicationAdapter
     @Override
     public void render()
     {
-        gameStateManager.update(Gdx.graphics.getDeltaTime());
+
+        // This makes the game run at/close to 60 frams a sec.        side note (1/60 = 0.0166666)
+        accumulator += Gdx.graphics.getDeltaTime();
+        while (accumulator > step)
+        {
+        accumulator -= step;
+        }
+
+        gameStateManager.update((float)accumulator);
         gameStateManager.render();
         MyInput.update();
 
