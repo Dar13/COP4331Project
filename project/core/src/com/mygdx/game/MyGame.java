@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.MyInputProcessor;
@@ -25,7 +24,7 @@ public class MyGame extends ApplicationAdapter
     private GameStateManager gameStateManager;
 
     private double accumulator;
-    private float step = 1.0f / 60.0f;
+    private float fps = 60f;
 
     private NetworkManager networkManager;
     private Thread networkThread;
@@ -59,14 +58,31 @@ public class MyGame extends ApplicationAdapter
     public void render()
     {
 
-        // This makes the game run at/close to 60 frams a sec.        side note (1/60 = 0.0166666)
-        accumulator += Gdx.graphics.getDeltaTime();
-        while (accumulator > step)
+        if(Gdx.graphics.getDeltaTime() < 1f/fps)
         {
-        accumulator -= step;
+            System.out.print("DeltaTime: " + Gdx.graphics.getDeltaTime() + " s\n");
+            float sleep = (1f/fps-Gdx.graphics.getDeltaTime())*1000;
+            System.out.print("sleep: " + sleep + " ms\n");
+            try
+            {
+                Thread.sleep((long)(1000/fps-Gdx.graphics.getDeltaTime()));
+            }
+            catch (InterruptedException e)
+            {
+                System.out.print("Error...");
+                e.printStackTrace();
+            }
         }
 
-        gameStateManager.update((float)accumulator);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("hi");
+
+        gameStateManager.update(Gdx.graphics.getDeltaTime());
         gameStateManager.render();
         MyInput.update();
 
