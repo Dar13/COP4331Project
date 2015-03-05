@@ -1,6 +1,7 @@
 package com.mygdx.handlers;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.EnemyHeavy;
@@ -14,27 +15,54 @@ import java.util.LinkedList;
  */
 public class EnemyManager
 {
-    protected static final int MYSTICAL_MAGIC_NUMBER = 16;
-    protected static final int MYSTICAL_MAGIC_NUMBER_2 = 32;
+    protected static final int centerOffset = 16;
+    protected static final int rangeOffset = 32;
+    protected static final int waveInfoNorm = 20;
+    protected static final int waveInfoFast = 2;
+    protected static final int waveInfoHeavy = 1;
 
-    public int numEnemies;
-    public int numHEnemies;
-    public Texture img;
+    public int currentWave = 1;
+    public int numEnemies = 0;
+    public int numHEnemies = 0;
+    public int numFEnemies = 0;
+    public int waveToBeSpawnedNorm;
+    public int waveToBeSpawnedFast;
+    public int waveToBeSpawnedHeavy;
+    public float timeSinceLastNorm;
+    public float timeSinceLastFast;
+    public float timeSinceLastHeavy;
+    private Texture EnemyImg = new Texture("EnemyDev.png");
+    private Texture FastEnemy = new Texture("FastEnemy.png");
+    private Texture TigerBase = new Texture("EnemyDev.png");
+    private Texture TigerTurret = new Texture("EnemyDev.png");
     public LinkedList<Enemy> enemies;
     public LinkedList<EnemyHeavy> enemyHeavies;
     public LinkedList<Tower> towers;
+    private LinkedList<WayPoint> path;
 
 
-    public EnemyManager(int numEnemies, int numHEnemies)
+    public EnemyManager(LinkedList<WayPoint> path)
     {
         enemies = new LinkedList<Enemy>();
         enemyHeavies = new LinkedList<EnemyHeavy>();
         towers = new LinkedList<Tower>();
-        img = new Texture("EnemyDev.png");
-        this.numEnemies = numEnemies;
+        timeSinceLastNorm = 0;
+        timeSinceLastFast = 0;
+        timeSinceLastHeavy = 0;
+        waveToBeSpawnedNorm = waveInfoNorm;
+        waveToBeSpawnedFast = 0;
+        waveToBeSpawnedHeavy = 0;
+        this.path = path;
     }
 
     public void AddEnemy(Texture img, float velocity, float armor, LinkedList<WayPoint> path)
+    {
+        Enemy New = new Enemy(img, velocity, armor, path);
+        enemies.addLast(New);
+        numEnemies++;
+    }
+
+    public void AddFastEnemy(Texture img, float velocity, float armor, LinkedList<WayPoint> path)
     {
         Enemy New = new Enemy(img, velocity, armor, path);
         enemies.addLast(New);
@@ -77,9 +105,65 @@ public class EnemyManager
         }
     }
 
-    public void UpdateAll(float deltaTime, LinkedList<Tower> towers)
+    public void NextWaveCalculator()
+    {
+
+    }
+
+    public void Update(float deltaTime, LinkedList<Tower> towers)
     {
         this.towers = towers;
+
+        if (currentWave == 1) {
+            timeSinceLastNorm = timeSinceLastNorm + deltaTime;
+
+            if (timeSinceLastNorm > .3 && waveToBeSpawnedNorm > 0) {
+                AddEnemy(EnemyImg, 3, 1, path);
+                timeSinceLastNorm = 0;
+                waveToBeSpawnedNorm--;
+            }
+        }
+
+        else if (currentWave == 2) {
+            timeSinceLastNorm = timeSinceLastNorm + deltaTime;
+            timeSinceLastFast = timeSinceLastFast + deltaTime;
+
+            if (timeSinceLastNorm > .5 && waveToBeSpawnedNorm > 0) {
+                AddEnemy(EnemyImg, 3, 1, path);
+                timeSinceLastNorm = 0;
+                waveToBeSpawnedNorm--;
+            }
+
+            if (timeSinceLastFast > .5 && waveToBeSpawnedFast > 0) {
+                AddEnemy(FastEnemy, 6, 1, path);
+                timeSinceLastFast = 0;
+                waveToBeSpawnedFast--;
+            }
+        }
+
+        else if (currentWave > 2) {
+            timeSinceLastNorm = timeSinceLastNorm + deltaTime;
+            timeSinceLastFast = timeSinceLastFast + deltaTime;
+
+            if (timeSinceLastNorm > .5 && waveToBeSpawnedNorm > 0) {
+                AddEnemy(EnemyImg, 3, 1, path);
+                timeSinceLastNorm = 0;
+                waveToBeSpawnedNorm--;
+            }
+
+            if (timeSinceLastFast > .5 && waveToBeSpawnedFast > 0) {
+                AddEnemy(FastEnemy, 6, 1, path);
+                timeSinceLastFast = 0;
+                waveToBeSpawnedFast--;
+            }
+
+            if (timeSinceLastHeavy > 3 && waveToBeSpawnedHeavy > 0) {
+                AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
+                timeSinceLastFast = 0;
+                waveToBeSpawnedFast--;
+            }
+        }
+
 
         //Enemy health decrementer, very crude atm.
         for (int i = 0; i < enemies.size(); i++)
@@ -173,14 +257,14 @@ public class EnemyManager
 
     public boolean InRange(float enemyX, float enemyY, float towerX, float towerY, float towerRange)
     {
-        if (Math.abs(enemyX + MYSTICAL_MAGIC_NUMBER - towerX + MYSTICAL_MAGIC_NUMBER)
-                < towerRange * MYSTICAL_MAGIC_NUMBER_2
-                && Math.abs(enemyY + MYSTICAL_MAGIC_NUMBER - towerY + MYSTICAL_MAGIC_NUMBER)
-                < towerRange * MYSTICAL_MAGIC_NUMBER_2)
+        if (Math.abs(enemyX + centerOffset - towerX + centerOffset)
+                < towerRange * rangeOffset
+                && Math.abs(enemyY + centerOffset - towerY + centerOffset)
+                < towerRange * rangeOffset)
         {
-            if (Math.sqrt(Math.pow((enemyX + MYSTICAL_MAGIC_NUMBER - towerX + MYSTICAL_MAGIC_NUMBER), 2)
-                                  + Math.pow((enemyY + MYSTICAL_MAGIC_NUMBER - towerY + MYSTICAL_MAGIC_NUMBER), 2))
-                    < towerRange * MYSTICAL_MAGIC_NUMBER_2)
+            if (Math.sqrt(Math.pow((enemyX + centerOffset - towerX + centerOffset), 2)
+                                  + Math.pow((enemyY + centerOffset - towerY + centerOffset), 2))
+                    < towerRange * rangeOffset)
             {
                 return true;
             }

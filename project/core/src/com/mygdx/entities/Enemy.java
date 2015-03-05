@@ -13,7 +13,7 @@ import java.util.LinkedList;
 public class Enemy extends Entities
 {
     public static final int VELOCITY = 3;
-    public static final int ARMOR = 8;
+    public static final int ARMOR = 1;
 
     public Sprite sprite;
     public float x = 0;

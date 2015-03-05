@@ -20,9 +20,9 @@ public class TowerManager
         this.towers = towers;
     }
 
-    public void addTower(Texture img, float x, float y, float damage, float range)
+    public void addTower(Texture img,Texture img2, float x, float y, float damage, float range)
     {
-        Tower New = new Tower(img, x, y, damage, range);
+        Tower New = new Tower(img, img2, x, y, damage, range);
         towers.addLast(New);
     }
 
