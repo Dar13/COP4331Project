@@ -144,6 +144,7 @@ public class EnemyManager
         else if (currentWave > 2) {
             timeSinceLastNorm = timeSinceLastNorm + deltaTime;
             timeSinceLastFast = timeSinceLastFast + deltaTime;
+            timeSinceLastHeavy = timeSinceLastHeavy + deltaTime;
 
             if (timeSinceLastNorm > .5 && waveToBeSpawnedNorm > 0) {
                 AddEnemy(EnemyImg, 3, 1, path);
