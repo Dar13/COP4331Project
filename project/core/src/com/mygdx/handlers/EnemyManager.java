@@ -41,6 +41,8 @@ public class EnemyManager
     public LinkedList<Tower> towers;
     private LinkedList<WayPoint> path;
 
+    public float accumulator =0;
+
 
     public EnemyManager(LinkedList<WayPoint> path)
     {
@@ -113,6 +115,9 @@ public class EnemyManager
 
     public void Update(float deltaTime, LinkedList<Tower> towers)
     {
+        //accumulator +=deltaTime;
+
+
         this.towers = towers;
 
         if (currentWave == 1)
@@ -265,7 +270,6 @@ public class EnemyManager
         }
 
     }
-
     public boolean InRange(float enemyX, float enemyY, float towerX, float towerY, float towerRange)
     {
         if (Math.abs(enemyX + centerOffset - towerX + centerOffset)
@@ -282,8 +286,6 @@ public class EnemyManager
         }
         return false;
     }
-
-
     public void RenderAll(SpriteBatch sb)
     {
         for (int i = 0; i < numHEnemies; i++)

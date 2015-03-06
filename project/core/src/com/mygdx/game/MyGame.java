@@ -25,6 +25,7 @@ public class MyGame extends ApplicationAdapter
     private GameStateManager gameStateManager;
 
     private double accumulator;
+    private float fps = 1f/60f;
 
 
     private NetworkManager networkManager;
@@ -59,14 +60,15 @@ public class MyGame extends ApplicationAdapter
     public void render()
     {
 
-        if(Gdx.graphics.getDeltaTime() < 1f/fps)
+        if(Gdx.graphics.getDeltaTime() < fps)
         {
             System.out.print("DeltaTime: " + Gdx.graphics.getDeltaTime() + " s\n");
-            float sleep = (1000/fps-Gdx.graphics.getDeltaTime());
+            //sleep the difference between our taget fps and time time between frames.
+            double sleep = (fps-Gdx.graphics.getDeltaTime())*1000;
             System.out.print("sleep: " + sleep + " ms\n");
             try
             {
-                Thread.sleep((long)(1000/fps-Gdx.graphics.getDeltaTime()));
+                Thread.sleep((long)(sleep));
             }
             catch (InterruptedException e)
             {
@@ -74,8 +76,7 @@ public class MyGame extends ApplicationAdapter
                 e.printStackTrace();
             }
         }
-
-        gameStateManager.update(Gdx.graphics.getDeltaTime());
+        gameStateManager.update(fps);
         gameStateManager.render();
         MyInput.update();
     }
