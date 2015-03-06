@@ -26,12 +26,9 @@ public class Play extends GameState
 
     public static final int edgeOffset = 32;
     private boolean debugModeOn = true;
-    private Texture TowerImg;
-    private Texture TowerShadow;
     private Texture Map;
     public Sprite map;
 
-    private Tower tower;
     public ShapeRenderer shapeRenderer;
     private OrthographicCamera cam;
     private Debugger debugger;
@@ -63,16 +60,13 @@ public class Play extends GameState
         shapeRenderer = new ShapeRenderer();
         Map = new Texture("map.png");
         map = new Sprite(Map);
-        TowerImg = new Texture("DevText_Tower.png");
-        TowerShadow = new Texture("shadowtower.png");
 
         // NOTE: need to create concrete tower types to remove magic number constants in code.
-        tower = new Tower(TowerImg, TowerShadow, 50, 50, 2, 2);
-        towers.addLast(tower);
         towerManager = new TowerManager(towers);
-        towerManager.addTower(TowerImg, TowerShadow, 240, 50, 2, 3);
-        towerManager.addTower(TowerImg, TowerShadow, 480, 50, 3, 3);
-        towerManager.addTower(TowerImg, TowerShadow, 560, 150, 7, 3);
+        towerManager.addBazookaTower(50, 50);
+        towerManager.addRifleTower(240, 50);
+        towerManager.addRifleTower(480, 50);
+        towerManager.addRifleTower(560, 150);
         debugger = new Debugger(wayPoints, towerManager.towers, enemyManager.enemies);
 
     }

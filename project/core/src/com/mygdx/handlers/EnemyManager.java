@@ -50,7 +50,7 @@ public class EnemyManager
         timeSinceLastFast = 0;
         timeSinceLastHeavy = 0;
         waveToBeSpawnedNorm = waveInfoNorm;
-        waveToBeSpawnedFast = 0;
+        waveToBeSpawnedFast = waveInfoFast;
         waveToBeSpawnedHeavy = waveInfoHeavy;
         this.path = path;
 
@@ -108,20 +108,11 @@ public class EnemyManager
         if (currentWave == 1)
         {
             timeSinceLastNorm++;
-            timeSinceLastHeavy++;
 
-            if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
-            {
+            if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0) {
                 AddEnemy(NullLayer, EnemyImg, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
-            }
-
-            if (timeSinceLastHeavy > MyGame.fpsretrieve * 3 && waveToBeSpawnedHeavy > 0)
-            {
-                AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
-                timeSinceLastFast = 0;
-                waveToBeSpawnedHeavy--;
             }
 
         }
