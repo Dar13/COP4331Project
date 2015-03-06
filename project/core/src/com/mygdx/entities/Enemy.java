@@ -27,8 +27,17 @@ public class Enemy extends Entities
     public float health = 100;
     public float armor = 1;
 
+    public enum Type
+    {
+        HEAVY,
+        NORMAL,
+        FAST
+    }
 
-    public Enemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path, String type)
+    public Type type;
+
+
+    public Enemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path, Type type)
     {
         super(img, path.getFirst().x, path.getFirst().y);
         currentWaypoint++;
@@ -37,8 +46,10 @@ public class Enemy extends Entities
         this.sprite2 = new Sprite(img2);
         this.velocity = velocity;
         this.tolerance = velocity / 2;
-        if (type.equalsIgnoreCase("heavy")){
-            this.tolerance = velocity + 16;
+        this.type = type;
+        switch (type){
+            case HEAVY:
+                this.tolerance = velocity + 16;
         }
         sprite.setPosition(x, y);
         sprite2.setPosition(x + 12, y + 2);
@@ -159,96 +170,227 @@ public class Enemy extends Entities
 
     public void changeSpriteRotation()
     {
-        if (heading == WayPoint.Direction.EAST)
-        {
-            switch (wayPoints.get(currentWaypoint).direction)
-            {
-                case NORTH:
-                    sprite.rotate(90);
-                    sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
-                    sprite2.rotate(90);
-                    sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                    break;
-                case SOUTH:
-                    sprite.rotate(-90);
-                    sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                    sprite2.rotate(-90);
-                    sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                    break;
-                case WEST:
-                    sprite.rotate(180);
-                    sprite2.rotate(180);
-                    break;
+        switch (type) {
+            case HEAVY:
+            if (heading == WayPoint.Direction.EAST) {
+                switch (wayPoints.get(currentWaypoint).direction) {
+                    case NORTH:
+                        sprite.rotate(90);
+                        sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
+                        sprite2.rotate(90);
+                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
+                        break;
+                    case SOUTH:
+                        sprite.rotate(-90);
+                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
+                        sprite2.rotate(-90);
+                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
+                        break;
+                    case WEST:
+                        sprite.rotate(180);
+                        sprite2.rotate(180);
+                        break;
+                }
             }
-        }
 
-        if (heading == WayPoint.Direction.WEST)
-        {
-            switch (wayPoints.get(currentWaypoint).direction)
-            {
-                case NORTH:
-                    sprite.rotate(-90);
-                    sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                    sprite2.rotate(-90);
-                    sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                    break;
-                case SOUTH:
-                    sprite.rotate(90);
-                    sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
-                    sprite2.rotate(90);
-                    sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y - 2);
-                    break;
-                case EAST:
-                    sprite.rotate(180);
-                    sprite2.rotate(180);
-                    break;
+            if (heading == WayPoint.Direction.WEST) {
+                switch (wayPoints.get(currentWaypoint).direction) {
+                    case NORTH:
+                        sprite.rotate(-90);
+                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
+                        sprite2.rotate(-90);
+                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
+                        break;
+                    case SOUTH:
+                        sprite.rotate(90);
+                        sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
+                        sprite2.rotate(90);
+                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y - 2);
+                        break;
+                    case EAST:
+                        sprite.rotate(180);
+                        sprite2.rotate(180);
+                        break;
+                }
             }
-        }
 
-        if (heading == WayPoint.Direction.NORTH)
-        {
-            switch (wayPoints.get(currentWaypoint).direction)
-            {
-                case EAST:
-                    sprite.rotate(-90);
-                    sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                    sprite2.rotate(-90);
-                    sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 2);
-                    break;
-                case SOUTH:
-                    sprite.rotate(180);
-                    sprite2.rotate(180);
-                    break;
-                case WEST:
-                    sprite.rotate(90);
-                    sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
-                    sprite2.rotate(90);
-                    sprite2.setPosition(wayPoints.get(currentWaypoint).x - 13, wayPoints.get(currentWaypoint).y + 3);
-                    break;
+            if (heading == WayPoint.Direction.NORTH) {
+                switch (wayPoints.get(currentWaypoint).direction) {
+                    case EAST:
+                        sprite.rotate(-90);
+                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
+                        sprite2.rotate(-90);
+                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 2);
+                        break;
+                    case SOUTH:
+                        sprite.rotate(180);
+                        sprite2.rotate(180);
+                        break;
+                    case WEST:
+                        sprite.rotate(90);
+                        sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
+                        sprite2.rotate(90);
+                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 13, wayPoints.get(currentWaypoint).y + 3);
+                        break;
+                }
             }
-        }
 
-        if (heading == WayPoint.Direction.SOUTH)
-        {
-            switch (wayPoints.get(currentWaypoint).direction)
-            {
-                case NORTH:
-                    sprite.rotate(180);
-                    sprite2.rotate(180);
-                    break;
-                case EAST:
-                    sprite.rotate(90);
-                    sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                    sprite2.rotate(90);
-                    sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                    break;
-                case WEST:
-                    sprite.rotate(-90);
-                    sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                    sprite2.rotate(-90);
-                    sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                    break;
+            if (heading == WayPoint.Direction.SOUTH) {
+                switch (wayPoints.get(currentWaypoint).direction) {
+                    case NORTH:
+                        sprite.rotate(180);
+                        sprite2.rotate(180);
+                        break;
+                    case EAST:
+                        sprite.rotate(90);
+                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
+                        sprite2.rotate(90);
+                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
+                        break;
+                    case WEST:
+                        sprite.rotate(-90);
+                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
+                        sprite2.rotate(-90);
+                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
+                        break;
+                }
             }
+            case NORMAL:
+                if (heading == WayPoint.Direction.EAST) {
+                    switch (wayPoints.get(currentWaypoint).direction) {
+                        case NORTH:
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
+                            break;
+                        case SOUTH:
+                            sprite.rotate(-90);
+                            sprite2.rotate(-90);
+                            break;
+                        case WEST:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                    }
+                }
+
+                if (heading == WayPoint.Direction.WEST) {
+                    switch (wayPoints.get(currentWaypoint).direction) {
+                        case NORTH:
+                            sprite.rotate(-90);
+                            sprite2.rotate(-90);
+                            break;
+                        case SOUTH:
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
+                            break;
+                        case EAST:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                    }
+                }
+
+                if (heading == WayPoint.Direction.NORTH) {
+                    switch (wayPoints.get(currentWaypoint).direction) {
+                        case EAST:
+                            sprite.rotate(-90);
+                            sprite2.rotate(-90);
+                            break;
+                        case SOUTH:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                        case WEST:
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
+                            break;
+                    }
+                }
+
+                if (heading == WayPoint.Direction.SOUTH) {
+                    switch (wayPoints.get(currentWaypoint).direction) {
+                        case NORTH:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                        case EAST:
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
+                            break;
+                        case WEST:
+                            sprite.rotate(-90);
+                            sprite2.rotate(-90);
+                            break;
+                    }
+                }
+            case FAST:
+                if (heading == WayPoint.Direction.EAST) {
+                    switch (wayPoints.get(currentWaypoint).direction) {
+                        case NORTH:
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
+                            break;
+                        case SOUTH:
+                            sprite.rotate(-90);
+                            sprite2.rotate(-90);
+                            break;
+                        case WEST:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                    }
+                }
+
+                if (heading == WayPoint.Direction.WEST) {
+                    switch (wayPoints.get(currentWaypoint).direction) {
+                        case NORTH:
+                            sprite.rotate(-90);
+                            sprite2.rotate(-90);
+                            break;
+                        case SOUTH:
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
+                            break;
+                        case EAST:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                    }
+                }
+
+                if (heading == WayPoint.Direction.NORTH) {
+                    switch (wayPoints.get(currentWaypoint).direction) {
+                        case EAST:
+                            sprite.rotate(-90);
+                            sprite2.rotate(-90);
+                            break;
+                        case SOUTH:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                        case WEST:
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
+                            break;
+                    }
+                }
+
+                if (heading == WayPoint.Direction.SOUTH) {
+                    switch (wayPoints.get(currentWaypoint).direction) {
+                        case NORTH:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                        case EAST:
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
+                            break;
+                        case WEST:
+                            sprite.rotate(-90);
+                            sprite2.rotate(-90);
+                            break;
+                    }
+                }
         }
     }
 

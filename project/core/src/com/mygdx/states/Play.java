@@ -13,6 +13,7 @@ import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.handlers.TowerManager;
+import com.mygdx.handlers.WayPointManager;
 import com.mygdx.triggers.Path;
 import com.mygdx.triggers.WayPoint;
 
@@ -33,10 +34,10 @@ public class Play extends GameState
     private OrthographicCamera cam;
     private Debugger debugger;
     private int gold = 0;
-    private LinkedList<WayPoint> wayPoints;
     private LinkedList<Tower> towers;
     public EnemyManager enemyManager;
     public TowerManager towerManager;
+    public WayPointManager wayPointManager;
     private LinkedList<Path> paths;
     private boolean Pause = false;
 
@@ -46,14 +47,9 @@ public class Play extends GameState
 
 
         paths = new LinkedList<Path>(); // NOTE: what is a path? This is never used. Is this for pathfinding? Tanner: It will be used when placing towers.
-        wayPoints = new LinkedList<WayPoint>();
         towers = new LinkedList<Tower>();
-        wayPoints.addLast(new WayPoint(0, 0, WayPoint.Direction.EAST));
-        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - edgeOffset, 0, WayPoint.Direction.NORTH));
-        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - edgeOffset, MyGame.V_HEIGHT - edgeOffset, WayPoint.Direction.WEST));
-        wayPoints.addLast(new WayPoint(0, MyGame.V_HEIGHT - edgeOffset, WayPoint.Direction.SOUTH));
-        wayPoints.addLast(new WayPoint(0, 0, WayPoint.Direction.END));
-        enemyManager = new EnemyManager(wayPoints);
+        wayPointManager = new WayPointManager();
+        enemyManager = new EnemyManager(wayPointManager.wayPoints);
 
         cam = new OrthographicCamera();
         cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
@@ -67,7 +63,7 @@ public class Play extends GameState
         towerManager.addRifleTower(240, 50);
         towerManager.addRifleTower(480, 50);
         towerManager.addRifleTower(560, 150);
-        debugger = new Debugger(wayPoints, towerManager.towers, enemyManager.enemies);
+        debugger = new Debugger(wayPointManager.wayPoints, towerManager.towers, enemyManager.enemies);
 
     }
 

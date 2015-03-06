@@ -58,21 +58,21 @@ public class EnemyManager
 
     public void AddEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        Enemy New = new Enemy(img, img2, velocity, armor, path, "normal");
+        Enemy New = new Enemy(img, img2, velocity, armor, path, Enemy.Type.NORMAL);
         enemies.addLast(New);
         numEnemies++;
     }
 
     public void AddFastEnemy(Texture img3, Texture img4, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        Enemy nEw = new Enemy(img3, img4, velocity, armor, path, "fast");
+        Enemy nEw = new Enemy(img3, img4, velocity, armor, path, Enemy.Type.FAST);
         enemies.addLast(nEw);
         numEnemies++;
     }
 
     public void AddHeavyEnemy(Texture img5, Texture img6, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        Enemy neW = new Enemy(img5, img6, velocity, armor, path, "heavy");
+        Enemy neW = new Enemy(img5, img6, velocity, armor, path, Enemy.Type.HEAVY);
         enemies.addLast(neW);
         numEnemies++;
     }
@@ -110,7 +110,7 @@ public class EnemyManager
             timeSinceLastNorm++;
 
             if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0) {
-                AddEnemy(NullLayer, EnemyImg, 3, 1, path);
+                AddEnemy(NullLayer, EnemyImg, 3, 20, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }

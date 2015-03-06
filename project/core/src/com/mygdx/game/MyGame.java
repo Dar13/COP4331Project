@@ -14,8 +14,8 @@ import java.util.HashMap;
 
 public class MyGame extends ApplicationAdapter
 {
-    public static final int V_WIDTH = 320 * 2;
-    public static final int V_HEIGHT = 240 * 2;
+    public static final int V_WIDTH = 336 * 2;
+    public static final int V_HEIGHT = 256 * 2;
     public static final int SCALE = 2;
     public static final float fpsretrieve = 60f;
 
@@ -62,10 +62,10 @@ public class MyGame extends ApplicationAdapter
 
         if(Gdx.graphics.getDeltaTime() < fps)
         {
-            System.out.print("DeltaTime: " + Gdx.graphics.getDeltaTime() + " s\n");
+            //System.out.print("DeltaTime: " + Gdx.graphics.getDeltaTime() + " s\n");
             //sleep the difference between our taget fps and time time between frames.
             double sleep = (fps-Gdx.graphics.getDeltaTime())*1000;
-            System.out.print("sleep: " + sleep + " ms\n");
+            //System.out.print("sleep: " + sleep + " ms\n");
             try
             {
                 Thread.sleep((long)(sleep));
