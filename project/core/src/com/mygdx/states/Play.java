@@ -83,11 +83,11 @@ public class Play extends GameState
     {
     }
 
-    public void update(float deltaTime)
+    public void update(float fps)
     {
         //Accounting for our future pause state.
         if(!Pause) {
-            enemyManager.Update(deltaTime, towers);
+            enemyManager.Update(fps, towers);
         }
     }
 

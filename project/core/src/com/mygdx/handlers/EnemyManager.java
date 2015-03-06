@@ -113,7 +113,7 @@ public class EnemyManager
 
     }
 
-    public void Update(float deltaTime, LinkedList<Tower> towers)
+    public void Update(float fps, LinkedList<Tower> towers)
     {
         //accumulator +=deltaTime;
 
@@ -124,7 +124,7 @@ public class EnemyManager
         {
             timeSinceLastNorm++;
 
-            if (timeSinceLastNorm > MyGame.fps/2 && waveToBeSpawnedNorm > 0)
+            if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
             {
                 AddEnemy(EnemyImg, 3, 1, path);
                 timeSinceLastNorm = 0;
@@ -137,14 +137,14 @@ public class EnemyManager
             timeSinceLastNorm++;
             timeSinceLastFast++;
 
-            if (timeSinceLastNorm > MyGame.fps/2 && waveToBeSpawnedNorm > 0)
+            if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
             {
                 AddEnemy(EnemyImg, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
 
-            if (timeSinceLastFast > MyGame.fps/3 && waveToBeSpawnedFast > 0)
+            if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
             {
                 AddEnemy(FastEnemy, 6, 1, path);
                 timeSinceLastFast = 0;
@@ -158,21 +158,21 @@ public class EnemyManager
             timeSinceLastFast++;
             timeSinceLastHeavy++;
 
-            if (timeSinceLastNorm > MyGame.fps/2 && waveToBeSpawnedNorm > 0)
+            if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
             {
                 AddEnemy(EnemyImg, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
 
-            if (timeSinceLastFast > MyGame.fps/3 && waveToBeSpawnedFast > 0)
+            if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
             {
                 AddEnemy(FastEnemy, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
             }
 
-            if (timeSinceLastHeavy > MyGame.fps * 3 && waveToBeSpawnedHeavy > 0)
+            if (timeSinceLastHeavy > MyGame.fpsretrieve * 3 && waveToBeSpawnedHeavy > 0)
             {
                 AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
                 timeSinceLastFast = 0;
