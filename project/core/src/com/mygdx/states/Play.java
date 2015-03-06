@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.Debug.Debugger;
-import com.mygdx.entities.Enemy;
-import com.mygdx.entities.EnemyHeavy;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.EnemyManager;

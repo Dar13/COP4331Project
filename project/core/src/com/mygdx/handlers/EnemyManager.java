@@ -1,10 +1,8 @@
 package com.mygdx.handlers;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.entities.Enemy;
-import com.mygdx.entities.EnemyHeavy;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.triggers.WayPoint;
@@ -33,11 +31,11 @@ public class EnemyManager
     public float timeSinceLastFast;
     public float timeSinceLastHeavy;
     private Texture EnemyImg = new Texture("EnemyDev.png");
+    private Texture NullLayer = new Texture("nulllayer.png");
     private Texture FastEnemy = new Texture("FastEnemy.png");
-    private Texture TigerBase = new Texture("EnemyDev.png");
-    private Texture TigerTurret = new Texture("EnemyDev.png");
+    private Texture TigerBase = new Texture("tigerbase.png");
+    private Texture TigerTurret = new Texture("tigerturret.png");
     public LinkedList<Enemy> enemies;
-    public LinkedList<EnemyHeavy> enemyHeavies;
     public LinkedList<Tower> towers;
     private LinkedList<WayPoint> path;
 
@@ -47,36 +45,36 @@ public class EnemyManager
     public EnemyManager(LinkedList<WayPoint> path)
     {
         enemies = new LinkedList<Enemy>();
-        enemyHeavies = new LinkedList<EnemyHeavy>();
         towers = new LinkedList<Tower>();
         timeSinceLastNorm = 0;
         timeSinceLastFast = 0;
         timeSinceLastHeavy = 0;
         waveToBeSpawnedNorm = waveInfoNorm;
         waveToBeSpawnedFast = 0;
-        waveToBeSpawnedHeavy = 0;
+        waveToBeSpawnedHeavy = waveInfoHeavy;
         this.path = path;
+
     }
 
-    public void AddEnemy(Texture img, float velocity, float armor, LinkedList<WayPoint> path)
+    public void AddEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        Enemy New = new Enemy(img, velocity, armor, path);
+        Enemy New = new Enemy(img, img2, velocity, armor, path, "normal");
         enemies.addLast(New);
         numEnemies++;
     }
 
-    public void AddFastEnemy(Texture img, float velocity, float armor, LinkedList<WayPoint> path)
+    public void AddFastEnemy(Texture img3, Texture img4, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        Enemy New = new Enemy(img, velocity, armor, path);
-        enemies.addLast(New);
+        Enemy nEw = new Enemy(img3, img4, velocity, armor, path, "fast");
+        enemies.addLast(nEw);
         numEnemies++;
     }
 
-    public void AddHeavyEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path)
+    public void AddHeavyEnemy(Texture img5, Texture img6, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        EnemyHeavy New = new EnemyHeavy(img, img2, velocity, armor, path);
-        enemyHeavies.addLast(New);
-        numHEnemies++;
+        Enemy neW = new Enemy(img5, img6, velocity, armor, path, "heavy");
+        enemies.addLast(neW);
+        numEnemies++;
     }
 
     public void RemoveEnemy(int toBeDeleted)
@@ -95,19 +93,6 @@ public class EnemyManager
 
     }
 
-    public void RemoveHEnemy(int toBeDeleted)
-    {
-        if (toBeDeleted == 0)
-        {
-            enemyHeavies.removeFirst();
-        }
-
-        else
-        {
-            enemyHeavies.remove(toBeDeleted);
-        }
-    }
-
     public void NextWaveCalculator()
     {
 
@@ -123,13 +108,22 @@ public class EnemyManager
         if (currentWave == 1)
         {
             timeSinceLastNorm++;
+            timeSinceLastHeavy++;
 
             if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
             {
-                AddEnemy(EnemyImg, 3, 1, path);
+                AddEnemy(NullLayer, EnemyImg, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
+
+            if (timeSinceLastHeavy > MyGame.fpsretrieve * 3 && waveToBeSpawnedHeavy > 0)
+            {
+                AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
+                timeSinceLastFast = 0;
+                waveToBeSpawnedHeavy--;
+            }
+
         }
 
         else if (currentWave == 2)
@@ -139,14 +133,14 @@ public class EnemyManager
 
             if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
             {
-                AddEnemy(EnemyImg, 3, 1, path);
+                AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
 
             if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
             {
-                AddEnemy(FastEnemy, 6, 1, path);
+                AddEnemy(FastEnemy, NullLayer, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
             }
@@ -160,14 +154,14 @@ public class EnemyManager
 
             if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
             {
-                AddEnemy(EnemyImg, 3, 1, path);
+                AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
 
             if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
             {
-                AddEnemy(FastEnemy, 6, 1, path);
+                AddEnemy(FastEnemy, NullLayer, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
             }
@@ -206,29 +200,6 @@ public class EnemyManager
             }
         }
 
-        for (int i = 0; i < enemyHeavies.size(); i++)
-        {
-            if (enemyHeavies.get(i) == null)
-            {
-                continue;
-            }
-            for (int j = 0; j < towers.size(); j++)
-            {
-                if (InRange(enemyHeavies.get(i).sprite.getX(),
-                            enemyHeavies.get(i).sprite.getY(),
-                            towers.get(j).sprite.getX(),
-                            towers.get(j).sprite.getY(),
-                            towers.get(j).range))
-                {
-                    if (enemyHeavies.get(i).health > 0)
-                    {
-                        enemyHeavies.get(i).health = enemyHeavies.get(i).health - (towers.get(j).damages / enemyHeavies.get(i).armor);
-                    }
-
-
-                }
-            }
-        }
 
         for (int i = 0; i < enemies.size(); i++)
         {
@@ -240,15 +211,6 @@ public class EnemyManager
 
         }
 
-        for (int i = 0; i < enemyHeavies.size(); i++)
-        {
-            if (enemyHeavies.get(i).health <= 0)
-            {
-                RemoveHEnemy(i);
-                numHEnemies--;
-            }
-
-        }
 
 
         for (int i = 0; i < enemies.size(); i++)
@@ -260,16 +222,9 @@ public class EnemyManager
 
         }
 
-        for (int i = 0; i < enemyHeavies.size(); i++)
-        {
-            if (!enemyHeavies.get(i).Check())
-            {
-                enemyHeavies.get(i).Move();
-            }
-
-        }
 
     }
+
     public boolean InRange(float enemyX, float enemyY, float towerX, float towerY, float towerRange)
     {
         if (Math.abs(enemyX + centerOffset - towerX + centerOffset)
@@ -286,12 +241,9 @@ public class EnemyManager
         }
         return false;
     }
+
     public void RenderAll(SpriteBatch sb)
     {
-        for (int i = 0; i < numHEnemies; i++)
-        {
-            enemyHeavies.get(i).render(sb);
-        }
 
         for (int i = 0; i < numEnemies; i++)
         {
