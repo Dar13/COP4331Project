@@ -1,11 +1,10 @@
 package com.mygdx.handlers;
 
+import com.mygdx.triggers.Path;
 import com.mygdx.triggers.WayPoint;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -13,50 +12,71 @@ import java.util.Scanner;
 /**
  * Created by LordNeah on 3/6/2015.
  */
-public class WayPointManager {
+public class WayPointManager
+{
 
     public LinkedList<WayPoint> wayPoints;
+    public LinkedList<Path> paths;
     public File inputtxt;
 
-    public WayPointManager(){
+    public WayPointManager()
+    {
         inputtxt = new File("Waypoints.txt");
         this.wayPoints = new LinkedList<WayPoint>();
-        try{
+        this.paths = new LinkedList<Path>();
+        try
+        {
             ReadInWaypoints();
         }
-        catch (FileNotFoundException e){
-
+        catch (FileNotFoundException e)
+        {
         }
+
+        ConstructPaths();
     }
 
-    private void ReadInWaypoints() throws FileNotFoundException{
+    private void ReadInWaypoints() throws FileNotFoundException
+    {
         Scanner in = new Scanner(inputtxt);
         in.useDelimiter(" ");
         int xx = 0;
         int yy = 0;
         String dir = new String();
-        while (in.hasNext()) {
-            if (in.hasNextInt()) {
+        while (in.hasNext())
+        {
+            if (in.hasNextInt())
+            {
                 int x = in.nextInt();
                 xx = x;
             }
 
-            if (in.hasNextInt()) {
+            if (in.hasNextInt())
+            {
                 int y = in.nextInt();
                 yy = y;
             }
 
-            if (in.hasNext()) {
+            if (in.hasNext())
+            {
                 char direction = in.next().charAt(0);
-                if (direction == 'n') {
+                if (direction == 'n')
+                {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.NORTH));
-                } else if (direction == 's') {
+                }
+                else if (direction == 's')
+                {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.SOUTH));
-                } else if (direction == 'e') {
+                }
+                else if (direction == 'e')
+                {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.EAST));
-                } else if (direction == 'w') {
+                }
+                else if (direction == 'w')
+                {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.WEST));
-                } else if (direction == 'o') {
+                }
+                else if (direction == 'o')
+                {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.END));
                 }
             }
@@ -66,7 +86,29 @@ public class WayPointManager {
         in.close();
     }
 
+    private void ConstructPaths(){
+        int i = 0;
+        while(i < wayPoints.size() - 1){
+            if (wayPoints.get(i).x == wayPoints.get(i+1).x) {
+                if(wayPoints.get(i).y > wayPoints.get(i+1).y){
+                    Path NEW = new Path(wayPoints.get(i).x + 32, wayPoints.get(i).y + 32, wayPoints.get(i+1).x, wayPoints.get(i+1).y);
+                }
+                else{
+                    Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i+1).x + 32, wayPoints.get(i+1).y + 32);
+                }
+            }
 
+            else if (wayPoints.get(i).y == wayPoints.get(i+1).y) {
+                if(wayPoints.get(i).x > wayPoints.get(i+1).x){
+                    Path NEW = new Path(wayPoints.get(i).x + 32, wayPoints.get(i).y + 32, wayPoints.get(i+1).x, wayPoints.get(i+1).y);
+                }
+                else{
+                    Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i+1).x + 32, wayPoints.get(i+1).y + 32);
+                }
+            }
+            i++;
+        }
+    }
 
 
 }

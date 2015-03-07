@@ -42,7 +42,7 @@ public class Debugger
         {
             shapeRenderer.setColor(Color.GREEN);
             shapeRenderer.line(path.get(waypointindex).x + 16, path.get(waypointindex).y + 16, path.get(waypointindex + 1).x + 16, path.get(waypointindex + 1).y + 16);
-            shapeRenderer.rect(path.get(waypointindex).x, path.get(waypointindex).y, path.get(waypointindex).x + 32, path.get(waypointindex).y + 32);
+            shapeRenderer.rect(path.get(waypointindex).x, path.get(waypointindex).y, 32, 32);
             switch (path.get(waypointindex + 1).direction)
             {
             case END:
