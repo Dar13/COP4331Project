@@ -71,13 +71,8 @@ public class Play extends GameState
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.scale(.01f);
-
-        // NOTE: need to create concrete tower types to remove magic number constants in code.
+        
         towerManager = new TowerManager(towers);
-        towerManager.addBazookaTower(50, 50);
-        towerManager.addRifleTower(240, 50);
-        towerManager.addRifleTower(480, 50);
-        towerManager.addRifleTower(560, 150);
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towers, enemyManager.enemies);
 
     }
@@ -89,10 +84,12 @@ public class Play extends GameState
     public void update(float fps)
     {
         //Accounting for our future pause state.
-        if(!Pause) {
+        if(!Pause)
+        {
             enemyManager.Update(fps, towers);
             rifle.update(fps);
-            if (rifle.clicked && towerPlacement == 0){
+            if (rifle.clicked && towerPlacement == 0)
+            {
                 towerToBePlaced = new Sprite(RifleTower);
                 towerToBePlacedS = new Sprite(TowerShadow);
                 towerToBePlaced.setPosition(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
@@ -101,12 +98,14 @@ public class Play extends GameState
                 towerPlacement = 1;
             }
 
-            else if (MyInput.isDown() && towerPlacement == 1){
+            else if (MyInput.isDown() && towerPlacement == 1)
+            {
                 towerToBePlaced.setPosition(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
                 towerToBePlacedS.setPosition(MyInput.x + 9, MyGame.V_HEIGHT - MyInput.y - 23);
             }
 
-            else if (MyInput.isReleased() && towerPlacement == 1 && !wayPointManager.WithinAny(MyInput.x, MyInput.y)){
+            else if (MyInput.isReleased() && towerPlacement == 1 && !wayPointManager.WithinAny(MyInput.x, MyInput.y))
+            {
               towerManager.addRifleTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
                 towerPlacement--;
             }
@@ -123,7 +122,8 @@ public class Play extends GameState
         spriteBatch.begin();
         map.draw(spriteBatch);
         rifle.render(spriteBatch);
-        if(towerPlacement == 1) {
+        if(towerPlacement == 1)
+        {
             towerToBePlaced.draw(spriteBatch);
             towerToBePlacedS.draw(spriteBatch);
         }
