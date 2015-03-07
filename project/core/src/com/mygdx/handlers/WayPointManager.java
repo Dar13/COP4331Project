@@ -86,23 +86,31 @@ public class WayPointManager
         in.close();
     }
 
-    private void ConstructPaths(){
+    private void ConstructPaths()
+    {
         int i = 0;
-        while(i < wayPoints.size() - 1){
-            if (wayPoints.get(i).x == wayPoints.get(i+1).x) {
-                if(wayPoints.get(i).y > wayPoints.get(i+1).y){
-                    Path NEW = new Path(wayPoints.get(i).x + 32, wayPoints.get(i).y + 32, wayPoints.get(i+1).x, wayPoints.get(i+1).y);
+        while(i < wayPoints.size() - 1)
+        {
+            if (wayPoints.get(i).x == wayPoints.get(i+1).x)
+            {
+                if(wayPoints.get(i).y > wayPoints.get(i+1).y)
+                {
+                    Path NEW = new Path(wayPoints.get(i+1).x, wayPoints.get(i+1).y, wayPoints.get(i).x + 32, wayPoints.get(i).y + 32);
                 }
-                else{
+                else
+                {
                     Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i+1).x + 32, wayPoints.get(i+1).y + 32);
                 }
             }
 
-            else if (wayPoints.get(i).y == wayPoints.get(i+1).y) {
-                if(wayPoints.get(i).x > wayPoints.get(i+1).x){
-                    Path NEW = new Path(wayPoints.get(i).x + 32, wayPoints.get(i).y + 32, wayPoints.get(i+1).x, wayPoints.get(i+1).y);
+            else if (wayPoints.get(i).y == wayPoints.get(i+1).y)
+            {
+                if(wayPoints.get(i).x > wayPoints.get(i+1).x)
+                {
+                    Path NEW = new Path(wayPoints.get(i+1).x, wayPoints.get(i+1).y, wayPoints.get(i).x + 32, wayPoints.get(i).y + 32);
                 }
-                else{
+                else
+                {
                     Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i+1).x + 32, wayPoints.get(i+1).y + 32);
                 }
             }
