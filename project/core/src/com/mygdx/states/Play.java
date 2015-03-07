@@ -95,19 +95,19 @@ public class Play extends GameState
             if (rifle.clicked && towerPlacement == 0){
                 towerToBePlaced = new Sprite(RifleTower);
                 towerToBePlacedS = new Sprite(TowerShadow);
-                towerToBePlaced.setPosition(MyInput.x, MyInput.y);
-                towerToBePlacedS.setPosition(MyInput.x + 9, MyInput.y - 23);
+                towerToBePlaced.setPosition(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
+                towerToBePlacedS.setPosition(MyInput.x + 9,MyGame.V_HEIGHT - MyInput.y - 23);
                 towerToBePlacedS.rotate(-45);
                 towerPlacement = 1;
             }
 
             else if (MyInput.isDown() && towerPlacement == 1){
-                towerToBePlaced.setPosition(MyInput.x, MyInput.y);
-                towerToBePlacedS.setPosition(MyInput.x + 9, MyInput.y - 23);
+                towerToBePlaced.setPosition(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
+                towerToBePlacedS.setPosition(MyInput.x + 9, MyGame.V_HEIGHT - MyInput.y - 23);
             }
 
             else if (MyInput.isReleased() && towerPlacement == 1 && !wayPointManager.WithinAny(MyInput.x, MyInput.y)){
-              towerManager.addRifleTower(MyInput.x, MyInput.y);
+              towerManager.addRifleTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
                 towerPlacement--;
             }
         }
