@@ -118,5 +118,16 @@ public class WayPointManager
         }
     }
 
+    public boolean WithinAny(float x, float y){
+        int i = 0;
+
+        while (i < paths.size()){
+            if (paths.get(i).IsWithin(x, y)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 }
