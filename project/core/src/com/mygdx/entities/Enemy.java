@@ -260,11 +260,11 @@ public class Enemy extends Entities
                     switch (wayPoints.get(currentWaypoint).direction) {
                         case NORTH:
                             sprite.rotate(90);
-                            sprite2.rotate(90);
+                            sprite2.rotate(0);
                             break;
                         case SOUTH:
                             sprite.rotate(-90);
-                            sprite2.rotate(-90);
+                            sprite2.rotate(0);
                             break;
                         case WEST:
                             sprite.rotate(180);
@@ -276,16 +276,16 @@ public class Enemy extends Entities
                 if (heading == WayPoint.Direction.WEST) {
                     switch (wayPoints.get(currentWaypoint).direction) {
                         case NORTH:
-                            sprite.rotate(-90);
-                            sprite2.rotate(-90);
+                            sprite.rotate(90);
+                            sprite2.rotate(0);
                             break;
                         case SOUTH:
                             sprite.rotate(90);
-                            sprite2.rotate(90);
+                            sprite2.rotate(0);
                             break;
                         case EAST:
                             sprite.rotate(180);
-                            sprite2.rotate(180);
+                            sprite2.rotate(0);
                             break;
                     }
                 }
@@ -294,15 +294,15 @@ public class Enemy extends Entities
                     switch (wayPoints.get(currentWaypoint).direction) {
                         case EAST:
                             sprite.rotate(-90);
-                            sprite2.rotate(-90);
+                            sprite2.rotate(0);
                             break;
                         case SOUTH:
                             sprite.rotate(180);
-                            sprite2.rotate(180);
+                            sprite2.rotate(0);
                             break;
                         case WEST:
                             sprite.rotate(90);
-                            sprite2.rotate(90);
+                            sprite2.rotate(0);
                             break;
                     }
                 }
@@ -310,16 +310,16 @@ public class Enemy extends Entities
                 if (heading == WayPoint.Direction.SOUTH) {
                     switch (wayPoints.get(currentWaypoint).direction) {
                         case NORTH:
-                            sprite.rotate(180);
-                            sprite2.rotate(180);
-                            break;
-                        case EAST:
                             sprite.rotate(90);
                             sprite2.rotate(90);
                             break;
+                        case EAST:
+                            sprite.rotate(-0);
+                            sprite2.rotate(-0);
+                            break;
                         case WEST:
-                            sprite.rotate(-90);
-                            sprite2.rotate(-90);
+                            sprite.rotate(0);
+                            sprite2.rotate(0);
                             break;
                     }
                 }
@@ -327,16 +327,16 @@ public class Enemy extends Entities
                 if (heading == WayPoint.Direction.EAST) {
                     switch (wayPoints.get(currentWaypoint).direction) {
                         case NORTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
+                            sprite.rotate(-0);
+                            sprite2.rotate(-0);
                             break;
                         case SOUTH:
-                            sprite.rotate(-90);
-                            sprite2.rotate(-90);
+                            sprite.rotate(0);
+                            sprite2.rotate(0);
                             break;
                         case WEST:
-                            sprite.rotate(180);
-                            sprite2.rotate(180);
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
                             break;
                     }
                 }
@@ -344,16 +344,16 @@ public class Enemy extends Entities
                 if (heading == WayPoint.Direction.WEST) {
                     switch (wayPoints.get(currentWaypoint).direction) {
                         case NORTH:
-                            sprite.rotate(-90);
-                            sprite2.rotate(-90);
+                            sprite.rotate(-0);
+                            sprite2.rotate(-0);
                             break;
                         case SOUTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
+                            sprite.rotate(0);
+                            sprite2.rotate(0);
                             break;
                         case EAST:
-                            sprite.rotate(180);
-                            sprite2.rotate(180);
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
                             break;
                     }
                 }
@@ -361,16 +361,16 @@ public class Enemy extends Entities
                 if (heading == WayPoint.Direction.NORTH) {
                     switch (wayPoints.get(currentWaypoint).direction) {
                         case EAST:
-                            sprite.rotate(-90);
-                            sprite2.rotate(-90);
+                            sprite.rotate(-0);
+                            sprite2.rotate(-0);
                             break;
                         case SOUTH:
-                            sprite.rotate(180);
-                            sprite2.rotate(180);
-                            break;
-                        case WEST:
                             sprite.rotate(90);
                             sprite2.rotate(90);
+                            break;
+                        case WEST:
+                            sprite.rotate(0);
+                            sprite2.rotate(0);
                             break;
                     }
                 }
@@ -378,16 +378,16 @@ public class Enemy extends Entities
                 if (heading == WayPoint.Direction.SOUTH) {
                     switch (wayPoints.get(currentWaypoint).direction) {
                         case NORTH:
-                            sprite.rotate(180);
-                            sprite2.rotate(180);
-                            break;
-                        case EAST:
                             sprite.rotate(90);
                             sprite2.rotate(90);
                             break;
+                        case EAST:
+                            sprite.rotate(0);
+                            sprite2.rotate(0);
+                            break;
                         case WEST:
-                            sprite.rotate(-90);
-                            sprite2.rotate(-90);
+                            sprite.rotate(-0);
+                            sprite2.rotate(-0);
                             break;
                     }
                 }

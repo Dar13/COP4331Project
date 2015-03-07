@@ -110,7 +110,7 @@ public class EnemyManager
             timeSinceLastNorm++;
 
             if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0) {
-                AddEnemy(NullLayer, EnemyImg, 3, 20, path);
+                AddEnemy(EnemyImg, NullLayer, 3, 20, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
