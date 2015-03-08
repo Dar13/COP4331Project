@@ -38,13 +38,17 @@ public class Play extends GameState
     public ShapeRenderer shapeRenderer;
     private OrthographicCamera cam;
     private Debugger debugger;
-    private int gold = 0;
+    private int gold = 500;
+    private int health = 10;
     private int towerPlacement = 0;
+    private int Zooka = 0;
+    private int Rifle = 0;
     private LinkedList<Tower> towers;
     public EnemyManager enemyManager;
     public TowerManager towerManager;
     public WayPointManager wayPointManager;
     private TowerButton rifle;
+    private TowerButton bazooka;
     private boolean Pause = false;
     private BitmapFont font;
     Texture RifleTower = new Texture("RifleTower.png");
@@ -67,11 +71,12 @@ public class Play extends GameState
 
         map = new Sprite(Map);
         rifle = new TowerButton(RifleTower, MyGame.V_WIDTH - 16, MyGame.V_HEIGHT - 16, cam);
+        bazooka = new TowerButton(BazookaTower, MyGame.V_WIDTH - 16, MyGame.V_HEIGHT - 64, cam);
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.scale(.01f);
-        
+
         towerManager = new TowerManager(towers);
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towers, enemyManager.enemies);
 
@@ -87,8 +92,11 @@ public class Play extends GameState
         if(!Pause)
         {
             enemyManager.Update(fps, towers);
+            health = health - enemyManager.CheckEnemiesAtEnd();
+            gold = gold + (enemyManager.GetDeadEnemies() * 100);
             rifle.update(fps);
-            if (rifle.clicked && towerPlacement == 0)
+            bazooka.update(fps);
+            if (rifle.clicked && towerPlacement == 0 && gold - towerManager.rifleBasePrice >= 0)
             {
                 towerToBePlaced = new Sprite(RifleTower);
                 towerToBePlacedS = new Sprite(TowerShadow);
@@ -96,6 +104,18 @@ public class Play extends GameState
                 towerToBePlacedS.setPosition(MyInput.x + 9,MyGame.V_HEIGHT - MyInput.y - 23);
                 towerToBePlacedS.rotate(-45);
                 towerPlacement = 1;
+                Rifle = 1;
+            }
+
+            else if (bazooka.clicked && towerPlacement == 0 && gold - towerManager.bazookaBasePrice >= 0)
+            {
+                towerToBePlaced = new Sprite(BazookaTower);
+                towerToBePlacedS = new Sprite(TowerShadow);
+                towerToBePlaced.setPosition(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
+                towerToBePlacedS.setPosition(MyInput.x + 9, MyGame.V_HEIGHT - MyInput.y - 23);
+                towerToBePlacedS.rotate(-45);
+                towerPlacement = 1;
+                Zooka = 1;
             }
 
             else if (MyInput.isDown() && towerPlacement == 1)
@@ -106,9 +126,21 @@ public class Play extends GameState
 
             else if (MyInput.isReleased() && towerPlacement == 1 && !wayPointManager.WithinAny(MyInput.x, MyInput.y))
             {
-              towerManager.addRifleTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
-                towerPlacement--;
+                if(Rifle == 1) {
+                    towerManager.addRifleTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
+                    towerPlacement--;
+                    Rifle--;
+                    gold = gold - towerManager.rifleBasePrice;
+                }
+
+                else if(Zooka == 1){
+                    towerManager.addBazookaTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
+                    towerPlacement--;
+                    Zooka--;
+                    gold = gold - towerManager.bazookaBasePrice;
+                }
             }
+
         }
     }
 
@@ -122,12 +154,16 @@ public class Play extends GameState
         spriteBatch.begin();
         map.draw(spriteBatch);
         rifle.render(spriteBatch);
+        bazooka.render(spriteBatch);
         if(towerPlacement == 1)
         {
             towerToBePlaced.draw(spriteBatch);
             towerToBePlacedS.draw(spriteBatch);
         }
         font.draw(spriteBatch, "Rifle", MyGame.V_WIDTH - 32, MyGame.V_HEIGHT - 10);
+        font.draw(spriteBatch, "Bazooka", MyGame.V_WIDTH - 32, MyGame.V_HEIGHT - 55);
+        font.draw(spriteBatch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
+        font.draw(spriteBatch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
         enemyManager.RenderAll(spriteBatch);
         towerManager.RenderAll(spriteBatch);
 

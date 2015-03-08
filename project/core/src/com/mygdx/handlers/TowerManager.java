@@ -19,6 +19,10 @@ public class TowerManager
     protected static final int baseBazookaDamage = 4;
     protected static final int baseSniperRange = 5;
     protected static final int baseSniperDamage = 5;
+    public int rifleBasePrice = 100;
+    public int bazookaBasePrice = 150;
+    public int sniperBasePrice = 300;
+
 
     Texture RifleTower = new Texture("RifleTower.png");
     Texture BazookaTower = new Texture("BazookaTower.png");

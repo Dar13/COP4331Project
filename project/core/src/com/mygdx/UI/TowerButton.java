@@ -33,8 +33,6 @@ public class TowerButton {
     {
         this.img = img;
         font = new BitmapFont();
-        font.setColor(Color.WHITE);
-        font.scale(3);
 
         this.x = x;
         this.y = y;

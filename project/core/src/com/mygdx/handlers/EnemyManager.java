@@ -22,8 +22,7 @@ public class EnemyManager
 
     public int currentWave = 1;
     public int numEnemies = 0;
-    public int numHEnemies = 0;
-    public int numFEnemies = 0;
+    private int numDeadEnemies = 0;
     public int waveToBeSpawnedNorm;
     public int waveToBeSpawnedFast;
     public int waveToBeSpawnedHeavy;
@@ -110,7 +109,7 @@ public class EnemyManager
             timeSinceLastNorm++;
 
             if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0) {
-                AddEnemy(EnemyImg, NullLayer, 3, 20, path);
+                AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
             }
@@ -196,6 +195,7 @@ public class EnemyManager
         {
             if (enemies.get(i).health <= 0)
             {
+                numDeadEnemies++;
                 RemoveEnemy(i);
                 numEnemies--;
             }
@@ -214,6 +214,27 @@ public class EnemyManager
         }
 
 
+    }
+
+    public int GetDeadEnemies(){
+        int temp = numDeadEnemies;
+        numDeadEnemies = 0;
+        return temp;
+    }
+
+    public int CheckEnemiesAtEnd(){
+        int enemyAtEnd = 0;
+        for (int i = 0; i < enemies.size(); i++)
+        {
+            if (enemies.get(i).atEnd)
+            {
+                RemoveEnemy(i);
+                numEnemies--;
+                enemyAtEnd++;
+            }
+
+        }
+        return enemyAtEnd;
     }
 
     public boolean InRange(float enemyX, float enemyY, float towerX, float towerY, float towerRange)

@@ -26,6 +26,7 @@ public class Enemy extends Entities
     private int currentWaypoint = 0;
     public float health = 100;
     public float armor = 1;
+    public boolean atEnd = false;
 
     public enum Type
     {
@@ -159,7 +160,7 @@ public class Enemy extends Entities
                     {
 
                         velocity = 0;
-
+                        atEnd = true;
                         return true;
                     }
                     return false;
