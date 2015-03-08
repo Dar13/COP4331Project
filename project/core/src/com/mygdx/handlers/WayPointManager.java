@@ -1,5 +1,7 @@
 package com.mygdx.handlers;
-
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.mygdx.game.MyGame;
 import com.mygdx.triggers.Path;
 import com.mygdx.triggers.WayPoint;
 
@@ -7,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.logging.FileHandler;
 
 
 /**
@@ -18,18 +21,21 @@ public class WayPointManager
     public LinkedList<WayPoint> wayPoints;
     public LinkedList<Path> paths;
     public File inputtxt;
+    boolean inAndroid;
+    private int[] map1 = new int[]{0, 0, 3, 608, 0, 1, 608, 448, 4, 0, 448, 2, 0, 0, 5};
 
-    public WayPointManager()
+    public WayPointManager(boolean inAndroid)
     {
-        inputtxt = new File("Waypoints.txt");
+        this.inAndroid = inAndroid;
         this.wayPoints = new LinkedList<WayPoint>();
         this.paths = new LinkedList<Path>();
         try
         {
             ReadInWaypoints();
         }
-        catch (FileNotFoundException e)
+        catch (Exception e)
         {
+
         }
 
         ConstructPaths();
@@ -37,53 +43,73 @@ public class WayPointManager
 
     private void ReadInWaypoints() throws FileNotFoundException
     {
-        Scanner in = new Scanner(inputtxt);
-        in.useDelimiter(" ");
-        int xx = 0;
-        int yy = 0;
-        String dir = new String();
-        while (in.hasNext())
-        {
-            if (in.hasNextInt())
-            {
-                int x = in.nextInt();
-                xx = x;
-            }
+        if (!inAndroid) {
+            FileHandle handle = Gdx.files.internal("Waypoints.txt");
+            File file = handle.file();
+            Scanner in = new Scanner(file);
+            in.useDelimiter(" ");
+            int xx = 0;
+            int yy = 0;
 
-            if (in.hasNextInt())
-            {
-                int y = in.nextInt();
-                yy = y;
-            }
+            while (in.hasNext()) {
+                if (in.hasNextInt()) {
+                    int x = in.nextInt();
+                    xx = x;
+                }
 
-            if (in.hasNext())
-            {
-                int direction = in.nextInt();
-                if (direction == 1)
-                {
-                    wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.NORTH));
+                if (in.hasNextInt()) {
+                    int y = in.nextInt();
+                    yy = y;
                 }
-                else if (direction == 2)
-                {
-                    wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.SOUTH));
-                }
-                else if (direction == 3)
-                {
-                    wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.EAST));
-                }
-                else if (direction == 4)
-                {
-                    wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.WEST));
-                }
-                else if (direction == 5)
-                {
-                    wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.END));
-                }
-            }
 
+                if (in.hasNextInt()) {
+                    int direction = in.nextInt();
+                    if (direction == 1) {
+                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.NORTH));
+                    } else if (direction == 2) {
+                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.SOUTH));
+                    } else if (direction == 3) {
+                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.EAST));
+                    } else if (direction == 4) {
+                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.WEST));
+                    } else if (direction == 5) {
+                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.END));
+                    }
+                }
+
+            }
+            in.close();
         }
 
-        in.close();
+        else if(inAndroid){
+            for(int i = 0; i < map1.length; i ++){
+                int x = map1[i];
+                i++;
+                int y = map1[i];
+                i++;
+                int dir = map1[i];
+                if (dir == 1)
+                {
+                    wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.NORTH));
+                }
+                else if (dir == 2)
+                {
+                    wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.SOUTH));
+                }
+                else if (dir == 3)
+                {
+                    wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.EAST));
+                }
+                else if (dir == 4)
+                {
+                    wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.WEST));
+                }
+                else if (dir == 5)
+                {
+                    wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.END));
+                }
+            }
+        }
     }
 
     private void ConstructPaths()

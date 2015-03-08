@@ -22,6 +22,6 @@ public class DesktopLauncher {
         networkImpls.put(NetworkManager.ConnectionMode.WIFI_P2P, null);
         networkImpls.put(NetworkManager.ConnectionMode.DATA_4G, null);
         networkImpls.put(NetworkManager.ConnectionMode.NONE, null);
-		new LwjglApplication(new MyGame(networkImpls), config);
+		new LwjglApplication(new MyGame(networkImpls, false), config);
 	}
 }

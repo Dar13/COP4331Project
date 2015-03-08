@@ -15,13 +15,15 @@ public class GameStateManager
     private MyGame game;
     private Stack<GameState> gameStates;
     private NetworkManager networkManager;
+    private boolean inAndroid = false;
 
     //A random number to represent PlayState.
     public static final int PLAY = 388031654;
     public static final int MENU = 131587867;
 
-    public GameStateManager(MyGame game, NetworkManager networkManager)
+    public GameStateManager(MyGame game, NetworkManager networkManager, boolean inAndroid)
     {
+        this.inAndroid = inAndroid;
         this.game = game;
         this.networkManager = networkManager;
 
@@ -48,7 +50,7 @@ public class GameStateManager
     {
         if (state == PLAY)
         {
-            return new Play(this, networkManager);
+            return new Play(this, networkManager, inAndroid);
         }
         if (state == MENU)
         {

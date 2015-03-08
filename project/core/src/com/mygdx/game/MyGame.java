@@ -30,10 +30,12 @@ public class MyGame extends ApplicationAdapter
 
     private NetworkManager networkManager;
     private Thread networkThread;
+    public boolean inAndroid = false;
 
-    public MyGame(HashMap<NetworkManager.ConnectionMode, NetworkInterface> networkImpls)
+    public MyGame(HashMap<NetworkManager.ConnectionMode, NetworkInterface> networkImpls, boolean inAndroid)
     {
         networkManager = new NetworkManager(networkImpls);
+        this.inAndroid = true;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class MyGame extends ApplicationAdapter
     {
         Gdx.input.setInputProcessor(new MyInputProcessor());
         spriteBatch = new SpriteBatch();
-        gameStateManager = new GameStateManager(this, networkManager);
+        gameStateManager = new GameStateManager(this, networkManager, inAndroid);
 
         // This must be done in MyGame.create()! putting this in render() will lock up the game.
         networkThread = new Thread(networkManager);
@@ -95,4 +97,8 @@ public class MyGame extends ApplicationAdapter
     {
         return hudCamera;
     }
+
+    public boolean GetMachineId(){return inAndroid;}
 }
+
+

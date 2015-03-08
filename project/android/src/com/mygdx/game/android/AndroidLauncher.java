@@ -12,9 +12,11 @@ import com.mygdx.net.NetworkInterface;
 import java.util.HashMap;
 
 public class AndroidLauncher extends AndroidApplication {
+    public boolean inAndroid = false;
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        inAndroid = true;
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
         HashMap<NetworkManager.ConnectionMode, NetworkInterface> networkImpls = new HashMap<>();
@@ -24,6 +26,6 @@ public class AndroidLauncher extends AndroidApplication {
         networkImpls.put(NetworkManager.ConnectionMode.DATA_4G, null);
         networkImpls.put(NetworkManager.ConnectionMode.NONE, null);
 
-		initialize(new MyGame(networkImpls), config);
+		initialize(new MyGame(networkImpls, inAndroid), config);
 	}
 }

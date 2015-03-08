@@ -31,7 +31,7 @@ public class Play extends GameState
 {
 
     public static final int edgeOffset = 32;
-    private boolean debugModeOn = true;
+    private boolean debugModeOn = false;
     private Texture Map;
     public Sprite map;
 
@@ -57,11 +57,11 @@ public class Play extends GameState
     Sprite towerToBePlaced;
     Sprite towerToBePlacedS;
 
-    public Play(GameStateManager gameStateManager, NetworkManager networkManager)
+    public Play(GameStateManager gameStateManager, NetworkManager networkManager, boolean inAndroid)
     {
         super(gameStateManager, networkManager);
         towers = new LinkedList<Tower>();
-        wayPointManager = new WayPointManager();
+        wayPointManager = new WayPointManager(inAndroid);
         enemyManager = new EnemyManager(wayPointManager.wayPoints);
 
         cam = new OrthographicCamera();
