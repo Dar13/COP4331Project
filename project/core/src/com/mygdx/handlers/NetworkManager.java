@@ -1,5 +1,6 @@
 package com.mygdx.handlers;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -10,9 +11,6 @@ import com.mygdx.states.StateChange;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +23,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class NetworkManager extends Listener implements Runnable
 {
-    public static final int SERVER_PORT = 0xDDD;
+    public static final int SERVER_TCP_PORT = 0xDDD;
+    public static final int SERVER_UDP_PORT = 0xDDE;
     public static final int MAX_CLIENTS = 4;
 
     //These lists will hold changes temporarily until they are either sent or applied
@@ -66,18 +65,18 @@ public class NetworkManager extends Listener implements Runnable
 
     protected AtomicBoolean initialized;
     protected Boolean ready;
+    protected boolean initializeManager;
 
     // server
     protected Boolean isServer;
     protected Server server;
-    //protected ServerSocket serverSocket;
-    //protected ArrayList<Socket> connections;
+    protected int uidCounter = 0;
     protected ArrayList<GameConnection> connections;
     protected int expectedAmountClients;
 
     // client
     protected Client client;
-    //protected Socket clientSocket;
+    protected ArrayList<InetAddress> serverAddresses;
     protected InetAddress hostAddress;
 
     // techniques of connecting
@@ -94,6 +93,7 @@ public class NetworkManager extends Listener implements Runnable
         networkInterfaces = modes;
         initialized = new AtomicBoolean(false);
         ready = false;
+        initializeManager = false;
 
         // this is the closest to a traditional mutex I could find.
         // allows multiple reads at one time while only allowing one write lock.
@@ -115,24 +115,50 @@ public class NetworkManager extends Listener implements Runnable
         }
     }
 
-    public boolean initialize(Boolean isServer,
-                              ConnectionMode primaryMode,
-                              ConnectionMode secondaryMode)
+    public void prepInitialize(boolean isServer,
+                               ConnectionMode primaryMode,
+                               ConnectionMode fallbackMode,
+                               boolean initializeNow)
     {
         mutex.writeLock().lock();
         try
         {
-            // secondary mode is allowed to be null
-            if (isServer == null ||
-                    primaryMode == null)
+            this.isServer = isServer;
+            this.preferredMode = primaryMode;
+            this.fallbackMode = fallbackMode;
+            this.initializeManager = initializeNow;
+        }
+        finally
+        {
+            mutex.writeLock().unlock();
+        }
+    }
+
+    public void setInitializeFlag(boolean flag)
+    {
+        mutex.writeLock().lock();
+        try
+        {
+            initializeManager = flag;
+        }
+        finally
+        {
+            mutex.writeLock().unlock();
+        }
+    }
+
+    public boolean initialize()
+    {
+        System.out.println("NET: Initializing NetworkManager");
+        mutex.writeLock().lock();
+        try
+        {
+            // make sure primary mode isn't null, secondary mode is nullable.
+            if (isServer == null || this.preferredMode == null)
             {
                 initialized.set(false);
                 return false;
             }
-
-            this.isServer = isServer;
-            this.preferredMode = primaryMode;
-            this.fallbackMode = secondaryMode;
 
             // this can't be null so ignore any warnings that it can be.
             if (isServer)
@@ -142,34 +168,18 @@ public class NetworkManager extends Listener implements Runnable
 
                 server = new Server();
                 server.addListener(this);
-                /*
-                try
-                {
-                    serverSocket = new ServerSocket();
-                    serverSocket.setReuseAddress(true);
-
-                }
-                catch (IOException e)
-                {
-                    System.out.println("NET: Exception occurred during ServerSocket creation.");
-                    e.printStackTrace();
-                    initialized.set(false);
-                    return false;
-                }
-                */
             }
             else
             {
-                //clientSocket = new Socket();
                 client = new Client();
                 client.addListener(this);
             }
 
-            networkInterface = networkInterfaces.get(primaryMode);
+            networkInterface = networkInterfaces.get(this.preferredMode);
 
             if (networkInterface != null)
             {
-                networkInterface.setup();
+                serverAddresses = networkInterface.setup(client, server);
 
                 // check to see if primary mode failed to setup properly
                 if (!networkInterface.isReady())
@@ -185,7 +195,7 @@ public class NetworkManager extends Listener implements Runnable
                     }
                     else
                     {
-                        networkInterface.setup();
+                        serverAddresses = networkInterface.setup(client, server);
                         if (!networkInterface.isReady())
                         {
                             // fallback failed
@@ -286,6 +296,11 @@ public class NetworkManager extends Listener implements Runnable
         // wait for initialization
         while (!isInitialized())
         {
+            if(initializeManager)
+            {
+                initialize();
+            }
+
             // sleep for 5 milliseconds
             try
             {
@@ -306,6 +321,9 @@ public class NetworkManager extends Listener implements Runnable
         {
             if (!ready)
             {
+                // register network packet classes with KryoNet
+                registerPackets();
+
                 if (isServer)
                 {
                     mutex.writeLock().lock();
@@ -356,6 +374,22 @@ public class NetworkManager extends Listener implements Runnable
         }
     }
 
+    public void registerPackets()
+    {
+        if(isServer)
+        {
+            Kryo kryo = server.getKryo();
+            kryo.register(GameConnection.ServerAuth.class);
+            kryo.register(GameConnection.ClientAuth.class);
+        }
+        else
+        {
+            Kryo kryo = client.getKryo();
+            kryo.register(GameConnection.ServerAuth.class);
+            kryo.register(GameConnection.ClientAuth.class);
+        }
+    }
+
     public boolean syncReady()
     {
         return false;
@@ -367,12 +401,13 @@ public class NetworkManager extends Listener implements Runnable
         try
         {
             server.start();
-            server.bind(SERVER_PORT);
+            server.bind(SERVER_TCP_PORT, SERVER_UDP_PORT);
             //serverSocket.bind(new InetSocketAddress(SERVER_PORT));
         }
         catch (IOException e)
         {
-            System.out.println("NET: Server failed to bind to port " + SERVER_PORT);
+            System.out.println("NET: Server failed to bind to TCP port " + SERVER_TCP_PORT +
+                               " and UDP port " + SERVER_UDP_PORT);
             e.printStackTrace();
             return false; // non-recoverable error so terminate the thread
         }
@@ -398,8 +433,9 @@ public class NetworkManager extends Listener implements Runnable
      */
     private boolean setupClient()
     {
-        // if hostAddress isn't set, return false to force it to wait until it's set.
-        if(getHostAddress() == null)
+        // if hostAddress isn't set and servers aren't found,
+        // return false to force it to wait until it's set.
+        if(getHostAddress() == null && serverAddresses == null)
         {
             return false;
         }
@@ -414,7 +450,26 @@ public class NetworkManager extends Listener implements Runnable
                 clientSocket.connect(new InetSocketAddress(hostAddress, SERVER_PORT), 500);
                 */
                 client.start();
-                client.connect(5000, hostAddress, SERVER_PORT);
+                if(getHostAddress() != null)
+                {
+                    client.connect(5000, hostAddress, SERVER_TCP_PORT);
+                }
+
+                if(!client.isConnected() && serverAddresses != null)
+                {
+                    for(InetAddress addr : serverAddresses)
+                    {
+                        try
+                        {
+                            client.connect(5000, addr, SERVER_TCP_PORT);
+                        }
+                        catch(SocketTimeoutException e)
+                        {
+                            System.out.println("NET: Client timed out trying to connect to host.");
+                            System.out.println("NET: Attempting next host.");
+                        }
+                    }
+                }
             }
             catch (SocketTimeoutException et)
             {
@@ -462,6 +517,9 @@ public class NetworkManager extends Listener implements Runnable
         else
         {
             // send validation packet
+            GameConnection.ClientAuth authPacket = new GameConnection.ClientAuth();
+            client.sendTCP(authPacket);
+
             System.out.println("NET: Connected to server! Connection ID = " + connection.getID());
         }
     }
@@ -471,7 +529,7 @@ public class NetworkManager extends Listener implements Runnable
     {
         boolean handled = false;
 
-        if(!isServer)
+        if(isServer)
         {
             // Might want to change to hashmap<id, connection> and have the connection ID or some other UID
             // embedded in the packet itself. Not sure if its worth it, as the connections list should
@@ -487,6 +545,16 @@ public class NetworkManager extends Listener implements Runnable
                         // check for validation message.
                         // otherwise close connection
                         // validation message should be first thing sent on the connection from the client.
+                        if(object instanceof GameConnection.ClientAuth)
+                        {
+                            GameConnection.ClientAuth packet = (GameConnection.ClientAuth)object;
+                            if(packet.key == 0xDEAD)
+                            {
+                                gameConnection.sendTCP(new GameConnection.ServerAuth());
+                                gameConnection.assignUID(uidCounter);
+                                uidCounter++;
+                            }
+                        }
                         System.out.println("NET: TCP Packet received from Connection! ID = " + gameConnection.getID());
                     }
                     else
@@ -499,6 +567,18 @@ public class NetworkManager extends Listener implements Runnable
         else // client packet handling
         {
             System.out.println("NET: Packet received from server!");
+            if(object instanceof GameConnection.ServerAuth)
+            {
+                GameConnection.ServerAuth authPacket = (GameConnection.ServerAuth)object;
+                if(authPacket.key != 0xBEEF)
+                {
+                    // ERROR, invalid server
+                    System.out.println("NET: Invalid server detected. Key = " + authPacket.key);
+                    connection.close();
+                }
+            }
+
+            // assume authenticated, handle packet normally
         }
 
         // mystery packet!

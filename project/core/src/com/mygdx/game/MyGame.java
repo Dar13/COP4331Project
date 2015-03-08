@@ -41,6 +41,9 @@ public class MyGame extends ApplicationAdapter
         // This must be done in MyGame.create()! putting this in render() will lock up the game.
         networkThread = new Thread(networkManager);
         networkThread.start();
+        System.out.println("Main Thread ID: " + Thread.currentThread().getId());
+        System.out.println("Network Thread ID: " + networkThread.getId());
+        /*
         boolean success = networkManager.initialize(true,
                                                     NetworkManager.ConnectionMode.WIFI_LAN,
                                                     null);
@@ -49,6 +52,7 @@ public class MyGame extends ApplicationAdapter
         {
             System.out.println("NET: Initialize failed.");
         }
+        */
     }
 
     @Override

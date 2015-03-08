@@ -1,9 +1,15 @@
 package com.mygdx.game.desktop.net;
 
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Server;
+import com.mygdx.handlers.NetworkManager;
 import com.mygdx.net.NetworkInterface;
 
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Created by NeilMoore on 2/25/2015.
@@ -13,11 +19,30 @@ public class PCLocalNetwork implements NetworkInterface
 
     /**
      * Sets up the network infrastructure as needed.
+     * @param client
+     * @param server
      */
     @Override
-    public void setup()
+    public java.util.ArrayList<java.net.InetAddress> setup(Client client, Server server)
     {
-        // pretty default PC networking setup. Not sure what to do here.
+        System.out.println("Thread ID: " + Thread.currentThread().getId());
+        System.out.println("NET: Network interface setting up!");
+        if(client != null)
+        {
+            List<InetAddress> addresses = client.discoverHosts(NetworkManager.SERVER_UDP_PORT, 5000);
+            if(addresses != null && addresses instanceof ArrayList)
+            {
+                return (ArrayList<InetAddress>)addresses;
+            }
+        }
+
+        if(server != null)
+        {
+            // other server-specific stuff goes here.
+            return null;
+        }
+
+        return null;
     }
 
     /**

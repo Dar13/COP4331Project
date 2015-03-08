@@ -23,7 +23,7 @@ public class NetTest extends GameState
     private TextButton serverButton;
     private TextButton clientButton;
 
-    public NetTest(GameStateManager gameStateManager, NetworkManager networkManager)
+    public NetTest(GameStateManager gameStateManager, final NetworkManager networkManager)
     {
         super(gameStateManager, networkManager);
 
@@ -35,7 +35,10 @@ public class NetTest extends GameState
         serverButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-
+                networkManager.prepInitialize(true,
+                                              NetworkManager.ConnectionMode.WIFI_LAN,
+                                              NetworkManager.ConnectionMode.NONE,
+                                              true);
             }
         });
         stage.addActor(serverButton);
@@ -45,7 +48,10 @@ public class NetTest extends GameState
         clientButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-
+                networkManager.prepInitialize(false,
+                                              NetworkManager.ConnectionMode.WIFI_LAN,
+                                              NetworkManager.ConnectionMode.NONE,
+                                              true);
             }
         });
         stage.addActor(clientButton);

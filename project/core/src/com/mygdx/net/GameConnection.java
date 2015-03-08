@@ -7,6 +7,16 @@ import com.esotericsoftware.kryonet.Connection;
  */
 public class GameConnection extends Connection
 {
+    public static class ServerAuth
+    {
+        public int key = 0xBEEF; // little bit of security through obscurity
+    }
+
+    public static class ClientAuth
+    {
+        public int key = 0xDEAD; // little bit of security through obscurity
+    }
+
     protected int uid;
     protected boolean validated;
 
