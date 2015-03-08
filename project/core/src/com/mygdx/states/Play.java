@@ -93,7 +93,7 @@ public class Play extends GameState
         {
             enemyManager.Update(fps, towers);
             health = health - enemyManager.CheckEnemiesAtEnd();
-            gold = gold + (enemyManager.GetDeadEnemies() * 100);
+            gold = gold + (enemyManager.GetDeadEnemies() * 25);
             rifle.update(fps);
             bazooka.update(fps);
             if (rifle.clicked && towerPlacement == 0 && gold - towerManager.rifleBasePrice >= 0)
@@ -126,14 +126,16 @@ public class Play extends GameState
 
             else if (MyInput.isReleased() && towerPlacement == 1 && !wayPointManager.WithinAny(MyInput.x, MyInput.y))
             {
-                if(Rifle == 1) {
+                if(Rifle == 1)
+                {
                     towerManager.addRifleTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
                     towerPlacement--;
                     Rifle--;
                     gold = gold - towerManager.rifleBasePrice;
                 }
 
-                else if(Zooka == 1){
+                else if(Zooka == 1)
+                {
                     towerManager.addBazookaTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
                     towerPlacement--;
                     Zooka--;
@@ -141,7 +143,8 @@ public class Play extends GameState
                 }
             }
 
-            if(health <= 0){
+            if(health <= 0)
+            {
                 gameStateManager.setState(GameStateManager.LOSE);
             }
 

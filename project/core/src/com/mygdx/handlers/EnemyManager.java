@@ -122,8 +122,10 @@ public class EnemyManager
     public float NextWaveCalculator()
     {
         float multiplier = 0;
-        for (int i = 0; i < towers.size(); i ++){
-            switch (towers.get(i).type){
+        for (int i = 0; i < towers.size(); i ++)
+        {
+            switch (towers.get(i).type)
+            {
                 case RIFLE:
                     multiplier = multiplier + .25f;
                     break;
@@ -212,7 +214,7 @@ public class EnemyManager
             if (timeSinceLastHeavy > MyGame.fpsretrieve * 3 && waveToBeSpawnedHeavy > 0)
             {
                 AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
-                timeSinceLastFast = 0;
+                timeSinceLastHeavy = 0;
                 waveToBeSpawnedHeavy--;
                 totalWavesToBeSpawned--;
             }
