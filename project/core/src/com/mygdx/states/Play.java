@@ -157,8 +157,8 @@ public class Play extends GameState
         bazooka.render(spriteBatch);
         if(towerPlacement == 1)
         {
-            towerToBePlaced.draw(spriteBatch);
             towerToBePlacedS.draw(spriteBatch);
+            towerToBePlaced.draw(spriteBatch);
         }
         font.draw(spriteBatch, "Rifle", MyGame.V_WIDTH - 32, MyGame.V_HEIGHT - 10);
         font.draw(spriteBatch, "Bazooka", MyGame.V_WIDTH - 32, MyGame.V_HEIGHT - 55);

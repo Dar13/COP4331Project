@@ -239,18 +239,12 @@ public class EnemyManager
 
     public boolean InRange(float enemyX, float enemyY, float towerX, float towerY, float towerRange)
     {
-        if (Math.abs(enemyX + centerOffset - towerX + centerOffset)
-                < towerRange * rangeOffset
-                && Math.abs(enemyY + centerOffset - towerY + centerOffset)
-                < towerRange * rangeOffset)
+        if (Math.pow((enemyX + centerOffset) - (towerX + centerOffset), 2) + Math.pow(((enemyY + centerOffset) - (towerY + centerOffset)), 2)
+            < Math.pow(towerRange * rangeOffset, 2))
         {
-            if (Math.sqrt(Math.pow((enemyX + centerOffset - towerX + centerOffset), 2)
-                                  + Math.pow((enemyY + centerOffset - towerY + centerOffset), 2))
-                    < towerRange * rangeOffset)
-            {
-                return true;
-            }
+            return true;
         }
+
         return false;
     }
 
