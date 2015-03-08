@@ -43,7 +43,8 @@ public class WayPointManager
 
     private void ReadInWaypoints() throws FileNotFoundException
     {
-        if (!inAndroid) {
+        if (!inAndroid)
+        {
             FileHandle handle = Gdx.files.internal("Waypoints.txt");
             File file = handle.file();
             Scanner in = new Scanner(file);
@@ -51,28 +52,41 @@ public class WayPointManager
             int xx = 0;
             int yy = 0;
 
-            while (in.hasNext()) {
-                if (in.hasNextInt()) {
+            while (in.hasNext())
+            {
+                if (in.hasNextInt())
+                {
                     int x = in.nextInt();
                     xx = x;
                 }
 
-                if (in.hasNextInt()) {
+                if (in.hasNextInt())
+                {
                     int y = in.nextInt();
                     yy = y;
                 }
 
-                if (in.hasNextInt()) {
+                if (in.hasNextInt())
+                {
                     int direction = in.nextInt();
-                    if (direction == 1) {
+                    if (direction == 1)
+                    {
                         wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.NORTH));
-                    } else if (direction == 2) {
+                    }
+                    else if (direction == 2)
+                    {
                         wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.SOUTH));
-                    } else if (direction == 3) {
+                    }
+                    else if (direction == 3)
+                    {
                         wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.EAST));
-                    } else if (direction == 4) {
+                    }
+                    else if (direction == 4)
+                    {
                         wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.WEST));
-                    } else if (direction == 5) {
+                    }
+                    else if (direction == 5)
+                    {
                         wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.END));
                     }
                 }
@@ -81,8 +95,10 @@ public class WayPointManager
             in.close();
         }
 
-        else if(inAndroid){
-            for(int i = 0; i < map1.length; i ++){
+        else if(inAndroid)
+        {
+            for(int i = 0; i < map1.length; i ++)
+            {
                 int x = map1[i];
                 i++;
                 int y = map1[i];

@@ -141,6 +141,10 @@ public class Play extends GameState
                 }
             }
 
+            if(health <= 0){
+                gameStateManager.setState(GameStateManager.LOSE);
+            }
+
         }
     }
 

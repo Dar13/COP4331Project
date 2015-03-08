@@ -1,6 +1,7 @@
 package com.mygdx.handlers;
 
 import com.mygdx.game.MyGame;
+import com.mygdx.states.GameOver;
 import com.mygdx.states.GameState;
 import com.mygdx.states.Menu;
 import com.mygdx.states.Play;
@@ -20,6 +21,7 @@ public class GameStateManager
     //A random number to represent PlayState.
     public static final int PLAY = 388031654;
     public static final int MENU = 131587867;
+    public static final int LOSE = 321123321;
 
     public GameStateManager(MyGame game, NetworkManager networkManager, boolean inAndroid)
     {
@@ -55,6 +57,9 @@ public class GameStateManager
         if (state == MENU)
         {
             return new Menu(this, networkManager);
+        }
+        if (state == LOSE){
+            return new GameOver(this, networkManager);
         }
 
         return null;

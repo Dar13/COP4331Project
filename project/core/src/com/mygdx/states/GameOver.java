@@ -13,18 +13,20 @@ import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.NetworkManager;
 
 /**
- * Created by James on 2/22/2015.
+ * Created by LordNeah on 3/8/2015.
  */
-public class Menu extends GameState
-{
+public class GameOver extends GameState {
+
 
     public SpriteBatch spriteBatch;
     private OrthographicCamera cam;
-    private GameButton start;
+    private GameButton Restart;
     private Texture enemyImg;
     private BitmapFont font;
 
-    public Menu(GameStateManager gameStateManager, NetworkManager networkManager)
+
+
+    public GameOver(GameStateManager gameStateManager, NetworkManager networkManager)
     {
         super(gameStateManager, networkManager);
 
@@ -34,26 +36,24 @@ public class Menu extends GameState
         spriteBatch = new SpriteBatch();
         spriteBatch.setProjectionMatrix(cam.combined);
 
-        start = new GameButton(MyGame.V_WIDTH / 2, MyGame.V_HEIGHT / 2, cam);
-
-        enemyImg = new Texture("EnemyDev.png");
+        Restart = new GameButton(MyGame.V_WIDTH / 2, MyGame.V_HEIGHT / 2, cam);
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
-        font.scale(3);
-    }
-
-    public void handleInput()
-    {
+        font.scale(2);
     }
 
     public void update(float deltaTime)
     {
-        start.update(deltaTime);
-        if (start.isReleased())
+        Restart.update(deltaTime);
+        if (Restart.isReleased())
         {
-            gameStateManager.setState(GameStateManager.PLAY);
+            gameStateManager.setState(GameStateManager.MENU);
         }
+    }
+
+    public void handleInput()
+    {
     }
 
     public void render()
@@ -63,16 +63,15 @@ public class Menu extends GameState
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        start.render(spriteBatch);
+        Restart.render(spriteBatch);
 
         spriteBatch.begin();
-        font.draw(spriteBatch, "Start", 265, 280);
+        font.draw(spriteBatch, "GAME OVER", 210, 430);
+        font.draw(spriteBatch, "Back to menu", 200, 275);
 
         spriteBatch.end();
     }
 
-    public void dispose()
-    {
-        enemyImg.dispose();
-    }
+    public void dispose(){}
+
 }
