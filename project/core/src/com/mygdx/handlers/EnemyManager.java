@@ -216,13 +216,15 @@ public class EnemyManager
 
     }
 
-    public int GetDeadEnemies(){
+    public int GetDeadEnemies()
+    {
         int temp = numDeadEnemies;
         numDeadEnemies = 0;
         return temp;
     }
 
-    public int CheckEnemiesAtEnd(){
+    public int CheckEnemiesAtEnd()
+    {
         int enemyAtEnd = 0;
         for (int i = 0; i < enemies.size(); i++)
         {

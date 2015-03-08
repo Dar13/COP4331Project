@@ -58,24 +58,24 @@ public class WayPointManager
 
             if (in.hasNext())
             {
-                char direction = in.next().charAt(0);
-                if (direction == 'n')
+                int direction = in.nextInt();
+                if (direction == 1)
                 {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.NORTH));
                 }
-                else if (direction == 's')
+                else if (direction == 2)
                 {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.SOUTH));
                 }
-                else if (direction == 'e')
+                else if (direction == 3)
                 {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.EAST));
                 }
-                else if (direction == 'w')
+                else if (direction == 4)
                 {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.WEST));
                 }
-                else if (direction == 'o')
+                else if (direction == 5)
                 {
                     wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.END));
                 }
