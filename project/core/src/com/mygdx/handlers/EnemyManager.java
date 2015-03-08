@@ -17,7 +17,7 @@ public class EnemyManager
     protected static final int centerOffset = 16;
     protected static final int rangeOffset = 32;
     protected static final int waveInfoNorm = 20;
-    protected static final int waveInfoFast = 2;
+    protected static final int waveInfoFast = 7;
     protected static final int waveInfoHeavy = 1;
 
     public int currentWave = 1;
@@ -26,6 +26,7 @@ public class EnemyManager
     public int waveToBeSpawnedNorm;
     public int waveToBeSpawnedFast;
     public int waveToBeSpawnedHeavy;
+    public int totalWavesToBeSpawned;
     public float timeSinceLastNorm;
     public float timeSinceLastFast;
     public float timeSinceLastHeavy;
@@ -38,8 +39,6 @@ public class EnemyManager
     public LinkedList<Tower> towers;
     private LinkedList<WayPoint> path;
 
-    public float accumulator =0;
-
 
     public EnemyManager(LinkedList<WayPoint> path)
     {
@@ -49,6 +48,7 @@ public class EnemyManager
         timeSinceLastFast = 0;
         timeSinceLastHeavy = 0;
         waveToBeSpawnedNorm = waveInfoNorm;
+        totalWavesToBeSpawned = waveToBeSpawnedNorm;
         waveToBeSpawnedFast = waveInfoFast;
         waveToBeSpawnedHeavy = waveInfoHeavy;
         this.path = path;
@@ -92,15 +92,63 @@ public class EnemyManager
 
     }
 
-    public void NextWaveCalculator()
+    public void NextWave(float multiplier)
     {
+        if(currentWave == 2)
+        {
+            this.waveToBeSpawnedNorm = waveInfoNorm * (int)multiplier;
+            this.waveToBeSpawnedFast = waveInfoFast;
+            this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast;
+        }
 
+        else if(currentWave == 3)
+        {
+            this.waveToBeSpawnedNorm = waveInfoNorm * (int)multiplier;
+            this.waveToBeSpawnedFast = waveInfoFast * (int)(multiplier / 2);
+            this.waveToBeSpawnedHeavy = waveInfoHeavy;
+            this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
+        }
+
+        else
+        {
+            this.waveToBeSpawnedNorm = waveInfoNorm * (int)multiplier;
+            this.waveToBeSpawnedFast = waveInfoFast * (int)(multiplier / 2);
+            this.waveToBeSpawnedHeavy = waveInfoHeavy * (int)(multiplier / 3);
+            this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
+        }
+
+    }
+
+    public float NextWaveCalculator()
+    {
+        float multiplier = 0;
+        for (int i = 0; i < towers.size(); i ++){
+            switch (towers.get(i).type){
+                case RIFLE:
+                    multiplier = multiplier + .25f;
+                    break;
+                case BAZOOKA:
+                    multiplier = multiplier + .5f;
+                    break;
+                case SNIPER:
+                    multiplier = multiplier + 1;
+                    break;
+
+            }
+        }
+
+        return multiplier;
     }
 
     public void Update(float fps, LinkedList<Tower> towers)
     {
         //accumulator +=deltaTime;
-
+        if (totalWavesToBeSpawned == 0 && enemies.size() == 0)
+        {
+            currentWave++;
+            float multiplier = NextWaveCalculator();
+            NextWave(multiplier);
+        }
 
         this.towers = towers;
 
@@ -112,6 +160,7 @@ public class EnemyManager
                 AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
+                totalWavesToBeSpawned--;
             }
 
         }
@@ -126,6 +175,7 @@ public class EnemyManager
                 AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
+                totalWavesToBeSpawned--;
             }
 
             if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
@@ -133,6 +183,7 @@ public class EnemyManager
                 AddEnemy(FastEnemy, NullLayer, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
+                totalWavesToBeSpawned--;
             }
         }
 
@@ -147,6 +198,7 @@ public class EnemyManager
                 AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
+                totalWavesToBeSpawned--;
             }
 
             if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
@@ -154,6 +206,7 @@ public class EnemyManager
                 AddEnemy(FastEnemy, NullLayer, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
+                totalWavesToBeSpawned--;
             }
 
             if (timeSinceLastHeavy > MyGame.fpsretrieve * 3 && waveToBeSpawnedHeavy > 0)
@@ -161,6 +214,7 @@ public class EnemyManager
                 AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedHeavy--;
+                totalWavesToBeSpawned--;
             }
         }
 

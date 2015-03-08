@@ -37,19 +37,19 @@ public class TowerManager
 
     public void addRifleTower(float x, float y)
     {
-        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseRifleDamage, baseRifleRange);
+        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseRifleDamage, baseRifleRange, Tower.Type.RIFLE);
         towers.addLast(New);
     }
 
     public void addBazookaTower(float x, float y)
     {
-        Tower New = new Tower(BazookaTower, TowerShadow, x, y, baseBazookaDamage, baseBazookaRange);
+        Tower New = new Tower(BazookaTower, TowerShadow, x, y, baseBazookaDamage, baseBazookaRange, Tower.Type.BAZOOKA);
         towers.addLast(New);
     }
 
     public void addSniperTower(float x, float y)
     {
-        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseSniperDamage, baseSniperRange);
+        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseSniperDamage, baseSniperRange, Tower.Type.SNIPER);
         towers.addLast(New);
     }
 
