@@ -5,6 +5,7 @@ import android.net.wifi.WifiManager;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
+import com.mygdx.handlers.NetworkManager;
 import com.mygdx.net.NetworkInterface;
 
 import java.math.BigInteger;
@@ -66,7 +67,7 @@ public class AndroidLocalNetwork implements NetworkInterface
         if(client != null)
         {
             // discover hosts and return
-            List<InetAddress> addresses = client.discoverHosts(0xDDD, 5000);
+            List<InetAddress> addresses = client.discoverHosts(NetworkManager.SERVER_UDP_PORT, 5000);
             if(addresses instanceof ArrayList)
             {
                 return (ArrayList<InetAddress>)addresses;

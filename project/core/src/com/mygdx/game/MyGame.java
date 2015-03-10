@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 public class MyGame extends ApplicationAdapter
 {
+    public static final int VERSION = 0x0F01; // 0x<MAJOR>F<MINOR>
     public static final int V_WIDTH = 320 * 2;
     public static final int V_HEIGHT = 240 * 2;
     public static final int SCALE = 2;

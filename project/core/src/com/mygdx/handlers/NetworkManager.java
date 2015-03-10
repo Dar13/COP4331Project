@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.mygdx.game.MyGame;
 import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
 import com.mygdx.states.StateChange;
@@ -94,6 +95,7 @@ public class NetworkManager extends Listener implements Runnable
         initialized = new AtomicBoolean(false);
         ready = false;
         initializeManager = false;
+        expectedAmountClients = MAX_CLIENTS;
 
         // this is the closest to a traditional mutex I could find.
         // allows multiple reads at one time while only allowing one write lock.
@@ -445,23 +447,19 @@ public class NetworkManager extends Listener implements Runnable
         {
             try
             {
-                /*
-                clientSocket.bind(null);
-                clientSocket.connect(new InetSocketAddress(hostAddress, SERVER_PORT), 500);
-                */
                 client.start();
                 if(getHostAddress() != null)
                 {
-                    client.connect(5000, hostAddress, SERVER_TCP_PORT);
+                    client.connect(5000, hostAddress, SERVER_TCP_PORT, SERVER_UDP_PORT);
                 }
 
                 if(!client.isConnected() && serverAddresses != null)
                 {
-                    for(InetAddress addr : serverAddresses)
+                    for(InetAddress address : serverAddresses)
                     {
                         try
                         {
-                            client.connect(5000, addr, SERVER_TCP_PORT);
+                            client.connect(5000, address, SERVER_TCP_PORT, SERVER_UDP_PORT);
                         }
                         catch(SocketTimeoutException e)
                         {
@@ -505,13 +503,15 @@ public class NetworkManager extends Listener implements Runnable
         {
             if(connections.size() < expectedAmountClients)
             {
-                GameConnection gameConnection = (GameConnection) connection;
+                GameConnection gameConnection = new GameConnection();
+                gameConnection.connection = connection;
                 connections.add(gameConnection);
             }
             else
             {
                 // don't need anymore connections. (rethink if we ever do chromecast stuff)
                 connection.close();
+                System.out.println("NET: Closing connection. ID = " + connection.getID());
             }
         }
         else
@@ -527,6 +527,7 @@ public class NetworkManager extends Listener implements Runnable
     @Override
     public void received(Connection connection, Object object)
     {
+        System.out.println("NET: Packet received!");
         boolean handled = false;
 
         if(isServer)
@@ -534,12 +535,12 @@ public class NetworkManager extends Listener implements Runnable
             // Might want to change to hashmap<id, connection> and have the connection ID or some other UID
             // embedded in the packet itself. Not sure if its worth it, as the connections list should
             // fairly small (n < [4,8,12,16])
-            for (Connection conn : connections)
+            for (GameConnection gameConnection : connections)
             {
-                if (conn.getID() == connection.getID())
+                if (gameConnection.connection.getID() == connection.getID())
                 {
                     handled = true;
-                    GameConnection gameConnection = (GameConnection) conn;
+
                     if (!gameConnection.isValidated())
                     {
                         // check for validation message.
@@ -548,14 +549,19 @@ public class NetworkManager extends Listener implements Runnable
                         if(object instanceof GameConnection.ClientAuth)
                         {
                             GameConnection.ClientAuth packet = (GameConnection.ClientAuth)object;
-                            if(packet.key == 0xDEAD)
+                            if(packet.key == MyGame.VERSION)
                             {
-                                gameConnection.sendTCP(new GameConnection.ServerAuth());
+                                gameConnection.connection.sendTCP(new GameConnection.ServerAuth());
                                 gameConnection.assignUID(uidCounter);
                                 uidCounter++;
+                                System.out.println("NET: Client auth key = " + packet.key);
+                            }
+                            else
+                            {
+                                System.out.println("NET: Client failed authentication.");
                             }
                         }
-                        System.out.println("NET: TCP Packet received from Connection! ID = " + gameConnection.getID());
+                        System.out.println("NET: TCP Packet received from Connection! ID = " + gameConnection.connection.getID());
                     }
                     else
                     {
@@ -570,7 +576,7 @@ public class NetworkManager extends Listener implements Runnable
             if(object instanceof GameConnection.ServerAuth)
             {
                 GameConnection.ServerAuth authPacket = (GameConnection.ServerAuth)object;
-                if(authPacket.key != 0xBEEF)
+                if(authPacket.key != MyGame.VERSION)
                 {
                     // ERROR, invalid server
                     System.out.println("NET: Invalid server detected. Key = " + authPacket.key);
