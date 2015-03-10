@@ -22,6 +22,7 @@ public class WayPointManager
     public LinkedList<Path> paths;
     public File inputtxt;
     boolean inAndroid;
+    //Hardcoded int array of waypoints for android version.
     private int[] map1 = new int[]{0, 0, 3, 608, 0, 1, 608, 448, 4, 0, 448, 2, 0, 0, 5};
 
     public WayPointManager(boolean inAndroid)
@@ -41,6 +42,9 @@ public class WayPointManager
         ConstructPaths();
     }
 
+    /*Reads in waypoints from a file if running in desktop, pulls them from the int array if
+    running in android.
+     */
     private void ReadInWaypoints() throws FileNotFoundException
     {
         if (!inAndroid)
@@ -128,6 +132,7 @@ public class WayPointManager
         }
     }
 
+    //constructs the paths between the waypoints, so that towers cannot be placed on the paths.
     private void ConstructPaths()
     {
         int i = 0;
@@ -160,6 +165,7 @@ public class WayPointManager
         }
     }
 
+    //checks to see if the tower x,y is within a any path.
     public boolean WithinAny(float x, float y){
         int i = 0;
 

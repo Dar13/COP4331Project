@@ -24,7 +24,6 @@ public class MyGame extends ApplicationAdapter
     private OrthographicCamera hudCamera;
     private GameStateManager gameStateManager;
 
-    private double accumulator;
     private float fps = 1f/60f;
 
 

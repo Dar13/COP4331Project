@@ -18,7 +18,7 @@ public class Path
         this.y2 = y2;
     }
 
-
+    //Check to see if any corner of the tower is within the path.
     public boolean IsWithin(float x, float y)
     {
 

@@ -13,7 +13,7 @@ import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.NetworkManager;
 
 /**
- * Created by LordNeah on 3/8/2015.
+ * GameOver state used to bring us back to the menu.
  */
 public class GameOver extends GameState {
 

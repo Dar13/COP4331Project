@@ -55,6 +55,7 @@ public class EnemyManager
 
     }
 
+    //Adds new Normal enemy to the Enemy linked list.
     public void AddEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path)
     {
         Enemy New = new Enemy(img, img2, velocity, armor, path, Enemy.Type.NORMAL);
@@ -62,6 +63,7 @@ public class EnemyManager
         numEnemies++;
     }
 
+    //Adds new Fast enemy to the Enemy linked list.
     public void AddFastEnemy(Texture img3, Texture img4, float velocity, float armor, LinkedList<WayPoint> path)
     {
         Enemy nEw = new Enemy(img3, img4, velocity, armor, path, Enemy.Type.FAST);
@@ -69,6 +71,7 @@ public class EnemyManager
         numEnemies++;
     }
 
+    //Adds new Heavy enemy to the Enemy linked list.
     public void AddHeavyEnemy(Texture img5, Texture img6, float velocity, float armor, LinkedList<WayPoint> path)
     {
         Enemy neW = new Enemy(img5, img6, velocity, armor, path, Enemy.Type.HEAVY);
@@ -76,6 +79,7 @@ public class EnemyManager
         numEnemies++;
     }
 
+    //Removes targeted enemy from Enemy Linked list
     public void RemoveEnemy(int toBeDeleted)
     {
 
@@ -92,6 +96,7 @@ public class EnemyManager
 
     }
 
+    //Calculates the number of enemies to spawn in the next wave based on the multiplier.
     public void NextWave(float multiplier)
     {
         if(currentWave == 2)
@@ -119,6 +124,7 @@ public class EnemyManager
 
     }
 
+    //Calculates the multiplier to be used in the next round based on player towers.
     public float NextWaveCalculator()
     {
         float multiplier = 0;
@@ -142,6 +148,10 @@ public class EnemyManager
         return multiplier;
     }
 
+
+    /* Spawns new enemies based on wave number, updates the enemy health, checks to see if they are
+    dead, removes them if they are, and moves them if they are alive.
+     */
     public void Update(float fps, LinkedList<Tower> towers)
     {
         //accumulator +=deltaTime;
@@ -182,7 +192,7 @@ public class EnemyManager
 
             if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
             {
-                AddEnemy(FastEnemy, NullLayer, 6, 1, path);
+                AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
                 totalWavesToBeSpawned--;
@@ -205,7 +215,7 @@ public class EnemyManager
 
             if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
             {
-                AddEnemy(FastEnemy, NullLayer, 6, 1, path);
+                AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
                 totalWavesToBeSpawned--;
@@ -272,6 +282,7 @@ public class EnemyManager
 
     }
 
+    //Returns the number of enemies killed in the update.
     public int GetDeadEnemies()
     {
         int temp = numDeadEnemies;
@@ -279,6 +290,8 @@ public class EnemyManager
         return temp;
     }
 
+    //Checks to see if there is any enemies at the end waypoint, removes them if there are, then
+    //returns the number at the end to the play class.
     public int CheckEnemiesAtEnd()
     {
         int enemyAtEnd = 0;
@@ -295,6 +308,7 @@ public class EnemyManager
         return enemyAtEnd;
     }
 
+    //Calculator to see if the distance from the tower to the enemy is within the tower range.
     public boolean InRange(float enemyX, float enemyY, float towerX, float towerY, float towerRange)
     {
         if (Math.pow((enemyX + centerOffset) - (towerX + centerOffset), 2) + Math.pow(((enemyY + centerOffset) - (towerY + centerOffset)), 2)

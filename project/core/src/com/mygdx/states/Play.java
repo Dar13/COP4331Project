@@ -91,11 +91,15 @@ public class Play extends GameState
         //Accounting for our future pause state.
         if(!Pause)
         {
+            //Updating enemy manager.
             enemyManager.Update(fps, towers);
             health = health - enemyManager.CheckEnemiesAtEnd();
             gold = gold + (enemyManager.GetDeadEnemies() * 25);
+            //Updating the bazooka and rifle placement buttons.
             rifle.update(fps);
             bazooka.update(fps);
+
+            //Creating a rifle sprite to follow the mouse/finger around the screen.
             if (rifle.clicked && towerPlacement == 0 && gold - towerManager.rifleBasePrice >= 0)
             {
                 towerToBePlaced = new Sprite(RifleTower);
@@ -107,6 +111,7 @@ public class Play extends GameState
                 Rifle = 1;
             }
 
+            //Creating a bazooka sprite to follow the mouse/finger around the screen.
             else if (bazooka.clicked && towerPlacement == 0 && gold - towerManager.bazookaBasePrice >= 0)
             {
                 towerToBePlaced = new Sprite(BazookaTower);
@@ -118,12 +123,14 @@ public class Play extends GameState
                 Zooka = 1;
             }
 
+            //Updating sprite location according to mouse location.
             else if (MyInput.isDown() && towerPlacement == 1)
             {
                 towerToBePlaced.setPosition(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
                 towerToBePlacedS.setPosition(MyInput.x + 9, MyGame.V_HEIGHT - MyInput.y - 23);
             }
 
+            //Placing a tower and adding to the linked list.
             else if (MyInput.isReleased() && towerPlacement == 1 && !wayPointManager.WithinAny(MyInput.x, MyInput.y))
             {
                 if(Rifle == 1)
@@ -143,6 +150,7 @@ public class Play extends GameState
                 }
             }
 
+            //If player health is zero, switch to LOSE gamestate.
             if(health <= 0)
             {
                 gameStateManager.setState(GameStateManager.LOSE);

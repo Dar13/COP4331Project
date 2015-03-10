@@ -35,18 +35,21 @@ public class TowerManager
         this.towers = towers;
     }
 
+    //Adds new rifle tower to the tower linked list.
     public void addRifleTower(float x, float y)
     {
         Tower New = new Tower(RifleTower, TowerShadow, x, y, baseRifleDamage, baseRifleRange, Tower.Type.RIFLE);
         towers.addLast(New);
     }
 
+    //Adds new bazooka tower to the tower linked list.
     public void addBazookaTower(float x, float y)
     {
         Tower New = new Tower(BazookaTower, TowerShadow, x, y, baseBazookaDamage, baseBazookaRange, Tower.Type.BAZOOKA);
         towers.addLast(New);
     }
 
+    //Adds new sniper tower to the tower linked list.
     public void addSniperTower(float x, float y)
     {
         Tower New = new Tower(RifleTower, TowerShadow, x, y, baseSniperDamage, baseSniperRange, Tower.Type.SNIPER);
@@ -61,6 +64,7 @@ public class TowerManager
         }
     }
 
+    //Upgrades selected tower based on upgrade constants.
     public void upgradeTower(int towerToBeUpgraded)
     {
         towers.get(towerToBeUpgraded).damages = towers.get(towerToBeUpgraded).damages * upgradeDamageConstatnt;
