@@ -27,7 +27,9 @@ public class Enemy extends Entities
     private int currentWaypoint = 0;
     public float health = 100;
     public float armor = 1;
+    public boolean atEnd = false;
 
+    //Enums for enemy type.
     public enum Type
     {
         HEAVY,
@@ -160,7 +162,7 @@ public class Enemy extends Entities
                     {
 
                         velocity = 0;
-
+                        atEnd = true;
                         return true;
                     }
                     return false;
@@ -169,6 +171,7 @@ public class Enemy extends Entities
         return false;
     }
 
+    //Rotating the sprites at each waypoint based on enemy type. Very broken at the moment.
     public void changeSpriteRotation()
     {
         switch (type)
@@ -420,14 +423,10 @@ public class Enemy extends Entities
         }
     }
 
+    //Update the linked list contained in enemy.
     public void setWayPointsLL(LinkedList<WayPoint> wayPoints)
     {
         this.wayPoints = wayPoints;
-    }
-
-    public void SetWayPoint(float x, float y, WayPoint.Direction direction)
-    {
-        wayPoints.addLast(new WayPoint(x, y, direction));
     }
 
     public void render(SpriteBatch sb)

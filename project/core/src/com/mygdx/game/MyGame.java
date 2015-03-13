@@ -25,33 +25,32 @@ public class MyGame extends ApplicationAdapter
     private OrthographicCamera hudCamera;
     private GameStateManager gameStateManager;
 
-    private MenuScreen menuScreen;
-    private double accumulator;
     private float fps = 1f/60f;
-
 
 
     private NetworkManager networkManager;
     private Thread networkThread;
+    public boolean inAndroid = false;
 
-    public MyGame(HashMap<NetworkManager.ConnectionMode, NetworkInterface> networkImpls)
+    public MyGame(HashMap<NetworkManager.ConnectionMode, NetworkInterface> networkImpls, boolean inAndroid)
     {
         networkManager = new NetworkManager(networkImpls);
+        this.inAndroid = true;
     }
 
     @Override
     public void create()
     {
-       // Gdx.input.setInputProcessor(new MyInputProcessor());
+        Gdx.input.setInputProcessor(new MyInputProcessor());
         spriteBatch = new SpriteBatch();
-        //gameStateManager = new GameStateManager(this, networkManager);
-        menuScreen = new MenuScreen(this);
+        gameStateManager = new GameStateManager(this, networkManager, inAndroid);
+
         // This must be done in MyGame.create()! putting this in render() will lock up the game.
         networkThread = new Thread(networkManager);
         networkThread.start();
         boolean success = networkManager.initialize(true,
-                                                    NetworkManager.ConnectionMode.WIFI_LAN,
-                                                    null);
+                NetworkManager.ConnectionMode.WIFI_LAN,
+                null);
 
         if (!success)
         {
@@ -79,10 +78,9 @@ public class MyGame extends ApplicationAdapter
                 e.printStackTrace();
             }
         }
-       //gameStateManager.update(fps);
-       //gameStateManager.render();
-       menuScreen.render(fps);
-       MyInput.update();
+        gameStateManager.update(fps);
+        gameStateManager.render();
+        MyInput.update();
     }
 
     public SpriteBatch getSpriteBatch()
@@ -99,4 +97,6 @@ public class MyGame extends ApplicationAdapter
     {
         return hudCamera;
     }
+
+    public boolean GetMachineId(){return inAndroid;}
 }

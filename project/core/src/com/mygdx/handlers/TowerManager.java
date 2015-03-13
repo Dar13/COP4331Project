@@ -19,6 +19,10 @@ public class TowerManager
     protected static final int baseBazookaDamage = 4;
     protected static final int baseSniperRange = 5;
     protected static final int baseSniperDamage = 5;
+    public int rifleBasePrice = 100;
+    public int bazookaBasePrice = 150;
+    public int sniperBasePrice = 300;
+
 
     Texture RifleTower = new Texture("RifleTower.png");
     Texture BazookaTower = new Texture("BazookaTower.png");
@@ -31,21 +35,24 @@ public class TowerManager
         this.towers = towers;
     }
 
+    //Adds new rifle tower to the tower linked list.
     public void addRifleTower(float x, float y)
     {
-        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseRifleDamage, baseRifleRange);
+        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseRifleDamage, baseRifleRange, Tower.Type.RIFLE);
         towers.addLast(New);
     }
 
+    //Adds new bazooka tower to the tower linked list.
     public void addBazookaTower(float x, float y)
     {
-        Tower New = new Tower(BazookaTower, TowerShadow, x, y, baseBazookaDamage, baseBazookaRange);
+        Tower New = new Tower(BazookaTower, TowerShadow, x, y, baseBazookaDamage, baseBazookaRange, Tower.Type.BAZOOKA);
         towers.addLast(New);
     }
 
+    //Adds new sniper tower to the tower linked list.
     public void addSniperTower(float x, float y)
     {
-        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseSniperDamage, baseSniperRange);
+        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseSniperDamage, baseSniperRange, Tower.Type.SNIPER);
         towers.addLast(New);
     }
 
@@ -57,6 +64,7 @@ public class TowerManager
         }
     }
 
+    //Upgrades selected tower based on upgrade constants.
     public void upgradeTower(int towerToBeUpgraded)
     {
         towers.get(towerToBeUpgraded).damages = towers.get(towerToBeUpgraded).damages * upgradeDamageConstatnt;

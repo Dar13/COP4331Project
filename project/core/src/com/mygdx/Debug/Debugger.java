@@ -23,6 +23,7 @@ public class Debugger
     private boolean finished = false;
     int waypointindex = 0;
 
+
     public Debugger(LinkedList<WayPoint> path, LinkedList<Tower> towers, LinkedList<Enemy> enemies)
     {
         debugeCam = new OrthographicCamera();
@@ -38,6 +39,9 @@ public class Debugger
     {
         debugeCam.update();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        /*Renders the waypoint paths with the path being represented by a
+        line and the waypoint being represented by a square.
+         */
         while (!finished)
         {
             shapeRenderer.setColor(Color.GREEN);
@@ -52,6 +56,9 @@ public class Debugger
             waypointindex++;
         }
 
+        /* Representing the tower range as a 32 pixel circle multiple centered at the center of the
+        tower image.
+         */
         int i = 0;
         while (i < towers.size())
         {
@@ -60,7 +67,8 @@ public class Debugger
             i++;
         }
 
-
+        /* Representing the enemy hp as a green line, 6 pixels above the enemy. above the enemy
+         */
         int j = 0;
         while (j < enemies.size())
         {

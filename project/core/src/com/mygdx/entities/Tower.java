@@ -22,9 +22,20 @@ public class Tower extends Entities
     public float range = 0;
     public LinkedList<WayPoint> wayPoints;
 
-    public Tower(Texture img, Texture img2, float x, float y, float damages, float range)
+    public enum Type
+    {
+        RIFLE,
+        BAZOOKA,
+        SNIPER
+    }
+
+    public Type type;
+
+
+    public Tower(Texture img, Texture img2, float x, float y, float damages, float range, Type type)
     {
         super(img, x, y);
+        this.type = type;
         this.sprite = new Sprite(img);
         this.sprite2 = new Sprite(img2);
         this.x = x;
