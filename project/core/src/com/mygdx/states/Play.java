@@ -29,6 +29,7 @@ import java.util.LinkedList;
  */
 public class Play extends GameState
 {
+    private boolean playerReady =true;
 
     public static final int edgeOffset = 32;
     private boolean debugModeOn = true;
@@ -52,6 +53,7 @@ public class Play extends GameState
     Texture TowerShadow = new Texture("shadowtower.png");
     Sprite towerToBePlaced;
     Sprite towerToBePlacedS;
+
 
     public Play(GameStateManager gameStateManager, NetworkManager networkManager)
     {
@@ -77,6 +79,18 @@ public class Play extends GameState
 
     }
 
+
+   /* public LinkedList<WayPoint> creatWayPoint()
+    {
+        wayPoints = new LinkedList<WayPoint>();
+        wayPoints.addLast(new WayPoint(0, 0, WayPoint.Direction.EAST));
+        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - edgeOffset, 0, WayPoint.Direction.NORTH));
+        wayPoints.addLast(new WayPoint(MyGame.V_WIDTH - edgeOffset, MyGame.V_HEIGHT - edgeOffset, WayPoint.Direction.WEST));
+        wayPoints.addLast(new WayPoint(0, MyGame.V_HEIGHT - edgeOffset, WayPoint.Direction.SOUTH));
+        wayPoints.addLast(new WayPoint(0, 0, WayPoint.Direction.END));
+        return wayPoints;
+    }*/
+
     public void handleInput()
     {
     }
@@ -84,29 +98,21 @@ public class Play extends GameState
     public void update(float fps)
     {
         //Accounting for our future pause state.
-        if(!Pause)
-        {
+        if(!Pause) {
             enemyManager.Update(fps, towers);
             rifle.update(fps);
-            if (rifle.clicked && towerPlacement == 0)
-            {
+            if (rifle.clicked && towerPlacement == 0) {
                 towerToBePlaced = new Sprite(RifleTower);
                 towerToBePlacedS = new Sprite(TowerShadow);
                 towerToBePlaced.setPosition(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
-                towerToBePlacedS.setPosition(MyInput.x + 9,MyGame.V_HEIGHT - MyInput.y - 23);
+                towerToBePlacedS.setPosition(MyInput.x + 9, MyGame.V_HEIGHT - MyInput.y - 23);
                 towerToBePlacedS.rotate(-45);
                 towerPlacement = 1;
-            }
-
-            else if (MyInput.isDown() && towerPlacement == 1)
-            {
+            } else if (MyInput.isDown() && towerPlacement == 1) {
                 towerToBePlaced.setPosition(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
                 towerToBePlacedS.setPosition(MyInput.x + 9, MyGame.V_HEIGHT - MyInput.y - 23);
-            }
-
-            else if (MyInput.isReleased() && towerPlacement == 1 && !wayPointManager.WithinAny(MyInput.x, MyInput.y))
-            {
-              towerManager.addRifleTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
+            } else if (MyInput.isReleased() && towerPlacement == 1 && !wayPointManager.WithinAny(MyInput.x, MyInput.y)) {
+                towerManager.addRifleTower(MyInput.x, MyGame.V_HEIGHT - MyInput.y);
                 towerPlacement--;
             }
         }
@@ -142,4 +148,9 @@ public class Play extends GameState
     public void dispose()
     {
     }
+
+    private void state_PlaceTowers()
+    {
+    }
+
 }

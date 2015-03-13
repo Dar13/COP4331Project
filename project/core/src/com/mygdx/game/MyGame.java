@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.MenuScreen;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.MyInputProcessor;
@@ -24,8 +25,10 @@ public class MyGame extends ApplicationAdapter
     private OrthographicCamera hudCamera;
     private GameStateManager gameStateManager;
 
+    private MenuScreen menuScreen;
     private double accumulator;
     private float fps = 1f/60f;
+
 
 
     private NetworkManager networkManager;
@@ -39,10 +42,10 @@ public class MyGame extends ApplicationAdapter
     @Override
     public void create()
     {
-        Gdx.input.setInputProcessor(new MyInputProcessor());
+       // Gdx.input.setInputProcessor(new MyInputProcessor());
         spriteBatch = new SpriteBatch();
-        gameStateManager = new GameStateManager(this, networkManager);
-
+        //gameStateManager = new GameStateManager(this, networkManager);
+        menuScreen = new MenuScreen(this);
         // This must be done in MyGame.create()! putting this in render() will lock up the game.
         networkThread = new Thread(networkManager);
         networkThread.start();
@@ -76,9 +79,10 @@ public class MyGame extends ApplicationAdapter
                 e.printStackTrace();
             }
         }
-        gameStateManager.update(fps);
-        gameStateManager.render();
-        MyInput.update();
+       //gameStateManager.update(fps);
+       //gameStateManager.render();
+       menuScreen.render(fps);
+       MyInput.update();
     }
 
     public SpriteBatch getSpriteBatch()
