@@ -4,6 +4,7 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,12 +23,15 @@ public class NetTest extends GameState
     private Stage stage;
     private TextButton serverButton;
     private TextButton clientButton;
+    private OrthographicCamera cam;
 
     public NetTest(GameStateManager gameStateManager, final NetworkManager networkManager)
     {
         super(gameStateManager, networkManager);
 
         stage = new Stage();
+        cam = (OrthographicCamera) stage.getCamera();
+        cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
 
         serverButton = new TextButton("Server", textButtonStyle);

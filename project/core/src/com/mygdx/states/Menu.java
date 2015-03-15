@@ -2,6 +2,7 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -18,12 +19,15 @@ public class Menu extends GameState
     private TextButton startButton;
     private TextButton netButton;
     private Stage stage;
+    private OrthographicCamera cam;
 
     public Menu(final GameStateManager gameStateManager, NetworkManager networkManager)
     {
         super(gameStateManager, networkManager);
 
         stage = new Stage();
+        cam = (OrthographicCamera) stage.getCamera();
+        cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
 
         startButton = new TextButton("Start", textButtonStyle);
