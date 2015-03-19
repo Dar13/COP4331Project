@@ -79,6 +79,7 @@ public class NetworkManager extends Listener implements Runnable
     protected Client client;
     protected ArrayList<InetAddress> serverAddresses;
     protected InetAddress hostAddress;
+    protected boolean validated = false;
 
     // techniques of connecting
     protected ConnectionMode preferredMode;
@@ -543,29 +544,14 @@ public class NetworkManager extends Listener implements Runnable
 
                     if (!gameConnection.isValidated())
                     {
-                        // check for validation message.
-                        // otherwise close connection
-                        // validation message should be first thing sent on the connection from the client.
-                        if(object instanceof GameConnection.ClientAuth)
-                        {
-                            GameConnection.ClientAuth packet = (GameConnection.ClientAuth)object;
-                            if(packet.key == MyGame.VERSION)
-                            {
-                                gameConnection.connection.sendTCP(new GameConnection.ServerAuth());
-                                gameConnection.assignUID(uidCounter);
-                                uidCounter++;
-                                System.out.println("NET: Client auth key = " + packet.key);
-                            }
-                            else
-                            {
-                                System.out.println("NET: Client failed authentication.");
-                            }
-                        }
+                        handleValidation(gameConnection, null, object);
                         System.out.println("NET: TCP Packet received from Connection! ID = " + gameConnection.connection.getID());
                     }
                     else
                     {
                         // handle normally.
+                        // decode to List<BaseChange> and then call receiveChanges()
+
                     }
                 }
             }
@@ -573,15 +559,9 @@ public class NetworkManager extends Listener implements Runnable
         else // client packet handling
         {
             System.out.println("NET: Packet received from server!");
-            if(object instanceof GameConnection.ServerAuth)
+            if(!validated)
             {
-                GameConnection.ServerAuth authPacket = (GameConnection.ServerAuth)object;
-                if(authPacket.key != MyGame.VERSION)
-                {
-                    // ERROR, invalid server
-                    System.out.println("NET: Invalid server detected. Key = " + authPacket.key);
-                    connection.close();
-                }
+                validated = handleValidation(null, connection, object);
             }
 
             // assume authenticated, handle packet normally
@@ -636,11 +616,53 @@ public class NetworkManager extends Listener implements Runnable
     private void receiveChanges(List<StateChange> changes)
     {
         /**
-         * TODO: this method is implmentation dependent, but should look roughly like the following:
+         * TODO: this method is implementation dependent, but should look roughly like the following:
          * if (isServer)
          *     check received changes for coherency with master state
          *     push valid changes to send queue (so they can be sent back out to other clients)
          * add all changes to update queue, so game can read them in when needed
          */
+    }
+
+    protected boolean handleValidation(GameConnection gameConnection, Connection connection, Object object)
+    {
+        // check for validation message.
+        // otherwise close connection
+        // validation message should be first thing sent on the connection from the client.
+        if(object instanceof GameConnection.ClientAuth)
+        {
+            GameConnection.ClientAuth authPacket = (GameConnection.ClientAuth)object;
+            if(authPacket.key == MyGame.VERSION)
+            {
+                gameConnection.connection.sendTCP(new GameConnection.ServerAuth());
+                gameConnection.assignUID(uidCounter);
+                uidCounter++;
+                System.out.println("NET: Client auth key = " + authPacket.key);
+                return true;
+            }
+            else
+            {
+                System.out.println("NET: Client failed authentication. Allowing retries...");
+                return false;
+            }
+        }
+
+        if(object instanceof GameConnection.ServerAuth)
+        {
+            GameConnection.ServerAuth authPacket = (GameConnection.ServerAuth)object;
+            if(authPacket.key != MyGame.VERSION)
+            {
+                // ERROR, invalid server
+                System.out.println("NET: Incompatible server detected. Key = " + authPacket.key);
+                gameConnection.connection.close();
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
