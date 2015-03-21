@@ -10,9 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.MyGame;
 
-
-
-
 /**
  * Created by James on 3/7/2015.
  */
@@ -30,7 +27,8 @@ public class MenuScreen  implements Screen  {
         start.setPosition(MyGame.V_WIDTH/2-50,MyGame.V_HEIGHT/2-50);
         start.setSize(200, 60);
         start.addListener(new ClickListener(){
-
+            public void onClick() {
+            }
 
         });
         stage.addActor(start);
