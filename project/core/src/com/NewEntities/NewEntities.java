@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * Created by James on 3/18/2015.
  */
 public abstract class NewEntities extends Actor {
-    protected Sprite sprite;
+    public Sprite sprite;
     protected float x;
     protected float y;
 

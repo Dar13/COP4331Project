@@ -102,24 +102,24 @@ public class NewEnemyManager extends Actor{
     {
         if(currentWave == 2)
         {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (int)multiplier;
+            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
             this.waveToBeSpawnedFast = waveInfoFast;
             this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast;
         }
 
         else if(currentWave == 3)
         {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (int)multiplier;
-            this.waveToBeSpawnedFast = waveInfoFast * (int)(multiplier / 2);
+            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
+            this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
             this.waveToBeSpawnedHeavy = waveInfoHeavy;
             this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
         }
 
         else
         {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (int)multiplier;
-            this.waveToBeSpawnedFast = waveInfoFast * (int)(multiplier / 2);
-            this.waveToBeSpawnedHeavy = waveInfoHeavy * (int)(multiplier / 3);
+            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
+            this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
+            this.waveToBeSpawnedHeavy = waveInfoHeavy * (1 + (int)(multiplier / 3));
             this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
         }
 

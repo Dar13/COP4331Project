@@ -9,9 +9,13 @@ import com.NewHandlers.NewGameStateManager;
 import com.NewHandlers.NewTowerManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -56,6 +60,8 @@ public class NewPlay extends  NewGameState {
     Texture RifleTower = new Texture("RifleTower.png");
     Texture BazookaTower = new Texture("BazookaTower.png");
     Texture TowerShadow = new Texture("shadowtower.png");
+    private BitmapFont font;
+    private Batch batch;
 
 
     public NewPlay(NewGameStateManager gameStateManager,NetworkManager networkManager, boolean inAndroid){
@@ -78,6 +84,11 @@ public class NewPlay extends  NewGameState {
         bazookaButton.setSize(64,64);
         bazookaButton.setPosition(rifleButton.getX(),rifleButton.getY()-64);
 
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
+        font.scale(.01f);
+
+
         stage.addActor(map);
         stage.addActor(enemyManager);
         stage.addActor(towerManager);
@@ -89,8 +100,10 @@ public class NewPlay extends  NewGameState {
     @Override
     public void update() {
         //((OrthographicCamera)stage.getCamera()).zoom += .01;
+        health = health - enemyManager.CheckEnemiesAtEnd();
+        gold = gold + (enemyManager.GetDeadEnemies() * 25);
 
-        if(rifleButton.isPressed() && towerPlacement==0){
+        if(rifleButton.isPressed() && towerPlacement==0 && gold >= towerManager.rifleBasePrice){
             System.out.println("test");
             towerToBePlaced = new Sprite(RifleTower);
             towerToBePlacedS = new Sprite(TowerShadow);
@@ -101,15 +114,15 @@ public class NewPlay extends  NewGameState {
             Rifle = 1;
         }
 
-        if(bazookaButton.isPressed() && towerPlacement==0){
+        if(bazookaButton.isPressed() && towerPlacement==0 && gold >= towerManager.bazookaBasePrice){
             System.out.println("test");
-            towerToBePlaced = new Sprite(RifleTower);
+            towerToBePlaced = new Sprite(BazookaTower);
             towerToBePlacedS = new Sprite(TowerShadow);
             towerToBePlaced.setPosition(Gdx.input.getX(), MyGame.V_HEIGHT - Gdx.input.getY());
             towerToBePlacedS.setPosition(Gdx.input.getX()+ 9,MyGame.V_HEIGHT - Gdx.input.getY() - 23);
             towerToBePlacedS.rotate(-45);
             towerPlacement = 1;
-            Rifle = 1;
+            Zooka = 1;
         }
 
 
@@ -145,7 +158,6 @@ public class NewPlay extends  NewGameState {
                     towerPlacement =0;
                     break;
             }
-            System.out.println("ijijiijjijijij");
         }
 
 
@@ -163,6 +175,16 @@ public class NewPlay extends  NewGameState {
         enemyManager.SetTowers(towers);
         stage.act(delta);
         stage.draw();
+        batch = stage.getBatch();
+        batch.begin();
+        if(towerPlacement == 1)
+        {
+            towerToBePlacedS.draw(batch);
+            towerToBePlaced.draw(batch);
+        }
+        font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
+        font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
+        batch.end();
     }
 
     @Override

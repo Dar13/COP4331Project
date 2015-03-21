@@ -45,7 +45,8 @@ public class NewTower extends NewEntities {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(sprite2.getTexture(),sprite2.getX(),sprite2.getY());
-        batch.draw(sprite.getTexture(),sprite.getX(),sprite.getY());
+        sprite2.draw(batch);
+        System.out.printf("cunt\n");
+        sprite.draw(batch);
     }
 }

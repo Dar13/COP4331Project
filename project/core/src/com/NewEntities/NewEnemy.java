@@ -427,7 +427,7 @@ public class NewEnemy extends NewEntities     {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(sprite.getTexture(),sprite.getX(),sprite.getY());
-        batch.draw(sprite2.getTexture(),sprite2.getX(),sprite2.getY());
+        sprite.draw(batch);
+        sprite2.draw(batch);
     }
 }
