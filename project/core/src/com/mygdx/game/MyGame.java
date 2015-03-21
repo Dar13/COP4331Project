@@ -1,12 +1,10 @@
 package com.mygdx.game;
 
+import com.NewHandlers.NewGameStateManager;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.MenuScreen;
-import com.mygdx.handlers.GameStateManager;
-import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.MyInputProcessor;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.net.NetworkInterface;
@@ -15,15 +13,16 @@ import java.util.HashMap;
 
 public class MyGame extends ApplicationAdapter
 {
-    public static final int V_WIDTH = 336 * 2;
-    public static final int V_HEIGHT = 256 * 2;
+    public static final int V_WIDTH = 336 * 2 + 32;
+    public static final int V_HEIGHT = 256 * 2 +32;
     public static final int SCALE = 2;
     public static final float fpsretrieve = 60f;
 
     private SpriteBatch spriteBatch;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
-    private GameStateManager gameStateManager;
+    private NewGameStateManager gameStateManager;
+   // private GameStateManager gameStateManager;
 
     private float fps = 1f/60f;
 
@@ -43,7 +42,8 @@ public class MyGame extends ApplicationAdapter
     {
         Gdx.input.setInputProcessor(new MyInputProcessor());
         spriteBatch = new SpriteBatch();
-        gameStateManager = new GameStateManager(this, networkManager, inAndroid);
+        //gameStateManager = new GameStateManager(this, networkManager, inAndroid);
+        gameStateManager = new NewGameStateManager(this, networkManager, inAndroid);
 
         // This must be done in MyGame.create()! putting this in render() will lock up the game.
         networkThread = new Thread(networkManager);
@@ -78,9 +78,12 @@ public class MyGame extends ApplicationAdapter
                 e.printStackTrace();
             }
         }
-        gameStateManager.update(fps);
-        gameStateManager.render();
-        MyInput.update();
+        gameStateManager.update();
+        gameStateManager.render(fps);
+        //gameStateManager.update(fps);
+        //gameStateManager.render();
+
+        //MyInput.update();
     }
 
     public SpriteBatch getSpriteBatch()

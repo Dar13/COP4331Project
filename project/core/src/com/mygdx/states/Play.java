@@ -31,7 +31,7 @@ public class Play extends GameState
 {
 
     public static final int edgeOffset = 32;
-    private boolean debugModeOn = false;
+    private boolean debugModeOn = true;
     private Texture Map;
     public Sprite map;
 
@@ -47,6 +47,7 @@ public class Play extends GameState
     public EnemyManager enemyManager;
     public TowerManager towerManager;
     public WayPointManager wayPointManager;
+
     private TowerButton rifle;
     private TowerButton bazooka;
     private boolean Pause = false;

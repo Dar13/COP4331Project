@@ -1,24 +1,22 @@
-package com.mygdx.entities;
+package com.NewEntities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
- * Created by James on 2/20/2015.
+ * Created by James on 3/18/2015.
  */
-public abstract class Entities
-{
+public abstract class NewEntities extends Actor {
     protected Sprite sprite;
     protected float x;
     protected float y;
 
-    public Entities(Texture img, float x, float y)
+    public NewEntities(Texture img, float x, float y)
     {
         sprite = new Sprite(img);
         this.x = x;
         this.y = y;
     }
 
-    public abstract void render(SpriteBatch sb);
 }
