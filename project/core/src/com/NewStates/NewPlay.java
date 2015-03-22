@@ -129,7 +129,7 @@ public class NewPlay extends  NewGameState {
         if(towerPlacement == 1) {
             if (wayPointManager.WithinAny(towerToBePlaced.getX(), towerToBePlaced.getY())) {
                 clearedForPlacement = false;
-            } else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480) {
+            } else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480 || towerToBePlaced.getX() + 32 > 640 || towerToBePlaced.getY() + 32 > 480) {
                 clearedForPlacement = false;
             }
 
@@ -178,6 +178,10 @@ public class NewPlay extends  NewGameState {
 
         if(health <= 0){
             gameStateManager.setState(NewGameStateManager.BADEND);
+        }
+
+        else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0){
+            gameStateManager.setState(NewGameStateManager.MENU);
         }
 
 
