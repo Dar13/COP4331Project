@@ -132,6 +132,7 @@ public class NewPlay extends  NewGameState {
             } else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480) {
                 clearedForPlacement = false;
             }
+
         }
 
         if (!Gdx.input.isTouched() && towerPlacement == 1 && !clearedForPlacement)
@@ -173,6 +174,10 @@ public class NewPlay extends  NewGameState {
                     towerPlacement =0;
                     break;
             }
+        }
+
+        if(health <= 0){
+            gameStateManager.setState(NewGameStateManager.BADEND);
         }
 
 

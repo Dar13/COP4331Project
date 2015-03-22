@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class MyGame extends ApplicationAdapter
 {
     public static final int V_WIDTH = 336 * 2 + 32;
-    public static final int V_HEIGHT = 256 * 2 +32;
+    public static final int V_HEIGHT = 256 * 2;
     public static final int SCALE = 2;
     public static final float fpsretrieve = 60f;
 

@@ -118,8 +118,6 @@ public class WayPointManager
     public boolean WithinAny(float x, float y){
         int i = 0;
 
-        System.out.println(paths.size());
-
         while (i < paths.size()){
             if (paths.get(i).IsWithin(x, y)){
                 return true;

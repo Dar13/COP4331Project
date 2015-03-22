@@ -1,5 +1,6 @@
 package com.NewHandlers;
 
+import com.NewStates.NewEnd;
 import com.NewStates.NewGameState;
 import com.NewStates.NewMenu;
 import com.NewStates.NewPlay;
@@ -21,6 +22,7 @@ public class NewGameStateManager {
 
     public static final int MENU = 131587867;
     public static final int PLAY = 321123321;
+    public static final int BADEND = 1234321;
 
     public NewGameStateManager(MyGame game, NetworkManager networkManager, boolean inAndroid)
     {
@@ -56,6 +58,9 @@ public class NewGameStateManager {
         if (state == MENU)
         {
             return new NewMenu(this,networkManager);
+        }
+        if(state == BADEND){
+            return new NewEnd(this, networkManager);
         }
         return null;
     }
