@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.Debug.Debugger;
-import com.mygdx.UI.GameButton;
 import com.mygdx.UI.TowerButton;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;

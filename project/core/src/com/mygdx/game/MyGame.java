@@ -13,8 +13,9 @@ import java.util.HashMap;
 
 public class MyGame extends ApplicationAdapter
 {
-    public static final int V_WIDTH = 336 * 2 + 32;
-    public static final int V_HEIGHT = 256 * 2;
+    public static final int VERSION = 0x0F01; // 0x<MAJOR>F<MINOR>
+    public static final int V_WIDTH = 336 * 2 + 32; // 320*2 ?
+    public static final int V_HEIGHT = 256 * 2;     // 240*2 ?
     public static final int SCALE = 2;
     public static final float fpsretrieve = 60f;
 
@@ -48,6 +49,9 @@ public class MyGame extends ApplicationAdapter
         // This must be done in MyGame.create()! putting this in render() will lock up the game.
         networkThread = new Thread(networkManager);
         networkThread.start();
+        System.out.println("Main Thread ID: " + Thread.currentThread().getId());
+        System.out.println("Network Thread ID: " + networkThread.getId());
+        /*
         boolean success = networkManager.initialize(true,
                 NetworkManager.ConnectionMode.WIFI_LAN,
                 null);
@@ -56,6 +60,7 @@ public class MyGame extends ApplicationAdapter
         {
             System.out.println("NET: Initialize failed.");
         }
+        */
     }
 
     @Override

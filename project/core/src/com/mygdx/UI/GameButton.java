@@ -64,10 +64,10 @@ public class GameButton
 
         // NOTE: what does this code do?
         if (MyInput.isDown() &&
-            vec.x > x - width / 2 &&
-            vec.x < x + width / 2 &&
-            vec.y > y - height / 2 &&
-            vec.y < y + height / 2)
+                vec.x > x - width / 2 &&
+                vec.x < x + width / 2 &&
+                vec.y > y - height / 2 &&
+                vec.y < y + height / 2)
         {
             clicked = true;
         }
@@ -78,10 +78,10 @@ public class GameButton
 
         // NOTE: what does this code do?
         if (MyInput.isReleased() &&
-            vec.x > x - width / 2 &&
-            vec.x < x + width / 2 &&
-            vec.y > y - height / 2 &&
-            vec.y < y + height / 2)
+                vec.x > x - width / 2 &&
+                vec.x < x + width / 2 &&
+                vec.y > y - height / 2 &&
+                vec.y < y + height / 2)
         {
             isReleased = true;
         }

@@ -3,6 +3,7 @@ package com.NewHandlers;
 import com.NewStates.NewEnd;
 import com.NewStates.NewGameState;
 import com.NewStates.NewMenu;
+import com.NewStates.NewNetTest;
 import com.NewStates.NewPlay;
 import com.NewStates.NewWinState;
 import com.mygdx.game.MyGame;
@@ -25,6 +26,7 @@ public class NewGameStateManager {
     public static final int PLAY = 321123321;
     public static final int BADEND = 1234321;
     public static final int GOODEND = 123123123;
+    public static final int NET = 12341542;
 
     public NewGameStateManager(MyGame game, NetworkManager networkManager, boolean inAndroid)
     {
@@ -66,6 +68,9 @@ public class NewGameStateManager {
         }
         if(state == GOODEND){
             return new NewWinState(this, networkManager);
+        }
+        if(state == NET) {
+            return new NewNetTest(this, networkManager);
         }
         return null;
     }

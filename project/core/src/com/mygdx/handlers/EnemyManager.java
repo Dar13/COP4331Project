@@ -250,8 +250,6 @@ public class EnemyManager
                     {
                         enemies.get(i).health = enemies.get(i).health - (towers.get(j).damages / enemies.get(i).armor);
                     }
-
-
                 }
             }
         }
