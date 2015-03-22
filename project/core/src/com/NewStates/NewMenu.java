@@ -16,8 +16,8 @@ import com.mygdx.handlers.NetworkManager;
 public class NewMenu extends NewGameState{
 
     private Stage stage;
-    private TextButton start;
-    private TextButton net;
+    private TextButton singleplayer;
+    private TextButton multiplayer;
 
     public NewMenu(NewGameStateManager gameStateManager,NetworkManager networkManager){
         super(gameStateManager,networkManager);
@@ -25,24 +25,24 @@ public class NewMenu extends NewGameState{
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
-        start = new TextButton("Start",skin);
-        start.setSize(200,60);
-        start.setPosition(game.V_WIDTH/2-start.getWidth()/2, game.V_HEIGHT*3/4);
-        start.addListener(new ClickListener());
-        stage.addActor(start);
+        singleplayer = new TextButton("Single Player",skin);
+        singleplayer.setSize(200, 60);
+        singleplayer.setPosition(game.V_WIDTH/2- singleplayer.getWidth()/2, game.V_HEIGHT*3/4);
+        singleplayer.addListener(new ClickListener());
+        stage.addActor(singleplayer);
 
-        net = new TextButton("Net",skin);
-        net.setSize(200,60);
-        net.setPosition(game.V_WIDTH/2-start.getWidth()/2, game.V_HEIGHT/4);
-        net.addListener(new ClickListener());
-        stage.addActor(net);
+        multiplayer = new TextButton("Multiplayer",skin);
+        multiplayer.setSize(200, 60);
+        multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, game.V_HEIGHT / 4);
+        multiplayer.addListener(new ClickListener());
+        stage.addActor(multiplayer);
    }
     @Override
     public void update() {
-        if(start.isChecked()){
-            gameStateManager.setState(NewGameStateManager.PLAY);
+        if(singleplayer.isChecked()){
+            gameStateManager.setState(NewGameStateManager.LEVELSELECT);
         }
-        if(net.isChecked()) {
+        if(multiplayer.isChecked()) {
             gameStateManager.setState(NewGameStateManager.NET);
         }
     }

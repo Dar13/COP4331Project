@@ -2,6 +2,7 @@ package com.NewHandlers;
 
 import com.NewStates.NewEnd;
 import com.NewStates.NewGameState;
+import com.NewStates.NewLevelSelect;
 import com.NewStates.NewMenu;
 import com.NewStates.NewNetTest;
 import com.NewStates.NewPlay;
@@ -27,6 +28,7 @@ public class NewGameStateManager {
     public static final int BADEND = 1234321;
     public static final int GOODEND = 123123123;
     public static final int NET = 12341542;
+    public static final int LEVELSELECT = 321321321;
 
     public NewGameStateManager(MyGame game, NetworkManager networkManager, boolean inAndroid)
     {
@@ -71,6 +73,9 @@ public class NewGameStateManager {
         }
         if(state == NET) {
             return new NewNetTest(this, networkManager);
+        }
+        if(state == LEVELSELECT){
+            return new NewLevelSelect(this, networkManager);
         }
         return null;
     }
