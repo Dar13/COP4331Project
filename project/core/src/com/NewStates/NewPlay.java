@@ -100,6 +100,7 @@ public class NewPlay extends  NewGameState {
     @Override
     public void update() {
         //((OrthographicCamera)stage.getCamera()).zoom += .01;
+        boolean clearedForPlacement = true;
         health = health - enemyManager.CheckEnemiesAtEnd();
         gold = gold + (enemyManager.GetDeadEnemies() * 15);
 
@@ -125,8 +126,22 @@ public class NewPlay extends  NewGameState {
             Zooka = 1;
         }
 
+        if(towerPlacement == 1) {
+            if (wayPointManager.WithinAny(towerToBePlaced.getX(), towerToBePlaced.getY())) {
+                clearedForPlacement = false;
+            } else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480) {
+                clearedForPlacement = false;
+            }
+        }
 
-        else if (!Gdx.input.isTouched() && towerPlacement == 1 && !wayPointManager.WithinAny(Gdx.input.getX(), Gdx.input.getY()))
+        if (!Gdx.input.isTouched() && towerPlacement == 1 && !clearedForPlacement)
+        {
+            towerPlacement = 0;
+            Rifle = 0;
+            Zooka = 0;
+        }
+
+        if (!Gdx.input.isTouched() && towerPlacement == 1 && clearedForPlacement)
         {
             if(Rifle == 1)
             {
@@ -144,9 +159,9 @@ public class NewPlay extends  NewGameState {
                 gold = gold - towerManager.bazookaBasePrice;
             }
         }
-        else if (towerPlacement == 1)
+
+        if (towerPlacement == 1)
         {
-            System.out.println("towerPlacement == 1");
             towerToBePlaced.setPosition(Gdx.input.getX(), MyGame.V_HEIGHT - Gdx.input.getY());
             towerToBePlacedS.setPosition(Gdx.input.getX()+ 9,MyGame.V_HEIGHT - Gdx.input.getY() - 23);
         }

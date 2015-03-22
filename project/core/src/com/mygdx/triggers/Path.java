@@ -22,22 +22,22 @@ public class Path
     public boolean IsWithin(float x, float y)
     {
 
-        if (x > x1 && x < x2 && y > y1 && y < y2)
+        if (x >= x1 && x <= x2 && y >= y1 && y <= y2)
         {
             return true;
         }
 
-        else if (x + 32 > x1 && x + 32 < x2 && y > y1 && y < y2)
+        else if (x + 32 >= x1 && x + 32 <= x2 && y >= y1 && y <= y2)
         {
             return true;
         }
 
-        else if (x > x1 && x < x2 && y + 32 > y1 && y + 32 < y2)
+        else if (x >= x1 && x <= x2 && y + 32 >= y1 && y + 32 <= y2)
         {
             return true;
         }
 
-        else if (x + 32 > x1 && x + 32 < x2 && y + 32 > y1 && y + 32 < y2)
+        else if (x + 32 >= x1 && x + 32 <= x2 && y + 32 >= y1 && y + 32 <= y2)
         {
             return true;
         }

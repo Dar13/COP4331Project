@@ -47,60 +47,6 @@ public class WayPointManager
      */
     private void ReadInWaypoints() throws FileNotFoundException
     {
-        if (!inAndroid)
-        {
-            FileHandle handle = Gdx.files.internal("Waypoints.txt");
-            File file = handle.file();
-            Scanner in = new Scanner(file);
-            in.useDelimiter(" ");
-            int xx = 0;
-            int yy = 0;
-
-            while (in.hasNext())
-            {
-                if (in.hasNextInt())
-                {
-                    int x = in.nextInt();
-                    xx = x;
-                }
-
-                if (in.hasNextInt())
-                {
-                    int y = in.nextInt();
-                    yy = y;
-                }
-
-                if (in.hasNextInt())
-                {
-                    int direction = in.nextInt();
-                    if (direction == 1)
-                    {
-                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.NORTH));
-                    }
-                    else if (direction == 2)
-                    {
-                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.SOUTH));
-                    }
-                    else if (direction == 3)
-                    {
-                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.EAST));
-                    }
-                    else if (direction == 4)
-                    {
-                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.WEST));
-                    }
-                    else if (direction == 5)
-                    {
-                        wayPoints.addLast(new WayPoint(xx, yy, WayPoint.Direction.END));
-                    }
-                }
-
-            }
-            in.close();
-        }
-
-        else if(inAndroid)
-        {
             for(int i = 0; i < map1.length; i ++)
             {
                 int x = map1[i];
@@ -129,7 +75,6 @@ public class WayPointManager
                     wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.END));
                 }
             }
-        }
     }
 
     //constructs the paths between the waypoints, so that towers cannot be placed on the paths.
@@ -143,10 +88,12 @@ public class WayPointManager
                 if(wayPoints.get(i).y > wayPoints.get(i+1).y)
                 {
                     Path NEW = new Path(wayPoints.get(i+1).x, wayPoints.get(i+1).y, wayPoints.get(i).x + 32, wayPoints.get(i).y + 32);
+                    paths.addLast(NEW);
                 }
                 else
                 {
                     Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i+1).x + 32, wayPoints.get(i+1).y + 32);
+                    paths.addLast(NEW);
                 }
             }
 
@@ -155,10 +102,12 @@ public class WayPointManager
                 if(wayPoints.get(i).x > wayPoints.get(i+1).x)
                 {
                     Path NEW = new Path(wayPoints.get(i+1).x, wayPoints.get(i+1).y, wayPoints.get(i).x + 32, wayPoints.get(i).y + 32);
+                    paths.addLast(NEW);
                 }
                 else
                 {
                     Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i+1).x + 32, wayPoints.get(i+1).y + 32);
+                    paths.addLast(NEW);
                 }
             }
             i++;
@@ -169,11 +118,15 @@ public class WayPointManager
     public boolean WithinAny(float x, float y){
         int i = 0;
 
+        System.out.println(paths.size());
+
         while (i < paths.size()){
             if (paths.get(i).IsWithin(x, y)){
                 return true;
             }
+            i++;
         }
+
 
         return false;
     }
