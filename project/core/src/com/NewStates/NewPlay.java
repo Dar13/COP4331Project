@@ -69,7 +69,7 @@ public class NewPlay extends  NewGameState {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
-        mapImg = new Texture("map.png");
+        mapImg = new Texture("MapEasy.png");
         MyActor map = new MyActor(mapImg,0,0);
 
         towers = new LinkedList<NewTower>();
@@ -101,7 +101,7 @@ public class NewPlay extends  NewGameState {
     public void update() {
         //((OrthographicCamera)stage.getCamera()).zoom += .01;
         health = health - enemyManager.CheckEnemiesAtEnd();
-        gold = gold + (enemyManager.GetDeadEnemies() * 25);
+        gold = gold + (enemyManager.GetDeadEnemies() * 15);
 
         if(rifleButton.isPressed() && towerPlacement==0 && gold >= towerManager.rifleBasePrice){
             System.out.println("test");
@@ -184,6 +184,7 @@ public class NewPlay extends  NewGameState {
         }
         font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
         font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
+        font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
         batch.end();
     }
 

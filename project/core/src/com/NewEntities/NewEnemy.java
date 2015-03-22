@@ -27,33 +27,44 @@ public class NewEnemy extends NewEntities     {
     public float health = 100;
     public float armor = 1;
     public boolean atEnd = false;
+    private Type typograph;
 
     public enum Type
     {
-        HEAVY,
         NORMAL,
-        FAST
+        FAST,
+        HEAVY
     }
 
-    public Type type;
 
     public NewEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path, Type type){
-        super(img, path.getFirst().x, path.getFirst().y);
+        super(img, path.get(0).x, path.get(0).y);
         currentWaypoint++;
         this.wayPoints = path;
         this.sprite = new Sprite(img);
         this.sprite2 = new Sprite(img2);
         this.velocity = velocity;
         this.tolerance = velocity / 2;
-        this.type = type;
+        this.typograph = type;
         switch (type){
             case HEAVY:
                 this.tolerance = velocity + 16;
+                break;
+            case NORMAL:
+                break;
+            case FAST:
+                break;
         }
-        sprite.setPosition(x, y);
-        sprite2.setPosition(x + 12, y + 2);
+        sprite.setPosition(path.get(0).x, path.get(0).y);
+        sprite2.setPosition(path.get(0).x + 12, path.get(0).y + 2);
         heading = wayPoints.getFirst().direction;
         this.armor = armor;
+        switch(heading){
+            case SOUTH:
+                sprite.rotate(-90);
+                sprite2.rotate(-90);
+                break;
+        }
     }
 
     /*
@@ -170,7 +181,7 @@ public class NewEnemy extends NewEntities     {
     //Rotating the sprites at each waypoint based on enemy type. Very broken at the moment.
     public void changeSpriteRotation()
     {
-        switch (type)
+        switch (typograph)
         {
             case HEAVY:
                 if (heading == WayPoint.Direction.EAST)
@@ -194,9 +205,11 @@ public class NewEnemy extends NewEntities     {
                             sprite2.rotate(180);
                             break;
                     }
+
+                    break;
                 }
 
-                if (heading == WayPoint.Direction.WEST)
+                else if (heading == WayPoint.Direction.WEST)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
                     {
@@ -217,9 +230,11 @@ public class NewEnemy extends NewEntities     {
                             sprite2.rotate(180);
                             break;
                     }
+
+                    break;
                 }
 
-                if (heading == WayPoint.Direction.NORTH)
+                else if (heading == WayPoint.Direction.NORTH)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
                     {
@@ -240,9 +255,11 @@ public class NewEnemy extends NewEntities     {
                             sprite2.setPosition(wayPoints.get(currentWaypoint).x - 13, wayPoints.get(currentWaypoint).y + 3);
                             break;
                     }
+
+                    break;
                 }
 
-                if (heading == WayPoint.Direction.SOUTH)
+                else if (heading == WayPoint.Direction.SOUTH)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
                     {
@@ -263,6 +280,8 @@ public class NewEnemy extends NewEntities     {
                             sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
                             break;
                     }
+
+                    break;
                 }
             case NORMAL:
                 if (heading == WayPoint.Direction.EAST)
@@ -278,13 +297,15 @@ public class NewEnemy extends NewEntities     {
                             sprite2.rotate(0);
                             break;
                         case WEST:
-                            sprite.rotate(180);
-                            sprite2.rotate(180);
+                            sprite.rotate(90);
+                            sprite2.rotate(90);
                             break;
                     }
+
+                    break;
                 }
 
-                if (heading == WayPoint.Direction.WEST)
+                else if (heading == WayPoint.Direction.WEST)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
                     {
@@ -301,9 +322,11 @@ public class NewEnemy extends NewEntities     {
                             sprite2.rotate(0);
                             break;
                     }
+
+                    break;
                 }
 
-                if (heading == WayPoint.Direction.NORTH)
+                else if (heading == WayPoint.Direction.NORTH)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
                     {
@@ -320,37 +343,42 @@ public class NewEnemy extends NewEntities     {
                             sprite2.rotate(0);
                             break;
                     }
+
+                    break;
                 }
 
-                if (heading == WayPoint.Direction.SOUTH)
+                else if (heading == WayPoint.Direction.SOUTH)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
                     {
                         case NORTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
                             break;
                         case EAST:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
+                            sprite.rotate(90);
+                            sprite2.rotate(0);
                             break;
                         case WEST:
-                            sprite.rotate(0);
+                            sprite.rotate(-90);
                             sprite2.rotate(0);
                             break;
                     }
+
+                    break;
                 }
+
             case FAST:
                 if (heading == WayPoint.Direction.EAST)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
                     {
                         case NORTH:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
+                            sprite.rotate(90);
+                            sprite2.rotate(0);
                             break;
                         case SOUTH:
-                            sprite.rotate(0);
+                            sprite.rotate(-90);
                             sprite2.rotate(0);
                             break;
                         case WEST:
@@ -358,64 +386,74 @@ public class NewEnemy extends NewEntities     {
                             sprite2.rotate(90);
                             break;
                     }
+
+                    break;
                 }
 
-                if (heading == WayPoint.Direction.WEST)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case NORTH:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
-                            break;
-                        case SOUTH:
-                            sprite.rotate(0);
-                            sprite2.rotate(0);
-                            break;
-                        case EAST:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
-                            break;
-                    }
-                }
-
-                if (heading == WayPoint.Direction.NORTH)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case EAST:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
-                            break;
-                        case SOUTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
-                            break;
-                        case WEST:
-                            sprite.rotate(0);
-                            sprite2.rotate(0);
-                            break;
-                    }
-                }
-
-                if (heading == WayPoint.Direction.SOUTH)
+                else if (heading == WayPoint.Direction.WEST)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
                     {
                         case NORTH:
                             sprite.rotate(90);
-                            sprite2.rotate(90);
+                            sprite2.rotate(0);
+                            break;
+                        case SOUTH:
+                            sprite.rotate(90);
+                            sprite2.rotate(0);
                             break;
                         case EAST:
-                            sprite.rotate(0);
+                            sprite.rotate(180);
+                            sprite2.rotate(0);
+                            break;
+                    }
+
+                    break;
+                }
+
+                else if (heading == WayPoint.Direction.NORTH)
+                {
+                    switch (wayPoints.get(currentWaypoint).direction)
+                    {
+                        case EAST:
+                            sprite.rotate(-90);
+                            sprite2.rotate(0);
+                            break;
+                        case SOUTH:
+                            sprite.rotate(180);
                             sprite2.rotate(0);
                             break;
                         case WEST:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
+                            sprite.rotate(90);
+                            sprite2.rotate(0);
                             break;
                     }
+
+                    break;
                 }
+
+                else if (heading == WayPoint.Direction.SOUTH)
+                {
+                    switch (wayPoints.get(currentWaypoint).direction)
+                    {
+                        case NORTH:
+                            sprite.rotate(180);
+                            sprite2.rotate(180);
+                            break;
+                        case EAST:
+                            sprite.rotate(90);
+                            sprite2.rotate(0);
+                            break;
+                        case WEST:
+                            sprite.rotate(-90);
+                            sprite2.rotate(0);
+                            break;
+                    }
+
+                    break;
+                }
+
+
         }
     }
 

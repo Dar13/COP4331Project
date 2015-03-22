@@ -40,6 +40,10 @@ public class NewEnemyManager extends Actor{
     public LinkedList<NewEnemy> enemies;
     public LinkedList<NewTower> towers;
     private LinkedList<WayPoint> path;
+    private float multiplierS = 0;
+    private float multiplierA = 0;
+    private float incrementer = 1;
+    private float multiplierSp = 0;
 
     public NewEnemyManager(LinkedList<WayPoint> path)
     {
@@ -59,7 +63,7 @@ public class NewEnemyManager extends Actor{
     //Adds new Normal enemy to the Enemy linked list.
     public void AddEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy New = new NewEnemy(img, img2, velocity, armor, path, NewEnemy.Type.NORMAL);
+        NewEnemy New = new NewEnemy(img, img2, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.NORMAL);
         enemies.addLast(New);
         numEnemies++;
     }
@@ -67,7 +71,7 @@ public class NewEnemyManager extends Actor{
     //Adds new Fast enemy to the Enemy linked list.
     public void AddFastEnemy(Texture img3, Texture img4, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy nEw = new NewEnemy(img3, img4, velocity, armor, path, NewEnemy.Type.FAST);
+        NewEnemy nEw = new NewEnemy(img3, img4, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.FAST);
         enemies.addLast(nEw);
         numEnemies++;
     }
@@ -75,7 +79,7 @@ public class NewEnemyManager extends Actor{
     //Adds new Heavy enemy to the Enemy linked list.
     public void AddHeavyEnemy(Texture img5, Texture img6, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy neW = new NewEnemy(img5, img6, velocity, armor, path, NewEnemy.Type.HEAVY);
+        NewEnemy neW = new NewEnemy(img5, img6, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.HEAVY);
         enemies.addLast(neW);
         numEnemies++;
     }
@@ -129,23 +133,36 @@ public class NewEnemyManager extends Actor{
     public float NextWaveCalculator()
     {
         float multiplier = 0;
+        multiplierS = currentWave * .05f;
+        multiplierA = currentWave * .05f;
         for (int i = 0; i < towers.size(); i ++)
         {
             switch (towers.get(i).type)
             {
                 case RIFLE:
                     multiplier = multiplier + .25f;
+                    multiplierS = multiplierS + .01f;
+                    multiplierA = multiplierA + .05f;
+                    multiplierSp = multiplierSp + .1f;
                     break;
                 case BAZOOKA:
                     multiplier = multiplier + .5f;
+                    multiplierS = multiplierS + .02f;
+                    multiplierA = multiplierA + .15f;
+                    multiplierSp = multiplierSp + .1f;
                     break;
                 case SNIPER:
                     multiplier = multiplier + 1;
+                    multiplierS = multiplierS + .04f;
+                    multiplierA = multiplierA + .17f;
+                    multiplierSp = multiplierSp + .1f;
+
                     break;
 
             }
         }
-
+        incrementer = incrementer + .07f;
+        multiplierSp = multiplierSp + .5f;
         return multiplier;
     }
 
@@ -176,7 +193,7 @@ public class NewEnemyManager extends Actor{
         {
             timeSinceLastNorm++;
 
-            if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0) {
+            if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
                 AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
@@ -190,7 +207,7 @@ public class NewEnemyManager extends Actor{
             timeSinceLastNorm++;
             timeSinceLastFast++;
 
-            if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
+            if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
                 AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
@@ -198,7 +215,7 @@ public class NewEnemyManager extends Actor{
                 totalWavesToBeSpawned--;
             }
 
-            if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
+            if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
                 AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
                 timeSinceLastFast = 0;
@@ -213,7 +230,7 @@ public class NewEnemyManager extends Actor{
             timeSinceLastFast++;
             timeSinceLastHeavy++;
 
-            if (timeSinceLastNorm > MyGame.fpsretrieve/2 && waveToBeSpawnedNorm > 0)
+            if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
                 AddEnemy(EnemyImg, NullLayer, 3, 1, path);
                 timeSinceLastNorm = 0;
@@ -221,7 +238,7 @@ public class NewEnemyManager extends Actor{
                 totalWavesToBeSpawned--;
             }
 
-            if (timeSinceLastFast > MyGame.fpsretrieve/3 && waveToBeSpawnedFast > 0)
+            if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
                 AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
                 timeSinceLastFast = 0;
@@ -229,7 +246,7 @@ public class NewEnemyManager extends Actor{
                 totalWavesToBeSpawned--;
             }
 
-            if (timeSinceLastHeavy > MyGame.fpsretrieve * 3 && waveToBeSpawnedHeavy > 0)
+            if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
             {
                 AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
                 timeSinceLastHeavy = 0;

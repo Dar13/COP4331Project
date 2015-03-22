@@ -46,7 +46,6 @@ public class NewTower extends NewEntities {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         sprite2.draw(batch);
-        System.out.printf("cunt\n");
         sprite.draw(batch);
     }
 }

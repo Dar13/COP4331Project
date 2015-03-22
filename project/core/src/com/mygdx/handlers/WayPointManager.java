@@ -23,7 +23,7 @@ public class WayPointManager
     public File inputtxt;
     boolean inAndroid;
     //Hardcoded int array of waypoints for android version.
-    private int[] map1 = new int[]{0, 0, 3, 608, 0, 1, 608, 448, 4, 0, 448, 2, 0, 0, 5};
+    private int[] map1 = new int[]{0, 448, 2, 0, 0, 3, 96, 0, 1, 96, 448, 3, 192, 448, 2, 192, 0, 3, 288, 0, 1, 288, 448, 3, 384, 448, 2, 384, 0, 3, 480, 0, 1, 480, 448, 3, 576, 448, 2, 576, 256, 3, 608, 256, 5};
 
     public WayPointManager(boolean inAndroid)
     {
