@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.action.Action;
 import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
 import com.mygdx.states.StateChange;
@@ -29,8 +30,8 @@ public class NetworkManager extends Listener implements Runnable
     public static final int MAX_CLIENTS = 4;
 
     //These lists will hold changes temporarily until they are either sent or applied
-    private List<StateChange> queuedLocalChanges;
-    private List<StateChange> queuedRemoteChanges;
+    private List<Action> queuedLocalChanges;
+    private List<Action> queuedRemoteChanges;
 
     public enum ConnectionMode
     {
@@ -101,8 +102,8 @@ public class NetworkManager extends Listener implements Runnable
         // this is the closest to a traditional mutex I could find.
         // allows multiple reads at one time while only allowing one write lock.
         mutex = new ReentrantReadWriteLock(true);
-        queuedLocalChanges = new ArrayList<StateChange>();
-        queuedRemoteChanges = new ArrayList<StateChange>();
+        queuedLocalChanges = new ArrayList<Action>();
+        queuedRemoteChanges = new ArrayList<Action>();
     }
 
     public HashMap<ConnectionMode, NetworkInterface> getNetworkImpls()
@@ -579,16 +580,23 @@ public class NetworkManager extends Listener implements Runnable
      * This method is to be called whenever an action happens; changes are queued locally so we
      * can easily alter sending and receiving timings
      */
-    public void addToSendQueue(StateChange stateChange)
+    public void addToSendQueue(Action action)
     {
-        queuedLocalChanges.add(stateChange);
+        if(isServer
+            && action.actionClass == Action.ActionClass.ACTION_ENEMY_CREATE
+            || action.actionClass == Action.ActionClass.ACTION_TOWER_PLACED
+            )
+        {
+
+        }
+        queuedLocalChanges.add(action);
     }
 
     /**
      * This method is to be called from within the Game State to request the updates that were
      * received by the network manager
      */
-    public List<StateChange> updateGameState()
+    public List<Action> updateGameState()
     {
         if(syncReady())
             return queuedRemoteChanges;
