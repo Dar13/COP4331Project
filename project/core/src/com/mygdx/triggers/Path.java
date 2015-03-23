@@ -17,4 +17,34 @@ public class Path
         this.x2 = x2;
         this.y2 = y2;
     }
+
+    //Check to see if any corner of the tower is within the path.
+    public boolean IsWithin(float x, float y)
+    {
+
+        if (x >= x1 && x <= x2 && y >= y1 && y <= y2)
+        {
+            return true;
+        }
+
+        else if (x + 32 >= x1 && x + 32 <= x2 && y >= y1 && y <= y2)
+        {
+            return true;
+        }
+
+        else if (x >= x1 && x <= x2 && y + 32 >= y1 && y + 32 <= y2)
+        {
+            return true;
+        }
+
+        else if (x + 32 >= x1 && x + 32 <= x2 && y + 32 >= y1 && y + 32 <= y2)
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
 }

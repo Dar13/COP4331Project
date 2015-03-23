@@ -1,5 +1,8 @@
 package com.mygdx.net;
 
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Server;
+
 /**
  * Interface for all internal network implementations.
  */
@@ -7,8 +10,10 @@ public interface NetworkInterface
 {
     /**
      * Sets up the network infrastructure as needed.
+     * @param client
+     * @param server
      */
-    public void setup();
+    public java.util.ArrayList<java.net.InetAddress> setup(Client client, Server server);
 
     /**
      * Returns if the interface is ready to be used.

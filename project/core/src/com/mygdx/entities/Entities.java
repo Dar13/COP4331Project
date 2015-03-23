@@ -12,6 +12,7 @@ public abstract class Entities
     protected Sprite sprite;
     protected float x;
     protected float y;
+    public int entityID;
 
     public Entities(Texture img, float x, float y)
     {
@@ -19,7 +20,6 @@ public abstract class Entities
         this.x = x;
         this.y = y;
     }
-
 
     public abstract void render(SpriteBatch sb);
 }

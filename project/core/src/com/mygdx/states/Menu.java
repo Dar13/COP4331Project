@@ -1,13 +1,12 @@
 package com.mygdx.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.UI.GameButton;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.NetworkManager;
@@ -17,30 +16,39 @@ import com.mygdx.handlers.NetworkManager;
  */
 public class Menu extends GameState
 {
-
-    public SpriteBatch spriteBatch;
+    private TextButton startButton;
+    private TextButton netButton;
+    private Stage stage;
     private OrthographicCamera cam;
-    private GameButton start;
-    private Texture enemyImg;
-    private BitmapFont font;
 
-    public Menu(GameStateManager gameStateManager, NetworkManager networkManager)
+    public Menu(final GameStateManager gameStateManager, NetworkManager networkManager)
     {
         super(gameStateManager, networkManager);
 
-        cam = new OrthographicCamera();
+        stage = new Stage();
+        cam = (OrthographicCamera) stage.getCamera();
         cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
+        Gdx.input.setInputProcessor(stage);
 
-        spriteBatch = new SpriteBatch();
-        spriteBatch.setProjectionMatrix(cam.combined);
+        startButton = new TextButton("Start", textButtonStyle);
+        startButton.setPosition(MyGame.V_WIDTH / 4, MyGame.V_HEIGHT * 5 / 8);
+        startButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameStateManager.setState(GameStateManager.PLAY);
+            }
+        });
+        stage.addActor(startButton);
 
-        start = new GameButton(MyGame.V_WIDTH / 2, MyGame.V_HEIGHT / 2, cam);
-
-        enemyImg = new Texture("EnemyDev.png");
-
-        font = new BitmapFont();
-        font.setColor(Color.WHITE);
-        font.scale(3);
+        netButton = new TextButton("Net", textButtonStyle);
+        netButton.setPosition(MyGame.V_WIDTH / 4, MyGame.V_HEIGHT / 4);
+        netButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameStateManager.setState(GameStateManager.NET);
+            }
+        });
+        stage.addActor(netButton);
     }
 
     public void handleInput()
@@ -49,30 +57,18 @@ public class Menu extends GameState
 
     public void update(float deltaTime)
     {
-        start.update(deltaTime);
-        if (start.isReleased())
-        {
-            gameStateManager.setState(GameStateManager.PLAY);
-        }
     }
 
     public void render()
     {
-        cam.update();
-
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        // clear screen, then draw stage
+        Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        start.render(spriteBatch);
-
-        spriteBatch.begin();
-        font.draw(spriteBatch, "Start", 260, 270);
-
-        spriteBatch.end();
+        stage.draw();
     }
 
     public void dispose()
     {
-        enemyImg.dispose();
+
     }
 }
