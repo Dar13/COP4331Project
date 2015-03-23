@@ -22,14 +22,16 @@ public abstract class Action
     }
 
     //This bool differentiates between locally generated actions and actions received from server
-    public boolean localChange;
+    public boolean localChange, needsID;
     public ActionClass actionClass; //not sure if this will be needed -- would rather have it
+    public Entity entity = null;
 
     public static AtomicInteger tempEntityID = new AtomicInteger(0);
 
     public Action()
     {
         localChange = true;
+        needsID = false;
     }
 
     //These methods will contain the implementation specific code for each type of action

@@ -582,12 +582,9 @@ public class NetworkManager extends Listener implements Runnable
      */
     public void addToSendQueue(Action action)
     {
-        if(isServer
-            && action.actionClass == Action.ActionClass.ACTION_ENEMY_CREATE
-            || action.actionClass == Action.ActionClass.ACTION_TOWER_PLACED
-            )
+        if(isServer && action.needsID)
         {
-
+            action.en
         }
         queuedLocalChanges.add(action);
     }

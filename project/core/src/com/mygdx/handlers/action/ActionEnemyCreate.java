@@ -8,16 +8,17 @@ import com.mygdx.entities.Enemy;
 public class ActionEnemyCreate extends Action
 {
     public int tempID;
-    public Enemy newEnemy;
 
     public ActionEnemyCreate(Enemy newEnemy)
     {
         actionClass = ActionClass.ACTION_ENEMY_CREATE;
-        this.newEnemy = newEnemy;
+        this.entity = newEnemy;
 
         if(localChange)
+        {
             newEnemy.entityID = tempEntityID.getAndIncrement();
-
+            needsID = true;
+        }
 
     }
 
