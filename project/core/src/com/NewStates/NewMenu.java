@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.handlers.AssetLoader;
 import com.mygdx.handlers.NetworkManager;
 
 
@@ -25,6 +26,10 @@ public class NewMenu extends NewGameState{
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
+        /* Menu Music */
+        //AssetLoader.loadMusic(1);
+        //AssetLoader.music.play();
+
         singleplayer = new TextButton("Single Player",skin);
         singleplayer.setSize(200, 60);
         singleplayer.setPosition(game.V_WIDTH/2- singleplayer.getWidth()/2, game.V_HEIGHT*3/4);
@@ -41,6 +46,9 @@ public class NewMenu extends NewGameState{
     public void update() {
         if(singleplayer.isChecked()){
             gameStateManager.setState(NewGameStateManager.LEVELSELECT);
+            AssetLoader.loadSound(1);
+            AssetLoader.sound.play();
+            //AssetLoader.sound.dispose(); Need to dispose of this sound somewhere...
         }
         if(multiplayer.isChecked()) {
             gameStateManager.setState(NewGameStateManager.NET);
