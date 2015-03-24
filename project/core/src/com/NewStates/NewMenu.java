@@ -48,7 +48,6 @@ public class NewMenu extends NewGameState{
             gameStateManager.setState(NewGameStateManager.LEVELSELECT);
             AssetLoader.loadSound(1);
             AssetLoader.sound.play();
-            //AssetLoader.sound.dispose(); Need to dispose of this sound somewhere...
         }
         if(multiplayer.isChecked()) {
             gameStateManager.setState(NewGameStateManager.NET);
