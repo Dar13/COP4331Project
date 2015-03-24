@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -28,6 +29,7 @@ public class NetworkManager extends Listener implements Runnable
     public static final int SERVER_TCP_PORT = 0xDDD;
     public static final int SERVER_UDP_PORT = 0xDDE;
     public static final int MAX_CLIENTS = 4;
+    public static final int INITIAL_ENTITY_ID = 2048;
 
     //These lists will hold changes temporarily until they are either sent or applied
     private List<Action> queuedLocalChanges;
@@ -75,6 +77,7 @@ public class NetworkManager extends Listener implements Runnable
     protected int uidCounter = 0;
     protected ArrayList<GameConnection> connections;
     protected int expectedAmountClients;
+    private AtomicInteger entityID;
 
     // client
     protected Client client;
@@ -172,6 +175,8 @@ public class NetworkManager extends Listener implements Runnable
 
                 server = new Server();
                 server.addListener(this);
+
+                entityID = new AtomicInteger(INITIAL_ENTITY_ID);
             }
             else
             {
@@ -580,15 +585,15 @@ public class NetworkManager extends Listener implements Runnable
      * This method is to be called whenever an action happens; changes are queued locally so we
      * can easily alter sending and receiving timings
      */
-    /*public void addToSendQueue(Action action)
+    public void addToSendQueue(Action action)
     {
         if(isServer && action.needsID)
         {
-            action.entity
+            action.entity.entityID = entityID.getAndIncrement();
         }
         queuedLocalChanges.add(action);
     }
-    */
+
 
     /**
      * This method is to be called from within the Game State to request the updates that were
