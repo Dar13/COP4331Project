@@ -11,6 +11,7 @@ public abstract class NewEntities extends Actor {
     public Sprite sprite;
     protected float x;
     protected float y;
+    public int entityID;
 
     public NewEntities(Texture img, float x, float y)
     {

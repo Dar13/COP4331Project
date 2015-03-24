@@ -1,5 +1,6 @@
 package com.mygdx.handlers.action;
 
+import com.NewEntities.NewEnemy;
 import com.mygdx.entities.Enemy;
 
 /**
@@ -9,7 +10,7 @@ public class ActionEnemyCreate extends Action
 {
     public int tempID;
 
-    public ActionEnemyCreate(Enemy newEnemy)
+    public ActionEnemyCreate(NewEnemy newEnemy)
     {
         actionClass = ActionClass.ACTION_ENEMY_CREATE;
         this.entity = newEnemy;
