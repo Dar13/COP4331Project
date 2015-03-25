@@ -116,8 +116,6 @@ public class NewPlay extends  NewGameState {
         health = health - enemyManager.CheckEnemiesAtEnd();
         gold = gold + (enemyManager.GetDeadEnemies() * 15);
 
-        System.out.println(stage.screenToStageCoordinates(new Vector2(MyInput.x, MyInput.y)));
-
 
         if(rifleButton.isPressed() && towerPlacement==0 && gold >= towerManager.rifleBasePrice){
             System.out.println("test");

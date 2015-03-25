@@ -81,6 +81,7 @@ public class NewEnemyManager extends Actor{
      */
     public void addEnemy(Entity.Type type, Texture baseTexture, Texture otherTexture, List<WayPoint> path)
     {
+        System.out.println("hi");
         Enemy enemy = EnemyFactory.createEnemy(type, baseTexture, otherTexture, 0, 0);
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()
@@ -338,7 +339,7 @@ public class NewEnemyManager extends Actor{
         }
 
 
-        for(Enemy enemy : enemyList)
+      /*  for(Enemy enemy : enemyList)
         {
             if(!enemy.isAlive())
             {
@@ -346,9 +347,9 @@ public class NewEnemyManager extends Actor{
                 removeEnemy(enemy.entityID);
                 numEnemies--;
             }
-        }
+        }*/
 
-        /*
+
         for (int i = 0; i < enemies.size(); i++)
         {
             if (enemies.get(i).health <= 0)
@@ -358,7 +359,6 @@ public class NewEnemyManager extends Actor{
                 numEnemies--;
             }
         }
-        */
 
         // Really need to rethink this. Maybe combine previous loops together into one big one?
         for(Enemy enemy : enemyList)
@@ -433,9 +433,11 @@ public class NewEnemyManager extends Actor{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        System.out.println( numEnemies + " " + enemies.size());
         for (int i = 0; i < numEnemies; i++)
         {
-            enemies.get(i).draw(batch,parentAlpha);
+            System.out.println(i + " " + numEnemies);
+            enemyList.get(i).draw(batch,parentAlpha);
         }
     }
 }

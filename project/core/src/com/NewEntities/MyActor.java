@@ -9,15 +9,19 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  */
 public class MyActor extends Entity
 {
+    Sprite img;
 
-    public MyActor(Texture img,float x,float y)
+    public MyActor(Texture texture,float x,float y)
     {
         super(x,y);
+        this.img = new Sprite(texture);
+        img.setPosition(x,y);
     }
 
 
     @Override
     public void draw(Batch batch, float parentAlpha)
     {
+        batch.draw(img, img.getX(),img.getY());
     }
 }
