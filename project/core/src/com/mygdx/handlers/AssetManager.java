@@ -12,7 +12,7 @@ import com.badlogic.gdx.audio.Sound;
  * for the different things we want to load.
  */
 
-public class AssetLoader {
+public class AssetManager {
     public static Sound sound;
     public static Music music;
 
