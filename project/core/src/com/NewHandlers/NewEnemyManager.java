@@ -1,5 +1,8 @@
 package com.NewHandlers;
 
+import com.NewEntities.Enemy;
+import com.NewEntities.EnemyFactory;
+import com.NewEntities.Entity;
 import com.NewEntities.NewEnemy;
 import com.NewEntities.NewTower;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.MyGame;
 import com.mygdx.triggers.WayPoint;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by James on 3/20/2015.
@@ -38,6 +44,9 @@ public class NewEnemyManager extends Actor{
     private Texture TigerBase = new Texture("tigerbase.png");
     private Texture TigerTurret = new Texture("tigerturret.png");
     public LinkedList<NewEnemy> enemies;
+
+    public List<Enemy> enemyList;
+
     public LinkedList<NewTower> towers;
     private LinkedList<WayPoint> path;
     private float multiplierS = 0;
@@ -58,12 +67,31 @@ public class NewEnemyManager extends Actor{
         waveToBeSpawnedHeavy = waveInfoHeavy;
         this.path = path;
 
+        enemyList = new ArrayList<>();
+
+    }
+
+    /**
+     * Creates and adds an enemy to the list of current enemies.
+     *
+     * @param type
+     * @param baseTexture
+     * @param otherTexture
+     * @param path
+     */
+    public void addEnemy(Entity.Type type, Texture baseTexture, Texture otherTexture, List<WayPoint> path)
+    {
+        System.out.println("hi");
+        Enemy enemy = EnemyFactory.createEnemy(type, baseTexture, otherTexture, 0, 0);
+        enemy.setWayPoints(path);
+        enemyList.add(enemy); // this is an append operation, same as addLast()
+        numEnemies++;
     }
 
     //Adds new Normal enemy to the Enemy linked list.
     public void AddEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy New = new NewEnemy(img, img2, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.NORMAL);
+        NewEnemy New = new NewEnemy(img, img2, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_NORMAL);
         enemies.addLast(New);
         numEnemies++;
     }
@@ -71,7 +99,7 @@ public class NewEnemyManager extends Actor{
     //Adds new Fast enemy to the Enemy linked list.
     public void AddFastEnemy(Texture img3, Texture img4, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy nEw = new NewEnemy(img3, img4, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.FAST);
+        NewEnemy nEw = new NewEnemy(img3, img4, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_FAST);
         enemies.addLast(nEw);
         numEnemies++;
     }
@@ -79,26 +107,32 @@ public class NewEnemyManager extends Actor{
     //Adds new Heavy enemy to the Enemy linked list.
     public void AddHeavyEnemy(Texture img5, Texture img6, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy neW = new NewEnemy(img5, img6, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.HEAVY);
+        NewEnemy neW = new NewEnemy(img5, img6, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_HEAVY);
         enemies.addLast(neW);
         numEnemies++;
     }
 
     //Removes targeted enemy from Enemy Linked list
-    public void RemoveEnemy(int toBeDeleted)
+    public void removeEnemy(int id)
     {
-
+        ListIterator<Enemy> iterator = enemyList.listIterator();
+        while(iterator.hasNext())
+        {
+            if(iterator.next().entityID == id)
+            {
+                iterator.remove();
+            }
+        }
+        /*
         if (toBeDeleted == 0)
         {
             enemies.removeFirst();
         }
-
         else
         {
             enemies.remove(toBeDeleted);
         }
-
-
+        */
     }
 
     //Calculates the number of enemies to spawn in the next wave based on the multiplier.
@@ -139,19 +173,19 @@ public class NewEnemyManager extends Actor{
         {
             switch (towers.get(i).type)
             {
-                case RIFLE:
+                case TOWER_RIFLE:
                     multiplier = multiplier + .25f;
                     multiplierS = multiplierS + .01f;
                     multiplierA = multiplierA + .05f;
                     multiplierSp = multiplierSp + .1f;
                     break;
-                case BAZOOKA:
+                case TOWER_BAZOOKA:
                     multiplier = multiplier + .5f;
                     multiplierS = multiplierS + .02f;
                     multiplierA = multiplierA + .15f;
                     multiplierSp = multiplierSp + .1f;
                     break;
-                case SNIPER:
+                case TOWER_SNIPER:
                     multiplier = multiplier + 1;
                     multiplierS = multiplierS + .04f;
                     multiplierA = multiplierA + .17f;
@@ -176,9 +210,11 @@ public class NewEnemyManager extends Actor{
         Update(delta);
     }
 
-    public void SetTowers(LinkedList<NewTower> towers){
+    public void SetTowers(LinkedList<NewTower> towers)
+    {
         this.towers = towers;
     }
+
     public void Update(float fps)
     {
         //accumulator +=deltaTime;
@@ -194,7 +230,9 @@ public class NewEnemyManager extends Actor{
             timeSinceLastNorm++;
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
-                AddEnemy(EnemyImg, NullLayer, 3, 1, path);
+                //AddEnemy(EnemyImg, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, EnemyImg, NullLayer, path);
+
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
                 totalWavesToBeSpawned--;
@@ -209,7 +247,9 @@ public class NewEnemyManager extends Actor{
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
-                AddEnemy(EnemyImg, NullLayer, 3, 1, path);
+                //AddEnemy(EnemyImg, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, EnemyImg, NullLayer, path);
+
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
                 totalWavesToBeSpawned--;
@@ -217,7 +257,9 @@ public class NewEnemyManager extends Actor{
 
             if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
-                AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
+                //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
+                addEnemy(Entity.Type.ENEMY_FAST, EnemyImg, NullLayer, path);
+
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
                 totalWavesToBeSpawned--;
@@ -232,7 +274,9 @@ public class NewEnemyManager extends Actor{
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
-                AddEnemy(EnemyImg, NullLayer, 3, 1, path);
+                //AddEnemy(EnemyImg, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, EnemyImg, NullLayer, path);
+
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
                 totalWavesToBeSpawned--;
@@ -240,7 +284,9 @@ public class NewEnemyManager extends Actor{
 
             if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
-                AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
+                //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
+                addEnemy(Entity.Type.ENEMY_FAST, EnemyImg, NullLayer, path);
+
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
                 totalWavesToBeSpawned--;
@@ -248,13 +294,24 @@ public class NewEnemyManager extends Actor{
 
             if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
             {
-                AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
+                //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
+                addEnemy(Entity.Type.ENEMY_HEAVY, TigerBase, TigerTurret, path);
+
                 timeSinceLastHeavy = 0;
                 waveToBeSpawnedHeavy--;
                 totalWavesToBeSpawned--;
             }
         }
 
+        /*
+        for(Enemy enemy : enemyList)
+        {
+            if(enemy != null)
+            {
+                // TODO: COME BACK WHEN TOWERS ARE REWORKED
+            }
+        }
+        */
 
         //Enemy health decrementer, very crude atm.
         for (int i = 0; i < enemies.size(); i++)
@@ -282,27 +339,44 @@ public class NewEnemyManager extends Actor{
         }
 
 
+      /*  for(Enemy enemy : enemyList)
+        {
+            if(!enemy.isAlive())
+            {
+                numDeadEnemies++;
+                removeEnemy(enemy.entityID);
+                numEnemies--;
+            }
+        }*/
+
+
         for (int i = 0; i < enemies.size(); i++)
         {
             if (enemies.get(i).health <= 0)
             {
                 numDeadEnemies++;
-                RemoveEnemy(i);
+                removeEnemy(i);
                 numEnemies--;
             }
-
         }
 
-
-
+        // Really need to rethink this. Maybe combine previous loops together into one big one?
+        for(Enemy enemy : enemyList)
+        {
+            if(!enemy.check())
+            {
+                enemy.move();
+            }
+        }
+        /*
         for (int i = 0; i < enemies.size(); i++)
         {
             if (!enemies.get(i).Check())
             {
                 enemies.get(i).Move();
             }
-
         }
+        */
 
 
     }
@@ -320,15 +394,26 @@ public class NewEnemyManager extends Actor{
     public int CheckEnemiesAtEnd()
     {
         int enemyAtEnd = 0;
+        /*
         for (int i = 0; i < enemies.size(); i++)
         {
             if (enemies.get(i).atEnd)
             {
-                RemoveEnemy(i);
+                removeEnemy(i);
                 numEnemies--;
                 enemyAtEnd++;
             }
 
+        }
+        */
+        for(ListIterator<Enemy> iterator = enemyList.listIterator(); iterator.hasNext();)
+        {
+            if(iterator.next().isNavigationFinished())
+            {
+                iterator.remove();
+                numEnemies--;
+                enemyAtEnd++;
+            }
         }
         return enemyAtEnd;
     }
@@ -348,9 +433,11 @@ public class NewEnemyManager extends Actor{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        System.out.println( numEnemies + " " + enemies.size());
         for (int i = 0; i < numEnemies; i++)
         {
-            enemies.get(i).draw(batch,parentAlpha);
+            System.out.println(i + " " + numEnemies);
+            enemyList.get(i).draw(batch,parentAlpha);
         }
     }
 }

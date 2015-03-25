@@ -1,6 +1,7 @@
 package com.NewStates;
 
 import com.NewHandlers.NewGameStateManager;
+import com.NewUI.MyStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,13 +17,13 @@ import com.mygdx.handlers.NetworkManager;
  */
 public class NewMenu extends NewGameState{
 
-    private Stage stage;
+    private MyStage stage;
     private TextButton singleplayer;
     private TextButton multiplayer;
 
     public NewMenu(NewGameStateManager gameStateManager,NetworkManager networkManager){
         super(gameStateManager,networkManager);
-        stage = new Stage();
+        stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 

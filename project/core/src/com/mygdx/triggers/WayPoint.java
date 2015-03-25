@@ -9,12 +9,19 @@ public class WayPoint
     public float y;
     public enum Direction
     {
-        NORTH,
-        SOUTH,
-        EAST,
-        WEST,
-        END, // NOTE: Discussion is needed
-        NONE
+        NORTH(0,1),
+        SOUTH(0,-1),
+        EAST(1,0),
+        WEST(-1,0),
+        END(0,0), // NOTE: Discussion is needed
+        NONE(0,0);
+
+        public int x,y;
+        Direction(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
     }
 
     public Direction direction;

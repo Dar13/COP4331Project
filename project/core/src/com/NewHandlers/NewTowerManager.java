@@ -39,21 +39,21 @@ public class NewTowerManager extends Actor {
     public void addRifleTower(float x, float y)
     {
         System.out.println("addRifleTower");
-        NewTower New = new NewTower(RifleTower, TowerShadow, x, y, baseRifleDamage, baseRifleRange, NewTower.Type.RIFLE);
+        NewTower New = new NewTower(RifleTower, TowerShadow, x, y, baseRifleDamage, baseRifleRange, NewTower.Type.TOWER_RIFLE);
         towers.addLast(New);
     }
 
     //Adds new bazooka tower to the tower linked list.
     public void addBazookaTower(float x, float y)
     {
-        NewTower New = new NewTower(BazookaTower, TowerShadow, x, y, baseBazookaDamage, baseBazookaRange, NewTower.Type.BAZOOKA);
+        NewTower New = new NewTower(BazookaTower, TowerShadow, x, y, baseBazookaDamage, baseBazookaRange, NewTower.Type.TOWER_BAZOOKA);
         towers.addLast(New);
     }
 
     //Adds new sniper tower to the tower linked list.
     public void addSniperTower(float x, float y)
     {
-        NewTower New = new NewTower(RifleTower, TowerShadow, x, y, baseSniperDamage, baseSniperRange, NewTower.Type.SNIPER);
+        NewTower New = new NewTower(RifleTower, TowerShadow, x, y, baseSniperDamage, baseSniperRange, NewTower.Type.TOWER_SNIPER);
         towers.addLast(New);
     }
 

@@ -3,6 +3,7 @@ package com.NewStates;
 // LibGDX includes
 
 import com.NewHandlers.NewGameStateManager;
+import com.NewUI.MyStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,7 +22,7 @@ import com.mygdx.handlers.NetworkManager;
 public class NewNetTest extends NewGameState
 {
     protected boolean connected = false;
-    private Stage stage;
+    private MyStage stage;
     private TextButton serverButton;
     private TextButton clientButton;
     private OrthographicCamera cam;
@@ -30,7 +31,7 @@ public class NewNetTest extends NewGameState
     {
         super(gameStateManager, networkManager);
 
-        stage = new Stage();
+        stage = new MyStage();
         cam = (OrthographicCamera) stage.getCamera();
         cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
