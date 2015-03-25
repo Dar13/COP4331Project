@@ -10,7 +10,8 @@ import java.util.LinkedList;
 /**
  * Created by James on 3/18/2015.
  */
-public class NewEnemy extends NewEntities     {
+public class NewEnemy extends Entity
+{
 
     public static final int VELOCITY = 3;
     public static final int ARMOR = 1;
@@ -29,7 +30,7 @@ public class NewEnemy extends NewEntities     {
     public boolean atEnd = false;
 
     public NewEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path, Type type){
-        super(img, path.get(0).x, path.get(0).y);
+        super(path.get(0).x, path.get(0).y);
         currentWaypoint++;
         this.wayPoints = path;
         this.sprite = new Sprite(img);
@@ -199,7 +200,6 @@ public class NewEnemy extends NewEntities     {
 
                     break;
                 }
-
                 else if (heading == WayPoint.Direction.WEST)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
@@ -224,7 +224,6 @@ public class NewEnemy extends NewEntities     {
 
                     break;
                 }
-
                 else if (heading == WayPoint.Direction.NORTH)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
@@ -249,7 +248,6 @@ public class NewEnemy extends NewEntities     {
 
                     break;
                 }
-
                 else if (heading == WayPoint.Direction.SOUTH)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
