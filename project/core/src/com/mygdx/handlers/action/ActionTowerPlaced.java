@@ -1,25 +1,25 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.NewEnemy;
-import com.mygdx.entities.Enemy;
+import com.NewEntities.NewTower;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
 
 /**
- * Created by rob on 3/23/15.
+ * Created by rob on 3/25/15.
  */
-public class ActionEnemyCreate extends Action
+public class ActionTowerPlaced extends Action
 {
-    public int tempID;
-
-    public ActionEnemyCreate(GameState gameState, NetworkManager networkManager, NewEnemy newEnemy)
+    public ActionTowerPlaced(GameState gameState, NetworkManager networkManager, NewTower tower)
     {
         super(gameState, networkManager);
 
-        actionClass = ActionClass.ACTION_ENEMY_CREATE;
-        this.entity = newEnemy;
+        this.networkManager = networkManager;
+        this.gameState = gameState;
 
-        newEnemy.entityID = tempEntityID.getAndIncrement();
+        actionClass = Action.ActionClass.ACTION_TOWER_PLACED;
+        this.entity = tower;
+
+        tower.entityID = tempEntityID.getAndIncrement();
         needsID = true;
 
         updateGamestate();

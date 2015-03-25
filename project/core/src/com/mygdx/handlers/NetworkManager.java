@@ -9,7 +9,6 @@ import com.mygdx.game.MyGame;
 import com.mygdx.handlers.action.Action;
 import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
-import com.mygdx.states.StateChange;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -588,9 +587,8 @@ public class NetworkManager extends Listener implements Runnable
     public void addToSendQueue(Action action)
     {
         if(isServer && action.needsID)
-        {
             action.entity.entityID = entityID.getAndIncrement();
-        }
+
         queuedLocalChanges.add(action);
     }
 
@@ -624,7 +622,7 @@ public class NetworkManager extends Listener implements Runnable
      * This method should be called from whatever callback we use when changes come in from the
      * network
      */
-    private void receiveChanges(List<StateChange> changes)
+    private void receiveChanges(List<Action> changes)
     {
         /**
          * TODO: this method is implementation dependent, but should look roughly like the following:
