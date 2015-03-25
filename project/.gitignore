@@ -63,3 +63,5 @@ gradle-app.setting
 .DS_Store
 *.db
 /kryonet-2.21/
+
+local.properties
