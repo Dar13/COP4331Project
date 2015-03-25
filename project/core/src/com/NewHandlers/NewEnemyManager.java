@@ -82,7 +82,6 @@ public class NewEnemyManager extends Actor{
      */
     public void addEnemy(Entity.Type type, Texture baseTexture, Texture otherTexture, List<WayPoint> path)
     {
-        System.out.println("hi");
         Enemy enemy = EnemyFactory.createEnemy(type, baseTexture, otherTexture, 0, 0);
         enemy.entityID = idCounter;
         idCounter++;

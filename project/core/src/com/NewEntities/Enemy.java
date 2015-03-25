@@ -63,6 +63,12 @@ public abstract class Enemy extends Entity
         position.x = wayPoints.get(currentWayPoint).x;
         position.y = wayPoints.get(currentWayPoint).y;
 
+        base.setX(position.x);
+        base.setY(position.y);
+
+        other.setX(position.x);
+        other.setY(position.y);
+
         heading = wayPoints.get(currentWayPoint).direction;
     }
 
@@ -92,14 +98,11 @@ public abstract class Enemy extends Entity
         {
             WayPoint wayPoint = wayPoints.get(currentWayPoint);
             Vector2 wpPosition = new Vector2(wayPoint.x, wayPoint.y);
-
-            Vector2 distance = position.sub(wpPosition);
+            Vector2 curPosition = new Vector2(position);
+            Vector2 distance = curPosition.sub(wpPosition);
             // within the tolerance radius of the waypoint
             if(distance.len2() <= (navigationTolerance * navigationTolerance))
             {
-                System.out.println("Enemy(" + entityID + ") @ waypoint(" + currentWayPoint +
-                                   ")");
-
                 position.x = wayPoint.x;
                 position.y = wayPoint.y;
 
@@ -110,7 +113,6 @@ public abstract class Enemy extends Entity
 
                 if(wayPoint.direction == WayPoint.Direction.END)
                 {
-                    System.out.println("Enemy " + entityID + " made it to end");
                     velocity = 0;
                     navigationFinished = true;
                 }
