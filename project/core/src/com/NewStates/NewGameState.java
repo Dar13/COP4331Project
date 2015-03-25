@@ -21,4 +21,9 @@ public abstract class NewGameState implements Screen {
         game = gameStateManager.getGame();
     }
     public abstract void update();
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
 }
