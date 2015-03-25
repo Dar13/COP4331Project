@@ -14,6 +14,8 @@ import java.util.ListIterator;
  */
 public abstract class Enemy extends Entity
 {
+    public static final int BASE_HEALTH = 100;
+
     // basic gameplay attirbutes
     protected float velocity;
     protected float armor;
@@ -34,6 +36,8 @@ public abstract class Enemy extends Entity
     public Enemy(Type type, float x, float y)
     {
         super(x, y);
+
+        health = BASE_HEALTH;
     }
 
     public abstract void draw(Batch batch, float parentAlpha);
@@ -93,6 +97,9 @@ public abstract class Enemy extends Entity
             // within the tolerance radius of the waypoint
             if(distance.len2() <= (navigationTolerance * navigationTolerance))
             {
+                System.out.println("Enemy(" + entityID + ") @ waypoint(" + currentWayPoint +
+                                   ")");
+
                 position.x = wayPoint.x;
                 position.y = wayPoint.y;
 
@@ -103,6 +110,7 @@ public abstract class Enemy extends Entity
 
                 if(wayPoint.direction == WayPoint.Direction.END)
                 {
+                    System.out.println("Enemy " + entityID + " made it to end");
                     velocity = 0;
                     navigationFinished = true;
                 }

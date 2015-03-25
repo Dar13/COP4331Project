@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public abstract class Entity extends Actor {
     protected Vector2 position;
     public int entityID;
+    public int tempID;
 
     public static enum Type
     {
