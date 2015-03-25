@@ -1,10 +1,8 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.NewEntities;
+import com.NewEntities.Entity;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.swing.text.html.parser.Entity;
 
 /**
  * This class should never be used directly EXCEPT to obtain action class IDs. To define a new
@@ -28,7 +26,7 @@ public abstract class Action
     //This bool differentiates between locally generated actions and actions received from server
     public boolean localChange, needsID;
     public ActionClass actionClass; //not sure if this will be needed -- would rather have it
-    public NewEntities entity = null;
+    public Entity entity = null;
 
     public static AtomicInteger tempEntityID = new AtomicInteger(0);
 

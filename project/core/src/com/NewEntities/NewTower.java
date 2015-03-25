@@ -10,7 +10,8 @@ import java.util.LinkedList;
 /**
  * Created by James on 3/20/2015.
  */
-public class NewTower extends NewEntities {
+public class NewTower extends Entity
+{
     public Sprite sprite;
     public Sprite sprite2;
     public float x = 0;
@@ -20,7 +21,7 @@ public class NewTower extends NewEntities {
     public LinkedList<WayPoint> wayPoints;
 
     public NewTower(Texture img, Texture img2, float x, float y, float damages, float range, Type type) {
-        super(img, x, y);
+        super(x, y);
         this.type = type;
         this.sprite = new Sprite(img);
         this.sprite2 = new Sprite(img2);
