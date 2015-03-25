@@ -1,8 +1,7 @@
 package com.NewStates;
 
 
-import com.NewEntities.MyActor;
-import com.NewEntities.NewEnemy;
+import com.NewEntities.Actor;
 import com.NewEntities.NewTower;
 import com.NewHandlers.NewEnemyManager;
 import com.NewHandlers.NewGameStateManager;
@@ -79,7 +78,7 @@ public class NewPlay extends  NewGameState {
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
         mapImg = new Texture("MapEasy.png");
-        MyActor map = new MyActor(mapImg,0,0);
+        Actor map = new Actor(mapImg,0,0);
 
         towers = new LinkedList<NewTower>();
         wayPointManager = new WayPointManager(inAndroid);

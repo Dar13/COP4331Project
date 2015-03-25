@@ -7,21 +7,21 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 /**
  * Created by James on 3/19/2015.
  */
-public class MyActor extends Entity
+public class Actor extends Entity
 {
-    Sprite img;
+    protected Sprite sprite;
 
-    public MyActor(Texture texture,float x,float y)
+    public Actor(Texture texture, float x, float y)
     {
         super(x,y);
-        this.img = new Sprite(texture);
-        img.setPosition(x,y);
+        this.sprite = new Sprite(texture);
+        sprite.setPosition(x, y);
     }
 
 
     @Override
     public void draw(Batch batch, float parentAlpha)
     {
-        batch.draw(img, img.getX(),img.getY());
+        batch.draw(sprite, sprite.getX(), sprite.getY());
     }
 }
