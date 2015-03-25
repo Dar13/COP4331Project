@@ -63,7 +63,7 @@ public class NewEnemyManager extends Actor{
     //Adds new Normal enemy to the Enemy linked list.
     public void AddEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy New = new NewEnemy(img, img2, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.NORMAL);
+        NewEnemy New = new NewEnemy(img, img2, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_NORMAL);
         enemies.addLast(New);
         numEnemies++;
     }
@@ -71,7 +71,7 @@ public class NewEnemyManager extends Actor{
     //Adds new Fast enemy to the Enemy linked list.
     public void AddFastEnemy(Texture img3, Texture img4, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy nEw = new NewEnemy(img3, img4, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.FAST);
+        NewEnemy nEw = new NewEnemy(img3, img4, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_FAST);
         enemies.addLast(nEw);
         numEnemies++;
     }
@@ -79,7 +79,7 @@ public class NewEnemyManager extends Actor{
     //Adds new Heavy enemy to the Enemy linked list.
     public void AddHeavyEnemy(Texture img5, Texture img6, float velocity, float armor, LinkedList<WayPoint> path)
     {
-        NewEnemy neW = new NewEnemy(img5, img6, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.HEAVY);
+        NewEnemy neW = new NewEnemy(img5, img6, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_HEAVY);
         enemies.addLast(neW);
         numEnemies++;
     }
@@ -139,19 +139,19 @@ public class NewEnemyManager extends Actor{
         {
             switch (towers.get(i).type)
             {
-                case RIFLE:
+                case TOWER_RIFLE:
                     multiplier = multiplier + .25f;
                     multiplierS = multiplierS + .01f;
                     multiplierA = multiplierA + .05f;
                     multiplierSp = multiplierSp + .1f;
                     break;
-                case BAZOOKA:
+                case TOWER_BAZOOKA:
                     multiplier = multiplier + .5f;
                     multiplierS = multiplierS + .02f;
                     multiplierA = multiplierA + .15f;
                     multiplierSp = multiplierSp + .1f;
                     break;
-                case SNIPER:
+                case TOWER_SNIPER:
                     multiplier = multiplier + 1;
                     multiplierS = multiplierS + .04f;
                     multiplierA = multiplierA + .17f;

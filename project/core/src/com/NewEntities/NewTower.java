@@ -19,15 +19,6 @@ public class NewTower extends NewEntities {
     public float range = 0;
     public LinkedList<WayPoint> wayPoints;
 
-    public enum Type
-    {
-        RIFLE,
-        BAZOOKA,
-        SNIPER
-    }
-
-    public Type type;
-
     public NewTower(Texture img, Texture img2, float x, float y, float damages, float range, Type type) {
         super(img, x, y);
         this.type = type;

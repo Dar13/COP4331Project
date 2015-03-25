@@ -13,6 +13,17 @@ public abstract class NewEntities extends Actor {
     protected float y;
     public int entityID;
 
+    public static enum Type
+    {
+        ENEMY_NORMAL,
+        ENEMY_FAST,
+        ENEMY_HEAVY,
+        TOWER_RIFLE,
+        TOWER_BAZOOKA,
+        TOWER_SNIPER;
+    }
+    public Type type;
+
     public NewEntities(Texture img, float x, float y)
     {
         sprite = new Sprite(img);

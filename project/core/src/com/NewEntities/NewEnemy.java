@@ -27,15 +27,6 @@ public class NewEnemy extends NewEntities     {
     public float health = 100;
     public float armor = 1;
     public boolean atEnd = false;
-    private Type typograph;
-
-    public enum Type
-    {
-        NORMAL,
-        FAST,
-        HEAVY
-    }
-
 
     public NewEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path, Type type){
         super(img, path.get(0).x, path.get(0).y);
@@ -45,14 +36,14 @@ public class NewEnemy extends NewEntities     {
         this.sprite2 = new Sprite(img2);
         this.velocity = velocity;
         this.tolerance = velocity / 2;
-        this.typograph = type;
+        this.type = type;
         switch (type){
-            case HEAVY:
+            case ENEMY_HEAVY:
                 this.tolerance = velocity + 16;
                 break;
-            case NORMAL:
+            case ENEMY_NORMAL:
                 break;
-            case FAST:
+            case ENEMY_FAST:
                 break;
         }
         sprite.setPosition(path.get(0).x, path.get(0).y);
@@ -181,9 +172,9 @@ public class NewEnemy extends NewEntities     {
     //Rotating the sprites at each waypoint based on enemy type. Very broken at the moment.
     public void changeSpriteRotation()
     {
-        switch (typograph)
+        switch (type)
         {
-            case HEAVY:
+            case ENEMY_HEAVY:
                 if (heading == WayPoint.Direction.EAST)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
@@ -283,7 +274,7 @@ public class NewEnemy extends NewEntities     {
 
                     break;
                 }
-            case NORMAL:
+            case ENEMY_NORMAL:
                 if (heading == WayPoint.Direction.EAST)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
@@ -368,7 +359,7 @@ public class NewEnemy extends NewEntities     {
                     break;
                 }
 
-            case FAST:
+            case ENEMY_FAST:
                 if (heading == WayPoint.Direction.EAST)
                 {
                     switch (wayPoints.get(currentWaypoint).direction)
