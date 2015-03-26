@@ -112,7 +112,7 @@ public class NewPlay extends  NewGameState {
 
     @Override
     public void update() {
-        ((OrthographicCamera)stage.getCamera()).zoom +=.001f;
+        //((OrthographicCamera)stage.getCamera()).zoom +=.001f;
         boolean clearedForPlacement = true;
         health = health - enemyManager.CheckEnemiesAtEnd();
         gold = gold + (enemyManager.GetDeadEnemies() * 15);
