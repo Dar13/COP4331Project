@@ -64,7 +64,7 @@ public abstract class Enemy extends Entity
 
     public void move()
     {
-        position.x += (velocity * heading.x);
+        position.x += (velocity * -heading.x);
         position.y += (velocity * heading.y);
 
         base.setPosition(position.x, position.y);

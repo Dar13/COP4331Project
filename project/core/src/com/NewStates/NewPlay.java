@@ -84,6 +84,10 @@ public class NewPlay extends  NewGameState {
         mapImg = new Texture("MapEasy.png");
         MyActor map = new MyActor(mapImg,0,0);
 
+        ((OrthographicCamera)stage.getCamera()).position.set(MyGame.V_WIDTH/2,MyGame.V_HEIGHT/2,0f);//setToOrtho(false,100,200);  //.zoom += .01;
+        stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
+
+
         towers = new LinkedList<NewTower>();
         wayPointManager = new WayPointManager(inAndroid);
         enemyManager = new NewEnemyManager(wayPointManager.wayPoints);
@@ -111,7 +115,7 @@ public class NewPlay extends  NewGameState {
 
     @Override
     public void update() {
-        //((OrthographicCamera)stage.getCamera()).zoom += .01;
+        ((OrthographicCamera)stage.getCamera()).zoom +=.001f;
         boolean clearedForPlacement = true;
         health = health - enemyManager.CheckEnemiesAtEnd();
         gold = gold + (enemyManager.GetDeadEnemies() * 15);
