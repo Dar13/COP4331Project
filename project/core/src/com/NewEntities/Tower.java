@@ -20,6 +20,8 @@ public abstract class Tower extends Entity
     // display attributes
     protected Sprite base;
     protected Sprite other;
+    protected int target;
+    protected int targetDistanceTraveled;
 
     public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y)
     {
@@ -27,6 +29,7 @@ public abstract class Tower extends Entity
 
         this.type = type;
         this.timeSinceLastShot = 0;
+        targetDistanceTraveled = 0;
 
         base = new Sprite(baseTexture);
         base.setPosition(x, y);
@@ -60,6 +63,16 @@ public abstract class Tower extends Entity
     public void resetTimeSinceLastShot()
     {
         timeSinceLastShot = 0;
+    }
+
+    public int returnTarget() { return target; }
+
+    public void setTargetDistanceTraveled(int targetDistanceTraveled){ this.targetDistanceTraveled = targetDistanceTraveled; }
+
+    public int getTargetDistanceTraveled(){ return targetDistanceTraveled; }
+
+    public void setTarget(int targetID) {
+        this.target = targetID;
     }
 
     public float getDamage()

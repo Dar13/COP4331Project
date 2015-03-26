@@ -87,6 +87,8 @@ public class NewEnemyManager extends Actor{
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()
         numEnemies++;
+
+
     }
 
     //Removes targeted enemy from Enemy Linked list
@@ -270,13 +272,40 @@ public class NewEnemyManager extends Actor{
             }
         }
 
+        for(Tower tower: towerList)
+        {
+            if(tower != null)
+            {
+                for(Enemy enemy : enemyList){
+                    if(!enemy.IDIsSame(tower.returnTarget()) && enemy.returnDistanceTraveled() > tower.getTargetDistanceTraveled() && tower.inRange(enemy.returnX(), enemy.returnY(), centerOffset, rangeOffset)){
+                        tower.setTarget(enemy.entityID);
+                        tower.setTargetDistanceTraveled(enemy.returnDistanceTraveled());
+                    }
+                }
+            }
+        }
+
+        for(Tower tower: towerList)
+        {
+            if(tower != null)
+            {
+                for(Enemy enemy : enemyList){
+                    if(enemy.IDIsSame(tower.returnTarget()) && !tower.inRange(enemy.returnX(), enemy.returnY(), centerOffset, rangeOffset)){
+                        tower.setTarget(-1);
+                        tower.setTargetDistanceTraveled(0);
+                    }
+                }
+            }
+        }
+
+
         for(Enemy enemy : enemyList)
         {
             if(enemy != null)
             {
                 for(Tower tower : towerList)
                 {
-                    if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire())
+                    if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.IDIsSame(tower.returnTarget()))
                     {
                         enemy.takeDamage(tower.getDamage());
                         tower.resetTimeSinceLastShot();

@@ -27,6 +27,7 @@ public abstract class Enemy extends Entity
     protected List<WayPoint> wayPoints;
     protected int currentWayPoint;
     protected boolean navigationFinished;
+    protected int distanceTraveled;
 
     // These might need to be the other way around.
     // base = sprite, other = sprite2
@@ -40,9 +41,19 @@ public abstract class Enemy extends Entity
         health = BASE_HEALTH;
 
         this.type = type;
+        distanceTraveled = 0;
     }
 
     public abstract void draw(Batch batch, float parentAlpha);
+
+    public boolean IDIsSame(int ID)
+    {
+        if (ID == this.entityID){
+            return true;
+        }
+
+        return false;
+    }
 
     public void applyVelocityMultiplier(float mult)
     {
@@ -81,6 +92,7 @@ public abstract class Enemy extends Entity
 
         base.setPosition(position.x, position.y);
         other.setPosition(position.x, position.y);
+        distanceTraveled += Math.abs(velocity);
     }
 
     public void rotateToDirection(WayPoint.Direction direction)
@@ -173,4 +185,7 @@ public abstract class Enemy extends Entity
     {
         return navigationFinished;
     }
+
+    public int returnDistanceTraveled(){ return distanceTraveled; }
+
 }
