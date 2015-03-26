@@ -145,7 +145,7 @@ public class NewPlay extends  NewGameState {
         }
 
         if(towerPlacement == 1) {
-            if (wayPointManager.WithinAny(towerToBePlaced.getX(), towerToBePlaced.getY())) {
+            if (wayPointManager.WithinAny(towerToBePlaced.getX(), towerToBePlaced.getY()) || towerManager.onAnotherTower(towerToBePlaced.getX(), towerToBePlaced.getY())) {
                 clearedForPlacement = false;
             } else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480 || towerToBePlaced.getX() + 32 > 640 || towerToBePlaced.getY() + 32 > 480) {
                 clearedForPlacement = false;

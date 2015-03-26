@@ -29,7 +29,8 @@ public abstract class Tower extends Entity
         base.setPosition(x, y);
 
         other = new Sprite(otherTexture);
-        base.setPosition(x, y);
+        other.setPosition(x + 9, y - 23);
+        other.rotate(-45);
     }
 
     public abstract void draw(Batch batch, float parentAlpha);
@@ -67,6 +68,22 @@ public abstract class Tower extends Entity
         float nRange = range * rangeOffset;
 
         return (tPosition.sub(ePosition).len2() <= (nRange * nRange));
+    }
+
+    public boolean steppingOntoes(float x, float y)
+    {
+        if ((x > base.getX() && x < base.getX() + 32
+                && y > base.getY() && y < base.getY() + 32)
+                || (x + 32 > base.getX() && x + 32 < base.getX() + 32
+                && y + 32 > base.getY() && y + 32 < base.getY() + 32)
+                || (x > base.getX() && x < base.getX() + 32
+                && y + 32 > base.getY() && y + 32 < base.getY() + 32)
+                || (x + 32 > base.getX() && x + 32 < base.getX() + 32
+                && y > base.getY() && y < base.getY() + 32))
+        {
+            return true;
+        }
+        return false;
     }
 
     public void upgrade(float damageMultiplier, float rangeMultiplier)

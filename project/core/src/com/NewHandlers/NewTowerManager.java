@@ -65,6 +65,18 @@ public class NewTowerManager extends Actor
         }
     }
 
+    public boolean onAnotherTower(float x, float y){
+
+        for(int i = 0; i < towerList.size(); i++)
+        {
+            if(towerList.get(i).steppingOntoes(x , y)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     //Upgrades selected tower based on upgrade constants.
     public void upgradeTower(int towerID)

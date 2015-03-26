@@ -25,7 +25,7 @@ public class SniperTower extends Tower
     @Override
     public void draw(Batch batch, float parentAlpha)
     {
-        base.draw(batch);
         other.draw(batch);
+        base.draw(batch);
     }
 }
