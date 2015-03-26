@@ -86,7 +86,10 @@ public class NewPlay extends  NewGameState {
         bazookaTowerTexture = new Texture(NewTowerManager.bazookaTexturePath);
         towerShadowTexture = new Texture(NewTowerManager.shadowTexturePath);
 
-        towers = new LinkedList<Tower>();
+        ((OrthographicCamera)stage.getCamera()).position.set(MyGame.V_WIDTH/2,MyGame.V_HEIGHT/2,0f);//setToOrtho(false,100,200);  //.zoom += .01;
+        stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
+
+        towers = new LinkedList<>();
         wayPointManager = new WayPointManager(inAndroid);
         enemyManager = new NewEnemyManager(wayPointManager.wayPoints);
         towerManager = new NewTowerManager(towers);
@@ -114,7 +117,7 @@ public class NewPlay extends  NewGameState {
 
     @Override
     public void update() {
-        //((OrthographicCamera)stage.getCamera()).zoom += .01;
+        //((OrthographicCamera)stage.getCamera()).zoom +=.001f;
         boolean clearedForPlacement = true;
         health = health - enemyManager.CheckEnemiesAtEnd();
         gold = gold + (enemyManager.GetDeadEnemies() * 15);
@@ -125,10 +128,7 @@ public class NewPlay extends  NewGameState {
             System.out.println("test - rifle button");
             towerToBePlaced = new Sprite(rifleTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
-            towerToBePlaced.setPosition(stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).x,
-                                        stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).y);
-            towerToBePlacedS.setPosition(Gdx.input.getX()+ 9,MyGame.V_HEIGHT - Gdx.input.getY() - 23);
-            towerToBePlacedS.rotate(-45);
+            towerToBePlaced.setPosition(MyInput.x,MyInput.y);
             towerPlacement = 1;
             Rifle = 1;
         }
@@ -139,16 +139,10 @@ public class NewPlay extends  NewGameState {
             System.out.println("test - bazooka button");
             towerToBePlaced = new Sprite(bazookaTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
-            towerToBePlaced.setPosition(stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).x,
-                                        stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).y);
-            towerToBePlacedS.setPosition(Gdx.input.getX()+ 9,MyGame.V_HEIGHT - Gdx.input.getY() - 23);
-            towerToBePlacedS.rotate(-45);
+            towerToBePlaced.setPosition(MyInput.x,MyInput.y);
             towerPlacement = 1;
             Zooka = 1;
         }
-
-        // sniper button handling
-        // TODO SNIPER BUTTON
 
         if(towerPlacement == 1) {
             if (wayPointManager.WithinAny(towerToBePlaced.getX(), towerToBePlaced.getY())) {
@@ -176,7 +170,7 @@ public class NewPlay extends  NewGameState {
                 towerManager.addRifleTower(stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).x,
                                            stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).y);
                                            */
-                towerManager.addTower(Tower.Type.TOWER_RIFLE, stageCoordinates.x, stageCoordinates.y);
+                towerManager.addTower(Tower.Type.TOWER_RIFLE, MyInput.x, MyInput.y);
                 towerPlacement--;
                 Rifle--;
                 gold = gold - RifleTower.PRICE;
@@ -184,9 +178,7 @@ public class NewPlay extends  NewGameState {
 
             else if(Zooka == 1)
             {
-                //towerManager.addBazookaTower(stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).x,
-                //                             stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).y);
-                towerManager.addTower(Tower.Type.TOWER_BAZOOKA, stageCoordinates.x, stageCoordinates.y);
+                towerManager.addTower(Tower.Type.TOWER_BAZOOKA, MyInput.x, MyInput.y);
                 towerPlacement--;
                 Zooka--;
                 gold = gold - BazookaTower.PRICE;
@@ -195,9 +187,7 @@ public class NewPlay extends  NewGameState {
 
         if (towerPlacement == 1)
         {
-            towerToBePlaced.setPosition(stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).x,
-                                        stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).y);
-            towerToBePlacedS.setPosition(Gdx.input.getX()+ 9,MyGame.V_HEIGHT - Gdx.input.getY() - 23);
+            towerToBePlaced.setPosition(MyInput.x,MyInput.y);
         }
         else if(Gdx.input.isTouched())
         {
@@ -222,7 +212,6 @@ public class NewPlay extends  NewGameState {
 
     @Override
     public void show() {
-
     }
 
     @Override
@@ -237,7 +226,6 @@ public class NewPlay extends  NewGameState {
         batch.begin();
         if(towerPlacement == 1)
         {
-            towerToBePlacedS.draw(batch);
             towerToBePlaced.draw(batch);
         }
         font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
