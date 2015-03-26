@@ -14,6 +14,8 @@ import java.util.ListIterator;
  */
 public abstract class Enemy extends Entity
 {
+    public static final int BASE_HEALTH = 100;
+
     // basic gameplay attirbutes
     protected float velocity;
     protected float armor;
@@ -34,6 +36,8 @@ public abstract class Enemy extends Entity
     public Enemy(Type type, float x, float y)
     {
         super(x, y);
+
+        health = BASE_HEALTH;
     }
 
     public abstract void draw(Batch batch, float parentAlpha);
@@ -58,6 +62,12 @@ public abstract class Enemy extends Entity
 
         position.x = wayPoints.get(currentWayPoint).x;
         position.y = wayPoints.get(currentWayPoint).y;
+
+        base.setX(position.x);
+        base.setY(position.y);
+
+        other.setX(position.x);
+        other.setY(position.y);
 
         heading = wayPoints.get(currentWayPoint).direction;
     }
@@ -88,8 +98,8 @@ public abstract class Enemy extends Entity
         {
             WayPoint wayPoint = wayPoints.get(currentWayPoint);
             Vector2 wpPosition = new Vector2(wayPoint.x, wayPoint.y);
-
-            Vector2 distance = position.sub(wpPosition);
+            Vector2 curPosition = new Vector2(position);
+            Vector2 distance = curPosition.sub(wpPosition);
             // within the tolerance radius of the waypoint
             if(distance.len2() <= (navigationTolerance * navigationTolerance))
             {

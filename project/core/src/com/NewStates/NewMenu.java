@@ -4,11 +4,10 @@ import com.NewHandlers.NewGameStateManager;
 import com.NewUI.MyStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mygdx.handlers.AssetLoader;
+import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.NetworkManager;
 
 
@@ -30,6 +29,7 @@ public class NewMenu extends NewGameState{
         /* Menu Music */
         //AssetLoader.loadMusic(1);
         //AssetLoader.music.play();
+        AssetManager.loadSound(1);
 
         singleplayer = new TextButton("Single Player",skin);
         singleplayer.setSize(200, 60);
@@ -47,8 +47,7 @@ public class NewMenu extends NewGameState{
     public void update() {
         if(singleplayer.isChecked()){
             gameStateManager.setState(NewGameStateManager.LEVELSELECT);
-            AssetLoader.loadSound(1);
-            AssetLoader.sound.play();
+            AssetManager.sound.play();
         }
         if(multiplayer.isChecked()) {
             gameStateManager.setState(NewGameStateManager.NET);

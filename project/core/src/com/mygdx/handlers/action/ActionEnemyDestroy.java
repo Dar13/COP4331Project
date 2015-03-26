@@ -1,26 +1,23 @@
 package com.mygdx.handlers.action;
 
 import com.NewEntities.NewEnemy;
-import com.mygdx.entities.Enemy;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
 
 /**
- * Created by rob on 3/23/15.
+ * Created by rob on 3/25/15.
  */
-public class ActionEnemyCreate extends Action
+public class ActionEnemyDestroy extends Action
 {
-    public int tempID;
-
-    public ActionEnemyCreate(GameState gameState, NetworkManager networkManager, NewEnemy newEnemy)
+    public ActionEnemyDestroy(GameState gameState, NetworkManager networkManager, NewEnemy enemy)
     {
         super(gameState, networkManager);
 
-        actionClass = ActionClass.ACTION_ENEMY_CREATE;
-        this.entity = newEnemy;
+        this.networkManager = networkManager;
+        this.gameState = gameState;
 
-        newEnemy.entityID = tempEntityID.getAndIncrement();
-        needsID = true;
+        actionClass = ActionClass.ACTION_ENEMY_DESTROY;
+        this.entity = enemy;
 
         updateGamestate();
         updateNetMan();
@@ -40,3 +37,4 @@ public class ActionEnemyCreate extends Action
         networkManager.addToSendQueue(this);
     }
 }
+

@@ -1,6 +1,7 @@
 package com.mygdx.handlers.action;
 
 import com.NewEntities.NewEnemy;
+import com.badlogic.gdx.Net;
 import com.mygdx.entities.Enemy;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
@@ -8,19 +9,19 @@ import com.mygdx.states.GameState;
 /**
  * Created by rob on 3/23/15.
  */
-public class ActionEnemyCreate extends Action
+public class ActionEnemyDamage extends Action
 {
-    public int tempID;
+    private int damage;
 
-    public ActionEnemyCreate(GameState gameState, NetworkManager networkManager, NewEnemy newEnemy)
+    public ActionEnemyDamage(GameState gameState, NetworkManager networkManager, NewEnemy enemy, int damage)
     {
         super(gameState, networkManager);
 
-        actionClass = ActionClass.ACTION_ENEMY_CREATE;
-        this.entity = newEnemy;
+        this.networkManager = networkManager;
+        this.gameState = gameState;
 
-        newEnemy.entityID = tempEntityID.getAndIncrement();
-        needsID = true;
+        actionClass = ActionClass.ACTION_ENEMY_DAMAGE;
+        this.entity = enemy;
 
         updateGamestate();
         updateNetMan();

@@ -32,12 +32,9 @@ import com.mygdx.game.MyGame;
 import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.handlers.WayPointManager;
-import com.sun.javafx.sg.prism.NGNode;
 
 
 import java.util.LinkedList;
-
-import javafx.scene.Camera;
 
 
 /**

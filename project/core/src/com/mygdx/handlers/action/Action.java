@@ -1,13 +1,22 @@
 package com.mygdx.handlers.action;
 
 import com.NewEntities.Entity;
+import com.mygdx.handlers.NetworkManager;
+import com.mygdx.states.GameState;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class should never be used directly EXCEPT to obtain action class IDs. To define a new
  * action class, declare it in the enum, and then create a class which extends Action to define its
- * specifics
+ * specifics.
+ *
+ * Subclasses should be parametrized with a GameState and NetworkManager object FIRST, followed by
+ * any relevant parameters to reconstruct the Action on the other side.
+ *
+ * The updateNetMan() function currently only contains one method call, which is made
+ * in each subclass. This will likely change, but I left it that way in case we later change the
+ * way NetMan is updated about new Actions.
  */
 public abstract class Action
 {
@@ -18,8 +27,7 @@ public abstract class Action
         ACTION_ENEMY_WIN,
         ACTION_TOWER_PLACED,
         ACTION_TOWER_UPGRADED,
-        ACTION_PLAYER_SEND_RESOURCES,
-        ACTION_PLAYER_RECEIVE_RESOURCES,
+        ACTION_TRANSFER_RESOURCES,
         ACTION_HOST_PAUSE
     }
 
@@ -27,11 +35,16 @@ public abstract class Action
     public boolean localChange, needsID;
     public ActionClass actionClass; //not sure if this will be needed -- would rather have it
     public Entity entity = null;
+    protected GameState gameState;
+    protected NetworkManager networkManager;
 
     public static AtomicInteger tempEntityID = new AtomicInteger(0);
 
-    public Action()
+    public Action(GameState gameState, NetworkManager networkManager)
     {
+        this.networkManager = networkManager;
+        this.gameState = gameState;
+
         localChange = true;
         needsID = false;
     }
