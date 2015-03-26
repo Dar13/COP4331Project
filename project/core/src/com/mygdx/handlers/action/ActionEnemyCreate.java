@@ -1,7 +1,6 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.NewEnemy;
-import com.mygdx.entities.Enemy;
+import com.NewEntities.Enemy;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
 
@@ -12,7 +11,7 @@ public class ActionEnemyCreate extends Action
 {
     public int tempID;
 
-    public ActionEnemyCreate(GameState gameState, NetworkManager networkManager, NewEnemy newEnemy)
+    public ActionEnemyCreate(GameState gameState, NetworkManager networkManager, Enemy newEnemy)
     {
         super(gameState, networkManager);
 

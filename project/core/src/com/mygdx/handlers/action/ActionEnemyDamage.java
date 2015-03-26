@@ -1,8 +1,7 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.NewEnemy;
+import com.NewEntities.Enemy;
 import com.badlogic.gdx.Net;
-import com.mygdx.entities.Enemy;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
 
@@ -13,7 +12,7 @@ public class ActionEnemyDamage extends Action
 {
     private int damage;
 
-    public ActionEnemyDamage(GameState gameState, NetworkManager networkManager, NewEnemy enemy, int damage)
+    public ActionEnemyDamage(GameState gameState, NetworkManager networkManager, Enemy enemy, int damage)
     {
         super(gameState, networkManager);
 

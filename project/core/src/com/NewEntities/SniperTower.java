@@ -16,11 +16,12 @@ public class SniperTower extends Tower
 
     public SniperTower(Texture baseTexture, Texture otherTexture, float x, float y)
     {
-        super(Type.TOWER_SNIPER, baseTexture, otherTexture, x, y, FIRING_DELAY);
+        super(Type.TOWER_SNIPER, baseTexture, otherTexture, x, y);
 
         damage = BASE_DAMAGE;
         range = BASE_RANGE;
         price = PRICE;
+        firingDelay = FIRING_DELAY;
     }
 
     @Override

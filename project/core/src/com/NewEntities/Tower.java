@@ -21,12 +21,11 @@ public abstract class Tower extends Entity
     protected Sprite base;
     protected Sprite other;
 
-    public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y, float firingDelay)
+    public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y)
     {
         super(x, y);
 
         this.type = type;
-        this.firingDelay = firingDelay;
         this.timeSinceLastShot = 0;
 
         base = new Sprite(baseTexture);
@@ -45,15 +44,23 @@ public abstract class Tower extends Entity
 
     public boolean readyToFire(){
         if(timeSinceLastShot > firingDelay){
+            // Is this ok?
+            //resetTimeSinceLastShot();
             return true;
         }
 
         return false;
     }
 
-    public void updateTSLS(){timeSinceLastShot++;}
+    public void updateTimeSinceLastShot()
+    {
+        timeSinceLastShot++;
+    }
 
-    public void resetTSLS() {timeSinceLastShot = 0;}
+    public void resetTimeSinceLastShot()
+    {
+        timeSinceLastShot = 0;
+    }
 
     public float getDamage()
     {
