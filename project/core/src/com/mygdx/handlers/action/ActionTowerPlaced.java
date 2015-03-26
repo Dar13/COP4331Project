@@ -1,6 +1,6 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.NewTower;
+import com.NewEntities.Tower;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
 
@@ -9,7 +9,7 @@ import com.mygdx.states.GameState;
  */
 public class ActionTowerPlaced extends Action
 {
-    public ActionTowerPlaced(GameState gameState, NetworkManager networkManager, NewTower tower)
+    public ActionTowerPlaced(GameState gameState, NetworkManager networkManager, Tower tower)
     {
         super(gameState, networkManager);
 
