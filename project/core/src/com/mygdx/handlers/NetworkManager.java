@@ -69,6 +69,7 @@ public class NetworkManager extends Listener implements Runnable
     protected AtomicBoolean initialized;
     protected Boolean ready;
     protected boolean initializeManager;
+    protected boolean singleplayer;
 
     // server
     protected Boolean isServer;
@@ -241,6 +242,11 @@ public class NetworkManager extends Listener implements Runnable
         {
             mutex.readLock().unlock();
         }
+    }
+
+    public synchronized void setSinglePlayer(boolean singleplayer)
+    {
+        this.singleplayer = singleplayer;
     }
 
     public void setExpectedAmountClients(int amount)
@@ -611,6 +617,15 @@ public class NetworkManager extends Listener implements Runnable
      */
     private void sendLocalChanges()
     {
+        if(!singleplayer)
+        {
+
+        }
+        else
+        {
+            // just pass through to receiveChanges, no processing needed
+            //receiveChanges(this.queuedLocalChanges);
+        }
         /**
          * TODO: implement this method with Kryonet, Pseudocode follows:
          *  if (local changes are not empty or being written)
