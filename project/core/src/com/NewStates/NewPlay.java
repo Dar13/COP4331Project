@@ -45,6 +45,7 @@ public class NewPlay extends  NewGameState {
     private int Rifle = 0;
 
     private boolean clicked = false;
+    private boolean debuggerOn = true;
 
     //private LinkedList<NewTower> towers;
     private List<Tower> towers;
@@ -113,6 +114,9 @@ public class NewPlay extends  NewGameState {
         stage.addActor(rifleButton);
         stage.addActor(bazookaButton);
 
+
+        debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, enemyManager.enemyList, stage.getBatch());
+
     }
 
     @Override
@@ -139,7 +143,7 @@ public class NewPlay extends  NewGameState {
             System.out.println("test - bazooka button");
             towerToBePlaced = new Sprite(bazookaTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
-            towerToBePlaced.setPosition(MyInput.x,MyInput.y);
+            towerToBePlaced.setPosition(MyInput.x, MyInput.y);
             towerPlacement = 1;
             Zooka = 1;
         }
@@ -232,6 +236,10 @@ public class NewPlay extends  NewGameState {
         font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
         font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
         batch.end();
+        debugger.setBatch(batch);
+        if(debuggerOn) {
+            debugger.render();
+        }
     }
 
     @Override

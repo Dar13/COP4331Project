@@ -14,16 +14,20 @@ public abstract class Tower extends Entity
     protected float damage;
     protected float range;
     protected int price;
+    protected float firingDelay;
+    protected float timeSinceLastShot;
 
     // display attributes
     protected Sprite base;
     protected Sprite other;
 
-    public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y)
+    public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y, float firingDelay)
     {
         super(x, y);
 
         this.type = type;
+        this.firingDelay = firingDelay;
+        this.timeSinceLastShot = 0;
 
         base = new Sprite(baseTexture);
         base.setPosition(x, y);
@@ -34,6 +38,22 @@ public abstract class Tower extends Entity
     }
 
     public abstract void draw(Batch batch, float parentAlpha);
+
+    public float getTimeSinceLastShot(){
+        return timeSinceLastShot;
+    }
+
+    public boolean readyToFire(){
+        if(timeSinceLastShot > firingDelay){
+            return true;
+        }
+
+        return false;
+    }
+
+    public void updateTSLS(){timeSinceLastShot++;}
+
+    public void resetTSLS() {timeSinceLastShot = 0;}
 
     public float getDamage()
     {
@@ -49,6 +69,10 @@ public abstract class Tower extends Entity
     {
         return price;
     }
+
+    public float returnX(){ return base.getX(); }
+
+    public float returnY(){ return base.getY(); }
 
     public boolean inRange(float x, float y, int positionOffset, int rangeOffset)
     {
@@ -70,6 +94,7 @@ public abstract class Tower extends Entity
         return (tPosition.sub(ePosition).len2() <= (nRange * nRange));
     }
 
+    //Checks to see if the x, y coordinates input clash with the stored x, y coordinates.
     public boolean steppingOntoes(float x, float y)
     {
         if ((x > base.getX() && x < base.getX() + 32

@@ -12,10 +12,11 @@ public class BazookaTower extends Tower
     public static final float BASE_DAMAGE = 4.0f;
     public static final float BASE_RANGE = 2.0f;
     public static final int PRICE = 150;
+    public static final float FIRING_DELAY = 6f;
 
     public BazookaTower(Texture baseTexture, Texture otherTexture, float x, float y)
     {
-        super(Type.TOWER_BAZOOKA, baseTexture, otherTexture, x, y);
+        super(Type.TOWER_BAZOOKA, baseTexture, otherTexture, x, y, FIRING_DELAY);
 
         damage = BASE_DAMAGE;
         range = BASE_RANGE;

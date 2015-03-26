@@ -145,6 +145,10 @@ public abstract class Enemy extends Entity
         return health;
     }
 
+    public float returnX(){ return base.getX(); }
+
+    public float returnY(){ return base.getY(); }
+
     public void takeDamage(float damageAmount)
     {
         decrementHealth(damageAmount / armor);

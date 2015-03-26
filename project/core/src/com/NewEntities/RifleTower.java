@@ -12,10 +12,11 @@ public class RifleTower extends Tower
     public static final float BASE_DAMAGE = 1.0f;
     public static final float BASE_RANGE = 2.0f;
     public static final int PRICE = 100;
+    public static final float FIRING_DELAY = 2f;
 
     public RifleTower(Texture baseTexture, Texture otherTexture, float x, float y)
     {
-        super(Type.TOWER_RIFLE, baseTexture, otherTexture, x, y);
+        super(Type.TOWER_RIFLE, baseTexture, otherTexture, x, y, FIRING_DELAY);
 
         damage = BASE_DAMAGE;
         range = BASE_RANGE;

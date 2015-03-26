@@ -278,12 +278,19 @@ public class NewEnemyManager extends Actor{
             {
                 for(Tower tower : towerList)
                 {
-                    if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset))
+                    if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire())
                     {
                         enemy.takeDamage(tower.getDamage());
+                        tower.resetTSLS();
                     }
                 }
             }
+        }
+
+
+        for(Tower tower : towerList)
+        {
+            tower.updateTSLS();
         }
 
         //Enemy health decrementer, very crude atm.

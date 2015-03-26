@@ -12,10 +12,11 @@ public class SniperTower extends Tower
     public static final float BASE_DAMAGE = 5.0f;
     public static final float BASE_RANGE = 5.0f;
     public static final int PRICE = 300;
+    public static final float FIRING_DELAY = 10f;
 
     public SniperTower(Texture baseTexture, Texture otherTexture, float x, float y)
     {
-        super(Type.TOWER_SNIPER, baseTexture, otherTexture, x, y);
+        super(Type.TOWER_SNIPER, baseTexture, otherTexture, x, y, FIRING_DELAY);
 
         damage = BASE_DAMAGE;
         range = BASE_RANGE;

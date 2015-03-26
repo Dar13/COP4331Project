@@ -78,7 +78,7 @@ public class Play extends GameState
         font.scale(.01f);
 
         towerManager = new TowerManager(towers);
-        debugger = new Debugger(wayPointManager.wayPoints, towerManager.towers, enemyManager.enemies);
+        //debugger = new Debugger(wayPointManager.wayPoints, towerManager, enemyManager.enemies);
 
     }
 
