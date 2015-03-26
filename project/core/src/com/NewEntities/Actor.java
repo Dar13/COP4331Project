@@ -18,7 +18,6 @@ public class Actor extends Entity
         sprite.setPosition(x, y);
     }
 
-
     @Override
     public void draw(Batch batch, float parentAlpha)
     {

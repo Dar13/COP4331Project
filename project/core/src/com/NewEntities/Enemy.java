@@ -38,6 +38,8 @@ public abstract class Enemy extends Entity
         super(x, y);
 
         health = BASE_HEALTH;
+
+        this.type = type;
     }
 
     public abstract void draw(Batch batch, float parentAlpha);
@@ -141,6 +143,11 @@ public abstract class Enemy extends Entity
     public float getHealth()
     {
         return health;
+    }
+
+    public void takeDamage(float damageAmount)
+    {
+        decrementHealth(damageAmount / armor);
     }
 
     public void decrementHealth(float amount)

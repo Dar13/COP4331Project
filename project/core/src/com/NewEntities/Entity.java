@@ -7,7 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 /**
  * Created by James on 3/18/2015.
  */
-public abstract class Entity extends Actor {
+public abstract class Entity extends Actor
+{
+    public static int uidCounter = 1;
+
     protected Vector2 position;
     public int entityID;
     public int tempID;
@@ -26,9 +29,17 @@ public abstract class Entity extends Actor {
     public Entity(float x, float y)
     {
         position = new Vector2(x,y);
+
+        tempID = uidCounter;
+        uidCounter++;
     }
 
     @Override
     public abstract void draw(Batch batch, float parentAlpha);
+
+    public Vector2 getPosition()
+    {
+        return position;
+    }
 
 }

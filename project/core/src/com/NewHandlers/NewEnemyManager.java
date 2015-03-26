@@ -5,6 +5,7 @@ import com.NewEntities.EnemyFactory;
 import com.NewEntities.Entity;
 import com.NewEntities.NewEnemy;
 import com.NewEntities.NewTower;
+import com.NewEntities.Tower;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -43,12 +44,12 @@ public class NewEnemyManager extends Actor{
     private Texture FastEnemy = new Texture("FastEnemy.png");
     private Texture TigerBase = new Texture("tigerbase.png");
     private Texture TigerTurret = new Texture("tigerturret.png");
-    public LinkedList<NewEnemy> enemies;
 
     public List<Enemy> enemyList;
+    public List<Enemy> enemiesToBeRemoved;
+    public List<Tower> towerList;
     protected int idCounter = 0;
 
-    public LinkedList<NewTower> towers;
     private LinkedList<WayPoint> path;
     private float multiplierS = 0;
     private float multiplierA = 0;
@@ -57,8 +58,6 @@ public class NewEnemyManager extends Actor{
 
     public NewEnemyManager(LinkedList<WayPoint> path)
     {
-        enemies = new LinkedList<NewEnemy>();
-        towers = new LinkedList<NewTower>();
         timeSinceLastNorm = 0;
         timeSinceLastFast = 0;
         timeSinceLastHeavy = 0;
@@ -69,7 +68,8 @@ public class NewEnemyManager extends Actor{
         this.path = path;
 
         enemyList = new ArrayList<>();
-
+        enemiesToBeRemoved = new ArrayList<>();
+        towerList = new LinkedList<>();
     }
 
     /**
@@ -84,34 +84,10 @@ public class NewEnemyManager extends Actor{
     {
         Enemy enemy = EnemyFactory.createEnemy(type, baseTexture, otherTexture, 0, 0);
         enemy.entityID = idCounter;
-        idCounter++;
+        idCounter++; // TODO: This will have to be changed to reflect getting the true entity ID from the host.
 
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()
-        numEnemies++;
-    }
-
-    //Adds new Normal enemy to the Enemy linked list.
-    public void AddEnemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path)
-    {
-        NewEnemy New = new NewEnemy(img, img2, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_NORMAL);
-        enemies.addLast(New);
-        numEnemies++;
-    }
-
-    //Adds new Fast enemy to the Enemy linked list.
-    public void AddFastEnemy(Texture img3, Texture img4, float velocity, float armor, LinkedList<WayPoint> path)
-    {
-        NewEnemy nEw = new NewEnemy(img3, img4, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_FAST);
-        enemies.addLast(nEw);
-        numEnemies++;
-    }
-
-    //Adds new Heavy enemy to the Enemy linked list.
-    public void AddHeavyEnemy(Texture img5, Texture img6, float velocity, float armor, LinkedList<WayPoint> path)
-    {
-        NewEnemy neW = new NewEnemy(img5, img6, (velocity * (incrementer + multiplierS)), (armor * (incrementer + multiplierA)), path, NewEnemy.Type.ENEMY_HEAVY);
-        enemies.addLast(neW);
         numEnemies++;
     }
 
@@ -121,21 +97,12 @@ public class NewEnemyManager extends Actor{
         ListIterator<Enemy> iterator = enemyList.listIterator();
         while(iterator.hasNext())
         {
-            if(iterator.next().entityID == id)
+            Enemy enemy = iterator.next();
+            if(enemy.entityID == id)
             {
-                iterator.remove();
+                enemiesToBeRemoved.add(enemy);
             }
         }
-        /*
-        if (toBeDeleted == 0)
-        {
-            enemies.removeFirst();
-        }
-        else
-        {
-            enemies.remove(toBeDeleted);
-        }
-        */
     }
 
     //Calculates the number of enemies to spawn in the next wave based on the multiplier.
@@ -172,32 +139,31 @@ public class NewEnemyManager extends Actor{
         float multiplier = 0;
         multiplierS = currentWave * .05f;
         multiplierA = currentWave * .05f;
-        for (int i = 0; i < towers.size(); i ++)
+        for(Tower tower : towerList)
         {
-            switch (towers.get(i).type)
+            switch(tower.type)
             {
-                case TOWER_RIFLE:
-                    multiplier = multiplier + .25f;
-                    multiplierS = multiplierS + .01f;
-                    multiplierA = multiplierA + .05f;
-                    multiplierSp = multiplierSp + .1f;
-                    break;
-                case TOWER_BAZOOKA:
-                    multiplier = multiplier + .5f;
-                    multiplierS = multiplierS + .02f;
-                    multiplierA = multiplierA + .15f;
-                    multiplierSp = multiplierSp + .1f;
-                    break;
-                case TOWER_SNIPER:
-                    multiplier = multiplier + 1;
-                    multiplierS = multiplierS + .04f;
-                    multiplierA = multiplierA + .17f;
-                    multiplierSp = multiplierSp + .1f;
-
-                    break;
-
+            case TOWER_RIFLE:
+                multiplier = multiplier + .25f;
+                multiplierS = multiplierS + .01f;
+                multiplierA = multiplierA + .05f;
+                multiplierSp = multiplierSp + .1f;
+                break;
+            case TOWER_BAZOOKA:
+                multiplier = multiplier + .5f;
+                multiplierS = multiplierS + .02f;
+                multiplierA = multiplierA + .15f;
+                multiplierSp = multiplierSp + .1f;
+                break;
+            case TOWER_SNIPER:
+                multiplier = multiplier + 1;
+                multiplierS = multiplierS + .04f;
+                multiplierA = multiplierA + .17f;
+                multiplierSp = multiplierSp + .1f;
+                break;
             }
         }
+
         incrementer = incrementer + .07f;
         multiplierSp = multiplierSp + .5f;
         return multiplier;
@@ -213,15 +179,15 @@ public class NewEnemyManager extends Actor{
         Update(delta);
     }
 
-    public void SetTowers(LinkedList<NewTower> towers)
+    public void SetTowers(List<Tower> towers)
     {
-        this.towers = towers;
+        towerList = towers;
     }
 
     public void Update(float fps)
     {
         //accumulator +=deltaTime;
-        if (totalWavesToBeSpawned == 0 && enemies.size() == 0)
+        if (totalWavesToBeSpawned == 0 && enemyList.size() == 0)
         {
             currentWave++;
             float multiplier = NextWaveCalculator();
@@ -306,17 +272,22 @@ public class NewEnemyManager extends Actor{
             }
         }
 
-        /*
         for(Enemy enemy : enemyList)
         {
             if(enemy != null)
             {
-                // TODO: COME BACK WHEN TOWERS ARE REWORKED
+                for(Tower tower : towerList)
+                {
+                    if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset))
+                    {
+                        enemy.takeDamage(tower.getDamage());
+                    }
+                }
             }
         }
-        */
 
         //Enemy health decrementer, very crude atm.
+        /*
         for (int i = 0; i < enemies.size(); i++)
         {
             if (enemies.get(i) == null)
@@ -340,17 +311,10 @@ public class NewEnemyManager extends Actor{
                 }
             }
         }
+        */
 
 
-        for(Enemy enemy : enemyList)
-        {
-            if(!enemy.isAlive())
-            {
-                numDeadEnemies++;
-                removeEnemy(enemy.entityID);
-                numEnemies--;
-            }
-        }
+
 
         /*
         for (int i = 0; i < enemies.size(); i++)
@@ -373,17 +337,18 @@ public class NewEnemyManager extends Actor{
             }
         }
 
-        /*
-        for (int i = 0; i < enemies.size(); i++)
+        for(Enemy enemy : enemyList)
         {
-            if (!enemies.get(i).Check())
+            if(!enemy.isAlive())
             {
-                enemies.get(i).Move();
+                numDeadEnemies++;
+                removeEnemy(enemy.entityID);
+                numEnemies--;
             }
         }
-        */
 
-
+        enemyList.removeAll(enemiesToBeRemoved);
+        enemiesToBeRemoved.clear();
     }
 
     //Returns the number of enemies killed in the update.

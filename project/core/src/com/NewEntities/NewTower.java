@@ -18,7 +18,6 @@ public class NewTower extends Entity
     public float y = 0;
     public float damages = 0;
     public float range = 0;
-    public LinkedList<WayPoint> wayPoints;
 
     public NewTower(Texture img, Texture img2, float x, float y, float damages, float range, Type type) {
         super(x, y);
@@ -32,7 +31,6 @@ public class NewTower extends Entity
         sprite.setPosition(x, y);
         sprite2.setPosition(x + 9, y - 23);
         sprite2.rotate(-45);
-        wayPoints = new LinkedList<WayPoint>();
     }
 
     @Override
