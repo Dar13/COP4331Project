@@ -45,6 +45,13 @@ public class AssetManager {
 
     public static void dispose()
     {
-
+        if (sound != null) {
+            sound.stop();
+            sound.dispose();
+        }
+        if (music != null) {
+            music.stop();
+            music.dispose();
+        }
     }
 }

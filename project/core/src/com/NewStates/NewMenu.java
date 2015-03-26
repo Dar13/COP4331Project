@@ -27,8 +27,8 @@ public class NewMenu extends NewGameState{
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
         /* Menu Music */
-        //AssetLoader.loadMusic(1);
-        //AssetLoader.music.play();
+        AssetManager.loadMusic(1);
+        //AssetManager.music.play();
         AssetManager.loadSound(1);
 
         singleplayer = new TextButton("Single Player",skin);
