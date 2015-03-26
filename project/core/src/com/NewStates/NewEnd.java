@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.NetworkManager;
 
 /**
@@ -28,6 +29,10 @@ public class NewEnd extends NewGameState {
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
+
+        //Stop all music and sounds
+        AssetManager.dispose();
+
         backtostart = new TextButton("Return to Menu",skin);
         backtostart.setSize(200,60);
         backtostart.setPosition(game.V_WIDTH/2-backtostart.getWidth()/2, game.V_HEIGHT/2-backtostart.getHeight()/2);
