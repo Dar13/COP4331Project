@@ -5,8 +5,10 @@ import com.NewEntities.EnemyFactory;
 import com.NewEntities.Entity;
 import com.NewEntities.HeavyEnemy;
 import com.NewEntities.Tower;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.MyGame;
 import com.mygdx.triggers.WayPoint;
@@ -20,8 +22,8 @@ import java.util.ListIterator;
  * Created by James on 3/20/2015.
  */
 public class NewEnemyManager extends Actor{
-    protected static final int centerOffset = 16;
-    protected static final int rangeOffset = 32;
+    public static final int centerOffset = 16;
+    public static final int rangeOffset = 32;
     protected static final int waveInfoNorm = 20;
     protected static final int waveInfoFast = 7;
     protected static final int waveInfoHeavy = 1;
@@ -53,8 +55,9 @@ public class NewEnemyManager extends Actor{
     private float multiplierA = 0;
     private float incrementer = 1;
     private float multiplierSp = 0;
+    Batch batch;
 
-    public NewEnemyManager(LinkedList<WayPoint> path)
+    public NewEnemyManager(LinkedList<WayPoint> path, Batch batch)
     {
         timeSinceLastNorm = 0;
         timeSinceLastFast = 0;
@@ -64,6 +67,7 @@ public class NewEnemyManager extends Actor{
         waveToBeSpawnedFast = waveInfoFast;
         waveToBeSpawnedHeavy = waveInfoHeavy;
         this.path = path;
+        this.batch = batch;
 
         enemyList = new ArrayList<>();
         enemiesToBeRemoved = new ArrayList<>();
@@ -83,6 +87,8 @@ public class NewEnemyManager extends Actor{
         Enemy enemy = EnemyFactory.createEnemy(type, baseTexture, otherTexture, 0, 0);
         enemy.entityID = idCounter;
         idCounter++; // TODO: This will have to be changed to reflect getting the true entity ID from the host.
+
+
 
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()
@@ -310,8 +316,7 @@ public class NewEnemyManager extends Actor{
 
                         enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
 
-                        System.out.println("Attacking: " + enemy.type + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
-
+                        System.out.println("Attacking: " + enemy.type + "   Enemy ID: " + enemy.entityID + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
                         tower.resetTimeSinceLastShot();
 
                     }
@@ -442,6 +447,7 @@ public class NewEnemyManager extends Actor{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        this.batch = batch;
         for (int i = 0; i < numEnemies; i++)
         {
             enemyList.get(i).draw(batch,parentAlpha);

@@ -3,6 +3,7 @@ package com.NewStates;
 
 import com.NewEntities.Actor;
 import com.NewEntities.BazookaTower;
+import com.NewEntities.Enemy;
 import com.NewEntities.Entity;
 import com.NewEntities.RifleTower;
 import com.NewEntities.Tower;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -71,6 +73,7 @@ public class NewPlay extends  NewGameState {
 
     private BitmapFont font;
     private Batch batch;
+    public ShapeRenderer shapeRenderer;
 
 
     public NewPlay(NewGameStateManager gameStateManager,NetworkManager networkManager, boolean inAndroid)
@@ -90,9 +93,12 @@ public class NewPlay extends  NewGameState {
         ((OrthographicCamera)stage.getCamera()).position.set(MyGame.V_WIDTH/2,MyGame.V_HEIGHT/2,0f);//setToOrtho(false,100,200);  //.zoom += .01;
         stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
 
+        shapeRenderer = new ShapeRenderer();
+
+
         towers = new LinkedList<>();
         wayPointManager = new WayPointManager(inAndroid);
-        enemyManager = new NewEnemyManager(wayPointManager.wayPoints);
+        enemyManager = new NewEnemyManager(wayPointManager.wayPoints, stage.getBatch());
         towerManager = new NewTowerManager(towers);
         rifleButton = new TextButton("rifle",skin);
         rifleButton.setSize(64,64);
@@ -236,6 +242,26 @@ public class NewPlay extends  NewGameState {
         font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
         font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
         batch.end();
+        batch.begin();
+        for(Enemy enemy : enemyManager.enemyList)
+        {
+            if(enemy != null)
+            {
+                for(Tower tower : towerManager.towerList)
+                {
+                    if(tower.inRange(enemy.getPosition(), enemyManager.centerOffset, enemyManager.rangeOffset) && tower.readyToFire() && enemy.IDIsSame(tower.returnTarget()))
+                    {
+                        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+                        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.line(tower.returnX() + enemyManager.centerOffset, tower.returnY() + enemyManager.centerOffset, enemy.returnX() + enemyManager.centerOffset, enemy.returnY() + enemyManager.centerOffset);
+                        shapeRenderer.end();
+                    }
+                }
+            }
+        }
+        batch.end();
+
         debugger.setBatch(batch);
         if(debuggerOn) {
             debugger.render();
