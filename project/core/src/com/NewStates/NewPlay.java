@@ -4,7 +4,9 @@ package com.NewStates;
 import com.NewEntities.Actor;
 import com.NewEntities.BazookaTower;
 import com.NewEntities.Enemy;
+import com.NewEntities.Entity;
 import com.NewEntities.RifleTower;
+import com.NewEntities.SniperTower;
 import com.NewEntities.Tower;
 import com.NewHandlers.NewEnemyManager;
 import com.NewHandlers.NewGameStateManager;
@@ -44,6 +46,7 @@ public class NewPlay extends  NewGameState {
     private int towerPlacement = 0;
     private int Zooka = 0;
     private int Rifle = 0;
+    private int sniper = 0;
 
     private boolean clicked = false;
     private boolean debuggerOn = true;
@@ -56,6 +59,7 @@ public class NewPlay extends  NewGameState {
 
     private TextButton rifleButton;
     private TextButton bazookaButton;
+    private TextButton sniperButton;
 
     private MyStage stage;
     private Texture mapImg;
@@ -68,6 +72,7 @@ public class NewPlay extends  NewGameState {
 
     Texture rifleTowerTexture;
     Texture bazookaTowerTexture;
+    Texture sniperTowerTexture;
     Texture towerShadowTexture;
 
     private BitmapFont font;
@@ -87,6 +92,7 @@ public class NewPlay extends  NewGameState {
         // load textures
         rifleTowerTexture = new Texture(NewTowerManager.rifleTexturePath);
         bazookaTowerTexture = new Texture(NewTowerManager.bazookaTexturePath);
+        sniperTowerTexture  = new Texture(NewTowerManager.sniperTexturePath);
         towerShadowTexture = new Texture(NewTowerManager.shadowTexturePath);
 
         ((OrthographicCamera)stage.getCamera()).position.set(MyGame.V_WIDTH/2,MyGame.V_HEIGHT/2,0f);//setToOrtho(false,100,200);  //.zoom += .01;
@@ -107,6 +113,11 @@ public class NewPlay extends  NewGameState {
         bazookaButton = new TextButton("bazooka",skin);
         bazookaButton.setSize(64, 64);
         bazookaButton.setPosition(rifleButton.getX(),rifleButton.getY() - 64);
+        bazookaButton.addListener(new ClickListener());
+        sniperButton = new TextButton("sniper",skin);
+        sniperButton.setSize(64, 64);
+        sniperButton.setPosition(bazookaButton.getX(),bazookaButton.getY() - 64);
+        sniperButton.addListener(new ClickListener());
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -118,6 +129,7 @@ public class NewPlay extends  NewGameState {
         stage.addActor(towerManager);
         stage.addActor(rifleButton);
         stage.addActor(bazookaButton);
+        stage.addActor(sniperButton);
 
 
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, enemyManager.enemyList, stage.getBatch());
@@ -151,6 +163,16 @@ public class NewPlay extends  NewGameState {
             towerToBePlaced.setPosition(MyInput.x, MyInput.y);
             towerPlacement = 1;
             Zooka = 1;
+        }
+
+        if(sniperButton.isPressed() && towerPlacement==0 &&
+                gold >= SniperTower.PRICE){
+            System.out.println("test - sniper button");
+            towerToBePlaced = new Sprite(sniperTowerTexture);
+            towerToBePlacedS = new Sprite(towerShadowTexture);
+            towerToBePlaced.setPosition(MyInput.x, MyInput.y);
+            towerPlacement = 1;
+            sniper = 1;
         }
 
         if(towerPlacement == 1) {
@@ -191,6 +213,14 @@ public class NewPlay extends  NewGameState {
                 towerPlacement--;
                 Zooka--;
                 gold = gold - BazookaTower.PRICE;
+            }
+
+            else if (sniper == 1)
+            {
+                towerManager.addTower(Tower.Type.TOWER_SNIPER, MyInput.x, MyInput.y);
+                towerPlacement--;
+                sniper--;
+                gold = gold - SniperTower.PRICE;
             }
         }
 
