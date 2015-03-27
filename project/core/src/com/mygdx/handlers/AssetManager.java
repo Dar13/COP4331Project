@@ -35,7 +35,7 @@ public class AssetManager {
     {
         switch(musicID){
             case 1:
-                music = Gdx.audio.newMusic(Gdx.files.internal("data/epic.wav"));
+                music = Gdx.audio.newMusic(Gdx.files.internal("data/epic.ogg"));
                 break;
             default:
                 music = Gdx.audio.newMusic(Gdx.files.internal("data/bass.mp3"));
