@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,10 +16,10 @@ import java.util.Map;
  */
 public class NewTowerManager extends Actor
 {
-    public static final String rifleTexturePath = "RifleTower.png";
-    public static final String bazookaTexturePath = "BazookaTower.png";
-    public static final String sniperTexturePath = "SniperTower.png";
-    public static final String shadowTexturePath = "shadowtower.png";
+    public static final String rifleTexturePath = "RifleBunker.png";
+    public static final String bazookaTexturePath = "BazookaBunker.png";
+    public static final String sniperTexturePath = "SniperBunker.png";
+    public static final String shadowTexturePath = "nulllayer.png";
 
     protected static final int upgradeDamageConstant = 2;
     protected static final float upgradeRangeConstant = 1.25f;
@@ -40,7 +39,7 @@ public class NewTowerManager extends Actor
         textureMap = new HashMap<>();
         textureMap.put(Entity.Type.TOWER_RIFLE, new Texture(rifleTexturePath));
         textureMap.put(Entity.Type.TOWER_BAZOOKA, new Texture(bazookaTexturePath));
-        //textureMap.put(Entity.Type.TOWER_SNIPER, new Texture(sniperTexturePath));
+        textureMap.put(Entity.Type.TOWER_SNIPER, new Texture(sniperTexturePath));
 
         towerShadow = new Texture(shadowTexturePath);
     }
@@ -68,7 +67,7 @@ public class NewTowerManager extends Actor
 
         for(int i = 0; i < towerList.size(); i++)
         {
-            if(towerList.get(i).steppingOntoes(x , y)){
+            if(towerList.get(i).steppingOnToes(x, y)){
                 return true;
             }
         }

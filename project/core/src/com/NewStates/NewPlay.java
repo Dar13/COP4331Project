@@ -3,7 +3,12 @@ package com.NewStates;
 
 import com.NewEntities.Actor;
 import com.NewEntities.BazookaTower;
+
+import com.NewEntities.Enemy;
+import com.NewEntities.Entity;
+
 import com.NewEntities.RifleTower;
+import com.NewEntities.SniperTower;
 import com.NewEntities.Tower;
 import com.NewHandlers.NewEnemyManager;
 import com.NewHandlers.NewGameStateManager;
@@ -17,6 +22,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -42,6 +48,7 @@ public class NewPlay extends  NewGameState {
     private int towerPlacement = 0;
     private int Zooka = 0;
     private int Rifle = 0;
+    private int sniper = 0;
 
     private boolean clicked = false;
     private boolean debuggerOn = true;
@@ -57,6 +64,7 @@ public class NewPlay extends  NewGameState {
     private TextButton bazookaButton;
     private TextButton readyButton;
 
+    private TextButton sniperButton;
     private MyStage stage;
     private Texture mapImg;
     private Debugger debugger;
@@ -68,10 +76,12 @@ public class NewPlay extends  NewGameState {
 
     Texture rifleTowerTexture;
     Texture bazookaTowerTexture;
+    Texture sniperTowerTexture;
     Texture towerShadowTexture;
 
     private BitmapFont font;
     private Batch batch;
+    public ShapeRenderer shapeRenderer;
 
     public enum SubState
     {
@@ -93,32 +103,43 @@ public class NewPlay extends  NewGameState {
         // load textures
         rifleTowerTexture = new Texture(NewTowerManager.rifleTexturePath);
         bazookaTowerTexture = new Texture(NewTowerManager.bazookaTexturePath);
+        sniperTowerTexture  = new Texture(NewTowerManager.sniperTexturePath);
         towerShadowTexture = new Texture(NewTowerManager.shadowTexturePath);
 
         ((OrthographicCamera)stage.getCamera()).position.set(MyGame.V_WIDTH/2,MyGame.V_HEIGHT/2,0f);//setToOrtho(false,100,200);  //.zoom += .01;
         stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
 
+        shapeRenderer = new ShapeRenderer();
+
+
         towers = new LinkedList<>();
         wayPointManager = new WayPointManager(inAndroid);
-        enemyManager = new NewEnemyManager(wayPointManager.wayPoints);
+        enemyManager = new NewEnemyManager(wayPointManager.wayPoints, stage.getBatch());
         towerManager = new NewTowerManager(towers);
 
         rifleButton = new TextButton("rifle",skin);
-        rifleButton.setSize(64,64);
+        rifleButton.setSize(64, 64);
         rifleButton.setPosition(game.V_WIDTH - rifleButton.getWidth(),
                                 game.V_HEIGHT - rifleButton.getHeight());
         rifleButton.addListener(new ClickListener());
 
         bazookaButton = new TextButton("bazooka",skin);
-        bazookaButton.setSize(64,64);
+        bazookaButton.setSize(64, 64);
         bazookaButton.setPosition(rifleButton.getX(),rifleButton.getY() - 64);
         bazookaButton.addListener(new ClickListener());
+
 
         readyButton = new TextButton("Ready",skin);
         readyButton.setSize(64,64);
         readyButton.setPosition(game.V_WIDTH- readyButton.getWidth(),
                                 0);
         readyButton.addListener(new ClickListener());
+
+        sniperButton = new TextButton("sniper",skin);
+        sniperButton.setSize(64, 64);
+        sniperButton.setPosition(bazookaButton.getX(),bazookaButton.getY() - 64);
+        sniperButton.addListener(new ClickListener());
+
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -131,6 +152,8 @@ public class NewPlay extends  NewGameState {
         stage.addActor(rifleButton);
         stage.addActor(bazookaButton);
         stage.addActor(readyButton);
+        stage.addActor(sniperButton);
+
 
 
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, enemyManager.enemyList, stage.getBatch());
@@ -176,6 +199,7 @@ public class NewPlay extends  NewGameState {
                 map.draw(batch, 1);
                 rifleButton.act(delta);
                 bazookaButton.act(delta);
+                sniperButton.act(delta);
                 readyButton.act(delta);
                 if(towerPlacement == 1)
                 {
@@ -187,6 +211,7 @@ public class NewPlay extends  NewGameState {
                 debugger.setBatch(batch);
                 rifleButton.draw(batch, 1);
                 bazookaButton.draw(batch,1);
+                sniperButton.draw(batch,1);
                 readyButton.draw(batch,1);
                 towerManager.draw(batch,1);
                 batch.end();
@@ -205,6 +230,29 @@ public class NewPlay extends  NewGameState {
                 font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
                 batch.end();
+                for(Enemy enemy : enemyManager.enemyList)
+                {
+                    if(enemy != null)
+                    {
+                        for(Tower tower : towerManager.towerList)
+                        {
+                            if(tower.inRange(enemy.getPosition(), enemyManager.centerOffset, enemyManager.rangeOffset) &&
+                                    tower.readyToFire() &&
+                                    enemy.entityID == tower.getTarget())
+                            {
+                                shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+                                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                                shapeRenderer.setColor(Color.RED);
+                                Vector2 towerPosition = tower.getPosition();
+                                Vector2 enemyPosition = enemy.getPosition();
+                                shapeRenderer.line(towerPosition.x + enemyManager.centerOffset, towerPosition.y + enemyManager.centerOffset, enemyPosition.x + enemyManager.centerOffset, enemyPosition.y + enemyManager.centerOffset);
+                                shapeRenderer.end();
+                            }
+                        }
+                    }
+                }
+
+
                 debugger.setBatch(batch);
                 if(debuggerOn) {
                     debugger.render();
@@ -235,6 +283,16 @@ public class NewPlay extends  NewGameState {
             towerToBePlaced.setPosition(MyInput.x, MyInput.y);
             towerPlacement = 1;
             Zooka = 1;
+        }
+
+        if(sniperButton.isPressed() && towerPlacement==0 &&
+                gold >= SniperTower.PRICE){
+            System.out.println("test - sniper button");
+            towerToBePlaced = new Sprite(sniperTowerTexture);
+            towerToBePlacedS = new Sprite(towerShadowTexture);
+            towerToBePlaced.setPosition(MyInput.x, MyInput.y);
+            towerPlacement = 1;
+            sniper = 1;
         }
 
         if(towerPlacement == 1) {
@@ -276,6 +334,14 @@ public class NewPlay extends  NewGameState {
                 Zooka--;
                 gold = gold - BazookaTower.PRICE;
             }
+
+            else if (sniper == 1)
+            {
+                towerManager.addTower(Tower.Type.TOWER_SNIPER, MyInput.x, MyInput.y);
+                towerPlacement--;
+                sniper--;
+                gold = gold - SniperTower.PRICE;
+            }
         }
 
         if (towerPlacement == 1)
@@ -290,6 +356,17 @@ public class NewPlay extends  NewGameState {
                     break;
             }
         }
+
+        if(health <= 0)
+        {
+            gameStateManager.setState(NewGameStateManager.BADEND);
+        }
+        else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0)
+        {
+            gameStateManager.setState(NewGameStateManager.MENU);
+        }
+
+
     }
 
     @Override

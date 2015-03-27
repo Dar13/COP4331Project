@@ -46,15 +46,6 @@ public abstract class Enemy extends Entity
 
     public abstract void draw(Batch batch, float parentAlpha);
 
-    public boolean IDIsSame(int ID)
-    {
-        if (ID == this.entityID){
-            return true;
-        }
-
-        return false;
-    }
-
     public void applyVelocityMultiplier(float mult)
     {
         velocity *= mult;
@@ -92,8 +83,8 @@ public abstract class Enemy extends Entity
 
         base.setPosition(position.x, position.y);
         other.setPosition(position.x, position.y);
+        
         distanceTraveled += Math.abs(velocity);
-
     }
 
     public void rotateToDirection(WayPoint.Direction direction)
@@ -158,10 +149,6 @@ public abstract class Enemy extends Entity
         return health;
     }
 
-    public float returnX(){ return base.getX(); }
-
-    public float returnY(){ return base.getY(); }
-
     public void takeDamage(float damageAmount)
     {
         decrementHealth(damageAmount / armor);
@@ -187,6 +174,9 @@ public abstract class Enemy extends Entity
         return navigationFinished;
     }
 
-    public float returnDistanceTraveled(){ return distanceTraveled; }
+    public float getDistanceTraveled()
+    {
+        return distanceTraveled;
+    }
 
 }

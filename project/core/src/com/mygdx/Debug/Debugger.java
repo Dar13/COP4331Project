@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
@@ -69,7 +70,9 @@ public class Debugger
         while (i < towers.size())
         {
             shapeRenderer.setColor(Color.CYAN);
-            shapeRenderer.circle(towers.get(i).returnX() + 16, towers.get(i).returnY() + 16, towers.get(i).getRange() * 32);
+            Vector2 towerPosition = towers.get(i).getPosition();
+            shapeRenderer.circle(towerPosition.x + 16, towerPosition.y + 16, towers.get(i).getRange() * 32);
+            //shapeRenderer.circle(towers.get(i).returnX() + 16, towers.get(i).returnY() + 16, towers.get(i).getRange() * 32);
             i++;
         }
 
@@ -79,7 +82,9 @@ public class Debugger
         while (j < enemies.size())
         {
             shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.line(enemies.get(j).returnX(), enemies.get(j).returnY() + 38, enemies.get(j).returnX() + enemies.get(j).getHealth() / 4, enemies.get(j).returnY() + 38);
+            Vector2 enemyPosition = enemies.get(j).getPosition();
+            shapeRenderer.line(enemyPosition.x, enemyPosition.y + 38, enemyPosition.x + enemies.get(j).getHealth() / 4, enemyPosition.y +  38);
+            //shapeRenderer.line(enemies.get(j).returnX(), enemies.get(j).returnY() + 38, enemies.get(j).returnX() + enemies.get(j).getHealth() / 4, enemies.get(j).returnY() + 38);
             j++;
         }
 

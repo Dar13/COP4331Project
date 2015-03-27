@@ -3,6 +3,7 @@ package com.NewEntities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.entities.*;
 import com.mygdx.entities.Enemy;
@@ -43,7 +44,8 @@ public abstract class Tower extends Entity
 
     public abstract void draw(Batch batch, float parentAlpha);
 
-    public float getTimeSinceLastShot(){
+    public float getTimeSinceLastShot()
+    {
         return timeSinceLastShot;
     }
 
@@ -67,14 +69,24 @@ public abstract class Tower extends Entity
         timeSinceLastShot = 0;
     }
 
-    public int returnTarget() { return target; }
+    public int getTarget()
+    {
+        return target;
+    }
 
-    public void setTargetDistanceTraveled(float targetDistanceTraveled){ this.targetDistanceTraveled = targetDistanceTraveled; }
-
-    public float getTargetDistanceTraveled(){ return targetDistanceTraveled; }
-
-    public void setTarget(int targetID) {
+    public void setTarget(int targetID)
+    {
         this.target = targetID;
+    }
+
+    public void setTargetDistanceTraveled(float targetDistanceTraveled)
+    {
+        this.targetDistanceTraveled = targetDistanceTraveled;
+    }
+
+    public float getTargetDistanceTraveled()
+    {
+        return targetDistanceTraveled;
     }
 
     public float getDamage(Type type)
@@ -126,10 +138,6 @@ public abstract class Tower extends Entity
         return price;
     }
 
-    public float returnX(){ return base.getX(); }
-
-    public float returnY(){ return base.getY(); }
-
     public boolean inRange(float x, float y, int positionOffset, int rangeOffset)
     {
         return inRange(new Vector2(x,y),positionOffset, rangeOffset);
@@ -151,20 +159,12 @@ public abstract class Tower extends Entity
     }
 
     //Checks to see if the x, y coordinates input clash with the stored x, y coordinates.
-    public boolean steppingOntoes(float x, float y)
+    public boolean steppingOnToes(float x, float y)
     {
-        if ((x > base.getX() && x < base.getX() + 32
-                && y > base.getY() && y < base.getY() + 32)
-                || (x + 32 > base.getX() && x + 32 < base.getX() + 32
-                && y + 32 > base.getY() && y + 32 < base.getY() + 32)
-                || (x > base.getX() && x < base.getX() + 32
-                && y + 32 > base.getY() && y + 32 < base.getY() + 32)
-                || (x + 32 > base.getX() && x + 32 < base.getX() + 32
-                && y > base.getY() && y < base.getY() + 32))
-        {
-            return true;
-        }
-        return false;
+        Rectangle bounds = new Rectangle(base.getX(), base.getY(), 32, 32);
+        Rectangle rect = new Rectangle(x, y, 32, 32);
+
+        return bounds.overlaps(rect);
     }
 
     public void upgrade(float damageMultiplier, float rangeMultiplier)
