@@ -3,7 +3,6 @@ package com.NewStates;
 
 import com.NewEntities.Actor;
 import com.NewEntities.BazookaTower;
-import com.NewEntities.Entity;
 import com.NewEntities.RifleTower;
 import com.NewEntities.Tower;
 import com.NewHandlers.NewEnemyManager;
@@ -48,6 +47,7 @@ public class NewPlay extends  NewGameState {
     private boolean debuggerOn = true;
 
     //private LinkedList<NewTower> towers;
+    private  Actor map;
     private List<Tower> towers;
     public NewEnemyManager enemyManager;
     public NewTowerManager towerManager;
@@ -55,6 +55,7 @@ public class NewPlay extends  NewGameState {
 
     private TextButton rifleButton;
     private TextButton bazookaButton;
+    private TextButton readyButton;
 
     private MyStage stage;
     private Texture mapImg;
@@ -72,15 +73,22 @@ public class NewPlay extends  NewGameState {
     private BitmapFont font;
     private Batch batch;
 
+    public enum SubState
+    {
+        SETUP,
+        PLAY,
+    }
+    private SubState state;
 
     public NewPlay(NewGameStateManager gameStateManager,NetworkManager networkManager, boolean inAndroid)
     {
         super(gameStateManager,networkManager);
+        state = SubState.SETUP;
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
         mapImg = new Texture("MapEasy.png");
-        Actor map = new Actor(mapImg,0,0);
+        map = new Actor(mapImg,0,0);
 
         // load textures
         rifleTowerTexture = new Texture(NewTowerManager.rifleTexturePath);
@@ -94,14 +102,23 @@ public class NewPlay extends  NewGameState {
         wayPointManager = new WayPointManager(inAndroid);
         enemyManager = new NewEnemyManager(wayPointManager.wayPoints);
         towerManager = new NewTowerManager(towers);
+
         rifleButton = new TextButton("rifle",skin);
         rifleButton.setSize(64,64);
         rifleButton.setPosition(game.V_WIDTH - rifleButton.getWidth(),
                                 game.V_HEIGHT - rifleButton.getHeight());
         rifleButton.addListener(new ClickListener());
+
         bazookaButton = new TextButton("bazooka",skin);
         bazookaButton.setSize(64,64);
         bazookaButton.setPosition(rifleButton.getX(),rifleButton.getY() - 64);
+        bazookaButton.addListener(new ClickListener());
+
+        readyButton = new TextButton("Ready",skin);
+        readyButton.setSize(64,64);
+        readyButton.setPosition(game.V_WIDTH- readyButton.getWidth(),
+                                0);
+        readyButton.addListener(new ClickListener());
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -113,6 +130,7 @@ public class NewPlay extends  NewGameState {
         stage.addActor(towerManager);
         stage.addActor(rifleButton);
         stage.addActor(bazookaButton);
+        stage.addActor(readyButton);
 
 
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, enemyManager.enemyList, stage.getBatch());
@@ -122,13 +140,84 @@ public class NewPlay extends  NewGameState {
     @Override
     public void update() {
         //((OrthographicCamera)stage.getCamera()).zoom +=.001f;
-        boolean clearedForPlacement = true;
         health = health - enemyManager.CheckEnemiesAtEnd();
         gold = gold + (enemyManager.GetDeadEnemies() * 15);
 
-        // rifle button handling
+        placeATower();
+        if(readyButton.isPressed()){
+            state = SubState.PLAY;
+            readyButton.remove();
+        }
+        if(health <= 0)
+        {
+            gameStateManager.setState(NewGameStateManager.BADEND);
+        }
+        else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0)
+        {
+            gameStateManager.setState(NewGameStateManager.MENU);
+        }
+
+
+    }
+
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void render(float delta)
+    {
+        Gdx.gl.glClearColor(0, 0, 0, 2);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        switch (state){
+            case SETUP:
+                batch = stage.getBatch();
+                batch.begin();
+                map.draw(batch, 1);
+                rifleButton.act(delta);
+                bazookaButton.act(delta);
+                readyButton.act(delta);
+                if(towerPlacement == 1)
+                {
+                    towerToBePlaced.draw(batch);
+                }
+                font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
+                font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
+                font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
+                debugger.setBatch(batch);
+                rifleButton.draw(batch, 1);
+                bazookaButton.draw(batch,1);
+                readyButton.draw(batch,1);
+                towerManager.draw(batch,1);
+                batch.end();
+                break;
+            case PLAY:
+                enemyManager.SetTowers(towers);
+                stage.act(delta);
+                stage.draw();
+                batch = stage.getBatch();
+                batch.begin();
+                if(towerPlacement == 1)
+                {
+                    towerToBePlaced.draw(batch);
+                }
+                font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
+                font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
+                font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
+                batch.end();
+                debugger.setBatch(batch);
+                if(debuggerOn) {
+                    debugger.render();
+                }
+                break;
+        }
+
+    }
+
+    public void placeATower(){
+        boolean clearedForPlacement = true;
         if(rifleButton.isPressed() && towerPlacement == 0 &&
-           gold >= RifleTower.PRICE){
+                gold >= RifleTower.PRICE){
             System.out.println("test - rifle button");
             towerToBePlaced = new Sprite(rifleTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
@@ -139,7 +228,7 @@ public class NewPlay extends  NewGameState {
 
         // bazooka button handling
         if(bazookaButton.isPressed() && towerPlacement==0 &&
-           gold >= BazookaTower.PRICE){
+                gold >= BazookaTower.PRICE){
             System.out.println("test - bazooka button");
             towerToBePlaced = new Sprite(bazookaTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
@@ -200,45 +289,6 @@ public class NewPlay extends  NewGameState {
                     towerPlacement = 0;
                     break;
             }
-        }
-
-        if(health <= 0)
-        {
-            gameStateManager.setState(NewGameStateManager.BADEND);
-        }
-        else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0)
-        {
-            gameStateManager.setState(NewGameStateManager.MENU);
-        }
-
-
-    }
-
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void render(float delta)
-    {
-        Gdx.gl.glClearColor(0, 0, 0, 2);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        enemyManager.SetTowers(towers);
-        stage.act(delta);
-        stage.draw();
-        batch = stage.getBatch();
-        batch.begin();
-        if(towerPlacement == 1)
-        {
-            towerToBePlaced.draw(batch);
-        }
-        font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
-        font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
-        font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
-        batch.end();
-        debugger.setBatch(batch);
-        if(debuggerOn) {
-            debugger.render();
         }
     }
 
