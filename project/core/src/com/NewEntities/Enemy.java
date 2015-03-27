@@ -27,7 +27,7 @@ public abstract class Enemy extends Entity
     protected List<WayPoint> wayPoints;
     protected int currentWayPoint;
     protected boolean navigationFinished;
-    protected int distanceTraveled;
+    protected float distanceTraveled;
 
     // These might need to be the other way around.
     // base = sprite, other = sprite2
@@ -93,6 +93,7 @@ public abstract class Enemy extends Entity
         base.setPosition(position.x, position.y);
         other.setPosition(position.x, position.y);
         distanceTraveled += Math.abs(velocity);
+
     }
 
     public void rotateToDirection(WayPoint.Direction direction)
@@ -186,6 +187,6 @@ public abstract class Enemy extends Entity
         return navigationFinished;
     }
 
-    public int returnDistanceTraveled(){ return distanceTraveled; }
+    public float returnDistanceTraveled(){ return distanceTraveled; }
 
 }

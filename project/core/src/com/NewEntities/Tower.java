@@ -23,7 +23,7 @@ public abstract class Tower extends Entity
     protected Sprite base;
     protected Sprite other;
     protected int target;
-    protected int targetDistanceTraveled;
+    protected float targetDistanceTraveled;
 
     public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y)
     {
@@ -69,9 +69,9 @@ public abstract class Tower extends Entity
 
     public int returnTarget() { return target; }
 
-    public void setTargetDistanceTraveled(int targetDistanceTraveled){ this.targetDistanceTraveled = targetDistanceTraveled; }
+    public void setTargetDistanceTraveled(float targetDistanceTraveled){ this.targetDistanceTraveled = targetDistanceTraveled; }
 
-    public int getTargetDistanceTraveled(){ return targetDistanceTraveled; }
+    public float getTargetDistanceTraveled(){ return targetDistanceTraveled; }
 
     public void setTarget(int targetID) {
         this.target = targetID;
@@ -83,12 +83,13 @@ public abstract class Tower extends Entity
             case TOWER_BAZOOKA:
                 switch (type){
                     case ENEMY_NORMAL:
-                        return damage / 3;
+                        return (damage / 3);
                     case ENEMY_FAST:
-                        return damage / 3;
+                        return (damage / 3);
                     case ENEMY_HEAVY:
-                        return damage * 2;
+                        return (damage * 2);
                 }
+                break;
 
             case TOWER_RIFLE:
                 switch (type){
@@ -97,19 +98,20 @@ public abstract class Tower extends Entity
                     case ENEMY_FAST:
                         return damage;
                     case ENEMY_HEAVY:
-                        return damage / 3;
+                        return (damage / 3);
                 }
-
+                break;
 
             case TOWER_SNIPER:
                 switch (type){
                     case ENEMY_NORMAL:
-                        return damage * 2;
+                        return (damage * 2);
                     case ENEMY_FAST:
                         return damage;
                     case ENEMY_HEAVY:
-                        return damage / 2;
+                        return (damage / 2);
                 }
+                break;
             }
         return damage / 2;
     }

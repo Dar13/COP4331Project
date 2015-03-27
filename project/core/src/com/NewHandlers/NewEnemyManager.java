@@ -3,6 +3,7 @@ package com.NewHandlers;
 import com.NewEntities.Enemy;
 import com.NewEntities.EnemyFactory;
 import com.NewEntities.Entity;
+import com.NewEntities.HeavyEnemy;
 import com.NewEntities.Tower;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -36,8 +37,7 @@ public class NewEnemyManager extends Actor{
     public float timeSinceLastNorm;
     public float timeSinceLastFast;
     public float timeSinceLastHeavy;
-    private Texture EnemyImg = new Texture("EnemyDev.png");
-
+    private Texture NormEnemy = new Texture("EnemyDev.png");
     private Texture NullLayer = new Texture("nulllayer.png");
     private Texture FastEnemy = new Texture("FastEnemy.png");
     private Texture TigerBase = new Texture("tigerbase.png");
@@ -199,8 +199,8 @@ public class NewEnemyManager extends Actor{
             timeSinceLastNorm++;
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
-                //AddEnemy(EnemyImg, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, EnemyImg, NullLayer, path);
+                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemy, NullLayer, path);
 
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
@@ -216,8 +216,8 @@ public class NewEnemyManager extends Actor{
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
-                //AddEnemy(EnemyImg, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, EnemyImg, NullLayer, path);
+                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemy, NullLayer, path);
 
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
@@ -227,7 +227,7 @@ public class NewEnemyManager extends Actor{
             if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
                 //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
-                addEnemy(Entity.Type.ENEMY_FAST, EnemyImg, NullLayer, path);
+                addEnemy(Entity.Type.ENEMY_FAST, FastEnemy, NullLayer, path);
 
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
@@ -243,8 +243,8 @@ public class NewEnemyManager extends Actor{
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
-                //AddEnemy(EnemyImg, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, EnemyImg, NullLayer, path);
+                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemy, NullLayer, path);
 
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
@@ -254,7 +254,7 @@ public class NewEnemyManager extends Actor{
             if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
                 //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
-                addEnemy(Entity.Type.ENEMY_FAST, EnemyImg, NullLayer, path);
+                addEnemy(Entity.Type.ENEMY_FAST, FastEnemy, NullLayer, path);
 
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
@@ -277,7 +277,7 @@ public class NewEnemyManager extends Actor{
             if(tower != null)
             {
                 for(Enemy enemy : enemyList){
-                    if(!enemy.IDIsSame(tower.returnTarget()) && enemy.returnDistanceTraveled() > tower.getTargetDistanceTraveled() && tower.inRange(enemy.returnX(), enemy.returnY(), centerOffset, rangeOffset)){
+                    if(!enemy.IDIsSame(tower.returnTarget()) && enemy.returnDistanceTraveled() > tower.getTargetDistanceTraveled() && tower.inRange(enemy.getPosition(), centerOffset, rangeOffset)){
                         tower.setTarget(enemy.entityID);
                         tower.setTargetDistanceTraveled(enemy.returnDistanceTraveled());
                     }
@@ -290,7 +290,7 @@ public class NewEnemyManager extends Actor{
             if(tower != null)
             {
                 for(Enemy enemy : enemyList){
-                    if(enemy.IDIsSame(tower.returnTarget()) && !tower.inRange(enemy.returnX(), enemy.returnY(), centerOffset, rangeOffset)){
+                    if(enemy.IDIsSame(tower.returnTarget()) && !tower.inRange(enemy.getPosition(), centerOffset, rangeOffset)){
                         tower.setTarget(-1);
                         tower.setTargetDistanceTraveled(0);
                     }
@@ -308,7 +308,10 @@ public class NewEnemyManager extends Actor{
                     if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.IDIsSame(tower.returnTarget()))
                     {
 
-                        enemy.takeDamage(tower.getDamage(enemy.type));
+                        enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
+
+                        System.out.println("Attacking: " + enemy.type + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
+
                         tower.resetTimeSinceLastShot();
 
                     }
