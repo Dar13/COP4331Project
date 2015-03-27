@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.entities.*;
+import com.mygdx.entities.Enemy;
 
 /**
  * Created by NeilMoore on 3/25/2015.
@@ -68,9 +70,41 @@ public abstract class Tower extends Entity
         this.target = targetID;
     }
 
-    public float getDamage()
+    public float getDamage(Type type)
     {
-        return damage;
+        switch (this.type) {
+            case TOWER_BAZOOKA:
+                switch (type){
+                    case ENEMY_NORMAL:
+                        return damage / 3;
+                    case ENEMY_FAST:
+                        return damage / 3;
+                    case ENEMY_HEAVY:
+                        return damage * 2;
+                }
+
+            case TOWER_RIFLE:
+                switch (type){
+                    case ENEMY_NORMAL:
+                        return damage;
+                    case ENEMY_FAST:
+                        return damage;
+                    case ENEMY_HEAVY:
+                        return damage / 3;
+                }
+
+
+            case TOWER_SNIPER:
+                switch (type){
+                    case ENEMY_NORMAL:
+                        return damage * 2;
+                    case ENEMY_FAST:
+                        return damage;
+                    case ENEMY_HEAVY:
+                        return damage / 2;
+                }
+            }
+        return damage / 2;
     }
 
     public float getRange()

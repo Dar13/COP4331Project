@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  */
 public class BazookaTower extends Tower
 {
-    public static final float BASE_DAMAGE = 4.0f;
+    public static final float BASE_DAMAGE = 8.0f;
     public static final float BASE_RANGE = 2.0f;
     public static final int PRICE = 150;
     public static final float FIRING_DELAY = 6f;
@@ -29,4 +29,6 @@ public class BazookaTower extends Tower
         other.draw(batch);
         base.draw(batch);
     }
+
+
 }

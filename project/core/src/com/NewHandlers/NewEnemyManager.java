@@ -309,7 +309,7 @@ public class NewEnemyManager extends Actor{
                 {
                     if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.IDIsSame(tower.returnTarget()))
                     {
-                        enemy.takeDamage(tower.getDamage());
+                        enemy.takeDamage(tower.getDamage(enemy.type));
                         tower.resetTSLS();
                     }
                 }
