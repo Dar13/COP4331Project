@@ -1,7 +1,6 @@
 package com.NewHandlers;
 
 import com.NewEntities.Entity;
-import com.NewEntities.NewTower;
 import com.NewEntities.Tower;
 import com.NewEntities.TowerFactory;
 import com.badlogic.gdx.graphics.Texture;

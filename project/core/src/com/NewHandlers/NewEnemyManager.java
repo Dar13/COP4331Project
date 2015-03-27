@@ -3,8 +3,6 @@ package com.NewHandlers;
 import com.NewEntities.Enemy;
 import com.NewEntities.EnemyFactory;
 import com.NewEntities.Entity;
-import com.NewEntities.NewEnemy;
-import com.NewEntities.NewTower;
 import com.NewEntities.Tower;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -309,8 +307,10 @@ public class NewEnemyManager extends Actor{
                 {
                     if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.IDIsSame(tower.returnTarget()))
                     {
+
                         enemy.takeDamage(tower.getDamage(enemy.type));
-                        tower.resetTSLS();
+                        tower.resetTimeSinceLastShot();
+
                     }
                 }
             }
@@ -319,7 +319,7 @@ public class NewEnemyManager extends Actor{
 
         for(Tower tower : towerList)
         {
-            tower.updateTSLS();
+            tower.updateTimeSinceLastShot();
         }
 
         //Enemy health decrementer, very crude atm.

@@ -16,11 +16,12 @@ public class RifleTower extends Tower
 
     public RifleTower(Texture baseTexture, Texture otherTexture, float x, float y)
     {
-        super(Type.TOWER_RIFLE, baseTexture, otherTexture, x, y, FIRING_DELAY);
+        super(Type.TOWER_RIFLE, baseTexture, otherTexture, x, y);
 
         damage = BASE_DAMAGE;
         range = BASE_RANGE;
         price = PRICE;
+        firingDelay = FIRING_DELAY;
     }
 
     @Override

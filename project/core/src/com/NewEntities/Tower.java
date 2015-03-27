@@ -25,12 +25,11 @@ public abstract class Tower extends Entity
     protected int target;
     protected int targetDistanceTraveled;
 
-    public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y, float firingDelay)
+    public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y)
     {
         super(x, y);
 
         this.type = type;
-        this.firingDelay = firingDelay;
         this.timeSinceLastShot = 0;
         targetDistanceTraveled = 0;
 
@@ -50,15 +49,33 @@ public abstract class Tower extends Entity
 
     public boolean readyToFire(){
         if(timeSinceLastShot > firingDelay){
+            // Is this ok?
+            //resetTimeSinceLastShot();
             return true;
         }
 
         return false;
     }
 
-    public void updateTSLS(){timeSinceLastShot++;}
+    public void updateTimeSinceLastShot()
+    {
+        timeSinceLastShot++;
+    }
 
-    public void resetTSLS() {timeSinceLastShot = 0;}
+    public void resetTimeSinceLastShot()
+    {
+        timeSinceLastShot = 0;
+    }
+
+    public int returnTarget() { return target; }
+
+    public void setTargetDistanceTraveled(int targetDistanceTraveled){ this.targetDistanceTraveled = targetDistanceTraveled; }
+
+    public int getTargetDistanceTraveled(){ return targetDistanceTraveled; }
+
+    public void setTarget(int targetID) {
+        this.target = targetID;
+    }
 
     public int returnTarget() { return target; }
 

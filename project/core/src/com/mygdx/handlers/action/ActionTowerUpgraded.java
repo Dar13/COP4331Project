@@ -1,7 +1,6 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.NewEnemy;
-import com.NewEntities.NewTower;
+import com.NewEntities.Tower;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
 
@@ -10,7 +9,7 @@ import com.mygdx.states.GameState;
  */
 public class ActionTowerUpgraded extends Action
 {
-    public ActionTowerUpgraded(GameState gameState, NetworkManager networkManager, NewTower tower)
+    public ActionTowerUpgraded(GameState gameState, NetworkManager networkManager, Tower tower)
     {
         super(gameState, networkManager);
 
