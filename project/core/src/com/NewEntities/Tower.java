@@ -75,6 +75,16 @@ public abstract class Tower extends Entity
         this.target = targetID;
     }
 
+    public int returnTarget() { return target; }
+
+    public void setTargetDistanceTraveled(int targetDistanceTraveled){ this.targetDistanceTraveled = targetDistanceTraveled; }
+
+    public int getTargetDistanceTraveled(){ return targetDistanceTraveled; }
+
+    public void setTarget(int targetID) {
+        this.target = targetID;
+    }
+
     public float getDamage()
     {
         return damage;
