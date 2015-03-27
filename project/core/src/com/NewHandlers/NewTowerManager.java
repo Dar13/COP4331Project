@@ -17,7 +17,7 @@ import java.util.Map;
 public class NewTowerManager extends Actor
 {
     public static final String rifleTexturePath = "RifleBunker.png";
-    public static final String bazookaTexturePath = "BazookaTower.png";
+    public static final String bazookaTexturePath = "BazookaBunker.png";
     public static final String sniperTexturePath = "SniperTower.png";
     public static final String shadowTexturePath = "shadowtower.png";
 
