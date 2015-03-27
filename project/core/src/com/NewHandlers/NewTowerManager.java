@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +67,7 @@ public class NewTowerManager extends Actor
 
         for(int i = 0; i < towerList.size(); i++)
         {
-            if(towerList.get(i).steppingOntoes(x , y)){
+            if(towerList.get(i).steppingOnToes(x, y)){
                 return true;
             }
         }

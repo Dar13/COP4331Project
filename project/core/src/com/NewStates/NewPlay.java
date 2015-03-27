@@ -4,7 +4,6 @@ package com.NewStates;
 import com.NewEntities.Actor;
 import com.NewEntities.BazookaTower;
 import com.NewEntities.Enemy;
-import com.NewEntities.Entity;
 import com.NewEntities.RifleTower;
 import com.NewEntities.Tower;
 import com.NewHandlers.NewEnemyManager;
@@ -101,12 +100,12 @@ public class NewPlay extends  NewGameState {
         enemyManager = new NewEnemyManager(wayPointManager.wayPoints, stage.getBatch());
         towerManager = new NewTowerManager(towers);
         rifleButton = new TextButton("rifle",skin);
-        rifleButton.setSize(64,64);
+        rifleButton.setSize(64, 64);
         rifleButton.setPosition(game.V_WIDTH - rifleButton.getWidth(),
                                 game.V_HEIGHT - rifleButton.getHeight());
         rifleButton.addListener(new ClickListener());
         bazookaButton = new TextButton("bazooka",skin);
-        bazookaButton.setSize(64,64);
+        bazookaButton.setSize(64, 64);
         bazookaButton.setPosition(rifleButton.getX(),rifleButton.getY() - 64);
 
         font = new BitmapFont();
@@ -249,12 +248,16 @@ public class NewPlay extends  NewGameState {
             {
                 for(Tower tower : towerManager.towerList)
                 {
-                    if(tower.inRange(enemy.getPosition(), enemyManager.centerOffset, enemyManager.rangeOffset) && tower.readyToFire() && enemy.IDIsSame(tower.returnTarget()))
+                    if(tower.inRange(enemy.getPosition(), enemyManager.centerOffset, enemyManager.rangeOffset) &&
+                       tower.readyToFire() &&
+                       enemy.entityID == tower.getTarget())
                     {
                         shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
                         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                         shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.line(tower.returnX() + enemyManager.centerOffset, tower.returnY() + enemyManager.centerOffset, enemy.returnX() + enemyManager.centerOffset, enemy.returnY() + enemyManager.centerOffset);
+                        Vector2 towerPosition = tower.getPosition();
+                        Vector2 enemyPosition = enemy.getPosition();
+                        shapeRenderer.line(towerPosition.x + enemyManager.centerOffset, towerPosition.y + enemyManager.centerOffset, enemyPosition.x + enemyManager.centerOffset, enemyPosition.y + enemyManager.centerOffset);
                         shapeRenderer.end();
                     }
                 }

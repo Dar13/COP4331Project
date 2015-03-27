@@ -3,12 +3,9 @@ package com.NewHandlers;
 import com.NewEntities.Enemy;
 import com.NewEntities.EnemyFactory;
 import com.NewEntities.Entity;
-import com.NewEntities.HeavyEnemy;
 import com.NewEntities.Tower;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.MyGame;
 import com.mygdx.triggers.WayPoint;
@@ -283,9 +280,9 @@ public class NewEnemyManager extends Actor{
             if(tower != null)
             {
                 for(Enemy enemy : enemyList){
-                    if(!enemy.IDIsSame(tower.returnTarget()) && enemy.returnDistanceTraveled() > tower.getTargetDistanceTraveled() && tower.inRange(enemy.getPosition(), centerOffset, rangeOffset)){
+                    if(!(enemy.entityID == tower.getTarget()) && enemy.getDistanceTraveled() > tower.getTargetDistanceTraveled() && tower.inRange(enemy.getPosition(), centerOffset, rangeOffset)){
                         tower.setTarget(enemy.entityID);
-                        tower.setTargetDistanceTraveled(enemy.returnDistanceTraveled());
+                        tower.setTargetDistanceTraveled(enemy.getDistanceTraveled());
                     }
                 }
             }
@@ -296,7 +293,7 @@ public class NewEnemyManager extends Actor{
             if(tower != null)
             {
                 for(Enemy enemy : enemyList){
-                    if(enemy.IDIsSame(tower.returnTarget()) && !tower.inRange(enemy.getPosition(), centerOffset, rangeOffset)){
+                    if(enemy.entityID == tower.getTarget() && !tower.inRange(enemy.getPosition(), centerOffset, rangeOffset)){
                         tower.setTarget(-1);
                         tower.setTargetDistanceTraveled(0);
                     }
@@ -311,12 +308,11 @@ public class NewEnemyManager extends Actor{
             {
                 for(Tower tower : towerList)
                 {
-                    if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.IDIsSame(tower.returnTarget()))
+                    if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.entityID == tower.getTarget())
                     {
-
                         enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
 
-                        System.out.println("Attacking: " + enemy.type + "   Enemy ID: " + enemy.entityID + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
+                        //System.out.println("Attacking: " + enemy.type + "   Enemy ID: " + enemy.entityID + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
                         tower.resetTimeSinceLastShot();
 
                     }
@@ -430,18 +426,6 @@ public class NewEnemyManager extends Actor{
             }
         }
         return enemyAtEnd;
-    }
-
-    //Calculator to see if the distance from the tower to the enemy is within the tower range.
-    public boolean InRange(float enemyX, float enemyY, float towerX, float towerY, float towerRange)
-    {
-        if (Math.pow((enemyX + centerOffset) - (towerX + centerOffset), 2) + Math.pow(((enemyY + centerOffset) - (towerY + centerOffset)), 2)
-                < Math.pow(towerRange * rangeOffset, 2))
-        {
-            return true;
-        }
-
-        return false;
     }
 
 
