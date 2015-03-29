@@ -311,6 +311,10 @@ public class NewEnemyManager extends Actor{
                     if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.entityID == tower.getTarget())
                     {
                         enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
+                        switch (tower.type){
+                            case TOWER_MORTAR:
+                                enemy.decrimentVelocity(2);
+                        }
 
                         //System.out.println("Attacking: " + enemy.type + "   Enemy ID: " + enemy.entityID + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
                         tower.resetTimeSinceLastShot();

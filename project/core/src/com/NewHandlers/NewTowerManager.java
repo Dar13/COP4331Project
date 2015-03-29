@@ -19,6 +19,7 @@ public class NewTowerManager extends Actor
     public static final String rifleTexturePath = "RifleBunker.png";
     public static final String bazookaTexturePath = "BazookaBunker.png";
     public static final String sniperTexturePath = "SniperBunker.png";
+    public static final String mortarTexturePath = "Mortarteam.png";
     public static final String shadowTexturePath = "nulllayer.png";
 
     protected static final int upgradeDamageConstant = 2;
@@ -40,13 +41,14 @@ public class NewTowerManager extends Actor
         textureMap.put(Entity.Type.TOWER_RIFLE, new Texture(rifleTexturePath));
         textureMap.put(Entity.Type.TOWER_BAZOOKA, new Texture(bazookaTexturePath));
         textureMap.put(Entity.Type.TOWER_SNIPER, new Texture(sniperTexturePath));
+        textureMap.put(Entity.Type.TOWER_MORTAR, new Texture(mortarTexturePath));
 
         towerShadow = new Texture(shadowTexturePath);
     }
 
     public void addTower(Entity.Type type, float x, float y)
     {
-        Tower tower = TowerFactory.createTower(type, textureMap.get(type), towerShadow, x, y);
+        Tower tower = TowerFactory.createTower(type, textureMap.get(type), towerShadow, x - 16, y - 16);
 
         tower.entityID = idCounter;
         idCounter++;

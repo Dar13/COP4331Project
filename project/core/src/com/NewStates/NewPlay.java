@@ -7,6 +7,7 @@ import com.NewEntities.BazookaTower;
 import com.NewEntities.Enemy;
 import com.NewEntities.Entity;
 
+import com.NewEntities.MortarTower;
 import com.NewEntities.RifleTower;
 import com.NewEntities.SniperTower;
 import com.NewEntities.Tower;
@@ -49,6 +50,7 @@ public class NewPlay extends  NewGameState {
     private int Zooka = 0;
     private int Rifle = 0;
     private int sniper = 0;
+    private int mortar = 0;
 
     private boolean clicked = false;
     private boolean debuggerOn = true;
@@ -62,9 +64,11 @@ public class NewPlay extends  NewGameState {
 
     private TextButton rifleButton;
     private TextButton bazookaButton;
+    private TextButton sniperButton;
+    private TextButton mortarButton;
     private TextButton readyButton;
 
-    private TextButton sniperButton;
+
     private MyStage stage;
     private Texture mapImg;
     private Debugger debugger;
@@ -77,6 +81,7 @@ public class NewPlay extends  NewGameState {
     Texture rifleTowerTexture;
     Texture bazookaTowerTexture;
     Texture sniperTowerTexture;
+    Texture mortarTowerTexture;
     Texture towerShadowTexture;
 
     private BitmapFont font;
@@ -104,6 +109,7 @@ public class NewPlay extends  NewGameState {
         rifleTowerTexture = new Texture(NewTowerManager.rifleTexturePath);
         bazookaTowerTexture = new Texture(NewTowerManager.bazookaTexturePath);
         sniperTowerTexture  = new Texture(NewTowerManager.sniperTexturePath);
+        mortarTowerTexture  = new Texture(NewTowerManager.mortarTexturePath);
         towerShadowTexture = new Texture(NewTowerManager.shadowTexturePath);
 
         ((OrthographicCamera)stage.getCamera()).position.set(MyGame.V_WIDTH/2,MyGame.V_HEIGHT/2,0f);//setToOrtho(false,100,200);  //.zoom += .01;
@@ -140,6 +146,11 @@ public class NewPlay extends  NewGameState {
         sniperButton.setPosition(bazookaButton.getX(),bazookaButton.getY() - 64);
         sniperButton.addListener(new ClickListener());
 
+        mortarButton = new TextButton("mortar",skin);
+        mortarButton.setSize(64, 64);
+        mortarButton.setPosition(sniperButton.getX(),sniperButton.getY() - 64);
+        mortarButton.addListener(new ClickListener());
+
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -151,8 +162,10 @@ public class NewPlay extends  NewGameState {
         stage.addActor(towerManager);
         stage.addActor(rifleButton);
         stage.addActor(bazookaButton);
-        stage.addActor(readyButton);
         stage.addActor(sniperButton);
+        stage.addActor(mortarButton);
+        stage.addActor(readyButton);
+
 
 
 
@@ -200,11 +213,37 @@ public class NewPlay extends  NewGameState {
                 rifleButton.act(delta);
                 bazookaButton.act(delta);
                 sniperButton.act(delta);
+                mortarButton.act(delta);
                 readyButton.act(delta);
+                batch.end();
                 if(towerPlacement == 1)
                 {
+                    // Shape renderer is so heavy it will prevent anything else being drawn
+                    // if it is in the same batch as it.
+                    batch.begin();
+                    shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.rect(towerToBePlaced.getX(), towerToBePlaced.getY(), 32, 32);
+                    if (Rifle == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, RifleTower.BASE_RANGE * 32);
+                    }
+                    else if (Zooka == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, BazookaTower.BASE_RANGE * 32);
+                    }
+                    else if (sniper == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, SniperTower.BASE_RANGE * 32);
+                    }
+                    else if (mortar == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, MortarTower.BASE_RANGE * 32);
+                    }
+                    shapeRenderer.end();
+                    batch.end();
+                    batch.begin();
                     towerToBePlaced.draw(batch);
+                    batch.end();
                 }
+                batch.begin();
                 font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
@@ -212,6 +251,7 @@ public class NewPlay extends  NewGameState {
                 rifleButton.draw(batch, 1);
                 bazookaButton.draw(batch,1);
                 sniperButton.draw(batch,1);
+                mortarButton.draw(batch,1);
                 readyButton.draw(batch,1);
                 towerManager.draw(batch,1);
                 batch.end();
@@ -269,7 +309,7 @@ public class NewPlay extends  NewGameState {
             System.out.println("test - rifle button");
             towerToBePlaced = new Sprite(rifleTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
-            towerToBePlaced.setPosition(MyInput.x,MyInput.y);
+            towerToBePlaced.setPosition(MyInput.x ,MyInput.y);
             towerPlacement = 1;
             Rifle = 1;
         }
@@ -295,10 +335,20 @@ public class NewPlay extends  NewGameState {
             sniper = 1;
         }
 
+        if(mortarButton.isPressed() && towerPlacement==0 &&
+                gold >= MortarTower.PRICE){
+            System.out.println("test - mortar button");
+            towerToBePlaced = new Sprite(mortarTowerTexture);
+            towerToBePlacedS = new Sprite(towerShadowTexture);
+            towerToBePlaced.setPosition(MyInput.x, MyInput.y);
+            towerPlacement = 1;
+            mortar = 1;
+        }
+
         if(towerPlacement == 1) {
             if (wayPointManager.WithinAny(towerToBePlaced.getX(), towerToBePlaced.getY()) || towerManager.onAnotherTower(towerToBePlaced.getX(), towerToBePlaced.getY())) {
                 clearedForPlacement = false;
-            } else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480 || towerToBePlaced.getX() + 32 > 640 || towerToBePlaced.getY() + 32 > 480) {
+            } else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480 || towerToBePlaced.getX() + 32 > 640 || towerToBePlaced.getY() + 32 > 480 || towerToBePlaced.getY() < 0) {
                 clearedForPlacement = false;
             }
 
@@ -342,11 +392,19 @@ public class NewPlay extends  NewGameState {
                 sniper--;
                 gold = gold - SniperTower.PRICE;
             }
+
+            else if (mortar == 1)
+            {
+                towerManager.addTower(Tower.Type.TOWER_MORTAR, MyInput.x, MyInput.y);
+                towerPlacement--;
+                mortar--;
+                gold = gold - MortarTower.PRICE;
+            }
         }
 
         if (towerPlacement == 1)
         {
-            towerToBePlaced.setPosition(MyInput.x,MyInput.y);
+            towerToBePlaced.setPosition(MyInput.x - 16,MyInput.y - 16);
         }
         else if(Gdx.input.isTouched())
         {

@@ -22,7 +22,8 @@ public abstract class Entity extends Actor
         ENEMY_HEAVY,
         TOWER_RIFLE,
         TOWER_BAZOOKA,
-        TOWER_SNIPER
+        TOWER_SNIPER,
+        TOWER_MORTAR
     }
     public Type type;
 

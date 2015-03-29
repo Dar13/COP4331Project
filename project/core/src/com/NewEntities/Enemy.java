@@ -139,6 +139,8 @@ public abstract class Enemy extends Entity
         return velocity;
     }
 
+    public void decrimentVelocity(float decrement) {velocity = velocity / decrement;}
+
     public float getArmor()
     {
         return armor;

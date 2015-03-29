@@ -124,6 +124,16 @@ public abstract class Tower extends Entity
                         return (damage / 2);
                 }
                 break;
+            case TOWER_MORTAR:
+                switch (type){
+                    case ENEMY_NORMAL:
+                        return damage;
+                    case ENEMY_FAST:
+                        return damage;
+                    case ENEMY_HEAVY:
+                        return (damage / 2);
+                }
+                break;
             }
         return damage / 2;
     }

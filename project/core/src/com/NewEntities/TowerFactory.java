@@ -21,6 +21,9 @@ public class TowerFactory
         case TOWER_SNIPER:
             return new SniperTower(baseTexture, otherTexture, x, y);
 
+        case TOWER_MORTAR:
+            return new MortarTower(baseTexture, otherTexture, x, y);
+
         default:
             return null;
         }
