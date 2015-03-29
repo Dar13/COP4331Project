@@ -36,10 +36,10 @@ public class NewEnemyManager extends Actor{
     public float timeSinceLastNorm;
     public float timeSinceLastFast;
     public float timeSinceLastHeavy;
-    private Texture NormEnemy = new Texture("EnemyDev.png");
+    private Texture NormEnemy = new Texture("Enemydirectionassets/EnemyRifleSouth.png");
     private Texture NullLayer = new Texture("nulllayer.png");
-    private Texture FastEnemy = new Texture("FastEnemy.png");
-    private Texture TigerBase = new Texture("tigerbase.png");
+    private Texture FastEnemy = new Texture("Enemydirectionassets/EnemyFastSouth.png");
+    private Texture TigerBase = new Texture("Enemydirectionassets/TigerEast.png");
     private Texture TigerTurret = new Texture("tigerturret.png");
 
     public List<Enemy> enemyList;
