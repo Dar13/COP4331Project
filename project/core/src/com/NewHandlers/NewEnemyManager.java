@@ -290,6 +290,24 @@ public class NewEnemyManager extends Actor{
 
         for(Tower tower: towerList)
         {
+            boolean targetNotdead = false;
+            if(tower != null)
+            {
+                for(Enemy enemy : enemyList){
+                    if(enemy.entityID == tower.getTarget()){
+                        targetNotdead = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!targetNotdead) {
+                tower.setTargetDistanceTraveled(0);
+            }
+        }
+
+        for(Tower tower: towerList)
+        {
             if(tower != null)
             {
                 for(Enemy enemy : enemyList){

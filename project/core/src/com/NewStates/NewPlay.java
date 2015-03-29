@@ -261,11 +261,34 @@ public class NewPlay extends  NewGameState {
                 stage.act(delta);
                 stage.draw();
                 batch = stage.getBatch();
-                batch.begin();
                 if(towerPlacement == 1)
                 {
+                    // Shape renderer is so heavy it will prevent anything else being drawn
+                    // if it is in the same batch as it.
+                    batch.begin();
+                    shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.rect(towerToBePlaced.getX(), towerToBePlaced.getY(), 32, 32);
+                    if (Rifle == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, RifleTower.BASE_RANGE * 32);
+                    }
+                    else if (Zooka == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, BazookaTower.BASE_RANGE * 32);
+                    }
+                    else if (sniper == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, SniperTower.BASE_RANGE * 32);
+                    }
+                    else if (mortar == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, MortarTower.BASE_RANGE * 32);
+                    }
+                    shapeRenderer.end();
+                    batch.end();
+                    batch.begin();
                     towerToBePlaced.draw(batch);
+                    batch.end();
                 }
+                batch.begin();
                 font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
