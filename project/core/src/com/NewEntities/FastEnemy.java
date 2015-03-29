@@ -12,12 +12,15 @@ public class FastEnemy extends Enemy
     public static final float BASE_VELOCITY = 6.0f;
     public static final float BASE_ARMOR = 1.0f;
 
-    public FastEnemy(Texture baseTexture, Texture otherTexture, float x, float y)
+    public FastEnemy(Texture north, Texture south, Texture east, Texture west, float x, float y)
     {
         super(Type.ENEMY_FAST, x, y);
 
-        base = new Sprite(baseTexture);
-        other = new Sprite(otherTexture);
+        this.north = new Sprite(north);
+        this.south = new Sprite(south);
+        this.east = new Sprite(east);
+        this.west = new Sprite(west);
+        this.current = new Sprite(east);
 
         velocity = BASE_VELOCITY;
         armor = BASE_ARMOR;
@@ -27,7 +30,6 @@ public class FastEnemy extends Enemy
 
     public void draw(Batch batch, float parentAlpha)
     {
-        base.draw(batch);
-        other.draw(batch);
+        current.draw(batch);
     }
 }

@@ -31,8 +31,11 @@ public abstract class Enemy extends Entity
 
     // These might need to be the other way around.
     // base = sprite, other = sprite2
-    protected Sprite base;
-    protected Sprite other;
+    protected Sprite south;
+    protected Sprite north;
+    protected Sprite east;
+    protected Sprite west;
+    protected Sprite current;
 
     public Enemy(Type type, float x, float y)
     {
@@ -67,11 +70,8 @@ public abstract class Enemy extends Entity
         position.x = wayPoints.get(currentWayPoint).x;
         position.y = wayPoints.get(currentWayPoint).y;
 
-        base.setX(position.x);
-        base.setY(position.y);
-
-        other.setX(position.x);
-        other.setY(position.y);
+        current.setX(position.x);
+        current.setY(position.y);
 
         heading = wayPoints.get(currentWayPoint).direction;
     }
@@ -81,21 +81,31 @@ public abstract class Enemy extends Entity
         position.x += (velocity * heading.x);
         position.y += (velocity * heading.y);
 
-        base.setPosition(position.x, position.y);
-        other.setPosition(position.x, position.y);
+        current.setPosition(position.x, position.y);
         
         distanceTraveled += Math.abs(velocity);
     }
 
     public void rotateToDirection(WayPoint.Direction direction)
     {
-        Vector2 directionVec = new Vector2(direction.x, direction.y);
-        Vector2 headingVec = new Vector2(heading.x, heading.y);
-
-        float angle = directionVec.angle(headingVec);
-
-        base.rotate(angle);
-        other.rotate(angle);
+        switch (direction){
+            case NORTH:
+                north.setPosition(current.getX(), current.getY());
+                current = north;
+                break;
+            case SOUTH:
+                south.setPosition(current.getX(), current.getY());
+                current = south;
+                break;
+            case EAST:
+                east.setPosition(current.getX(), current.getY());
+                current = east;
+                break;
+            case WEST:
+                west.setPosition(current.getX(), current.getY());
+                current = west;
+                break;
+        }
     }
 
     public boolean check()

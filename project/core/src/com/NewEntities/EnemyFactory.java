@@ -7,19 +7,19 @@ import com.badlogic.gdx.graphics.Texture;
  */
 public class EnemyFactory
 {
-    public static Enemy createEnemy(Entity.Type type, Texture baseTexture, Texture otherTexture,
+    public static Enemy createEnemy(Entity.Type type, Texture north, Texture south, Texture east, Texture west,
                                     float x, float y)
     {
         switch(type)
         {
         case ENEMY_NORMAL:
-            return new NormalEnemy(baseTexture, otherTexture, x, y);
+            return new NormalEnemy(north, south, east, west, x, y);
 
         case ENEMY_FAST:
-            return new FastEnemy(baseTexture, otherTexture, x, y);
+            return new FastEnemy(north, south, east, west, x, y);
 
         case ENEMY_HEAVY:
-            return new HeavyEnemy(baseTexture, otherTexture, x, y);
+            return new HeavyEnemy(north, south, east, west, x, y);
 
         default:
             return null;

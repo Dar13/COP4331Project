@@ -36,11 +36,18 @@ public class NewEnemyManager extends Actor{
     public float timeSinceLastNorm;
     public float timeSinceLastFast;
     public float timeSinceLastHeavy;
-    private Texture NormEnemy = new Texture("Enemydirectionassets/EnemyRifleSouth.png");
-    private Texture NullLayer = new Texture("nulllayer.png");
-    private Texture FastEnemy = new Texture("Enemydirectionassets/EnemyFastSouth.png");
-    private Texture TigerBase = new Texture("Enemydirectionassets/TigerEast.png");
-    private Texture TigerTurret = new Texture("tigerturret.png");
+    private Texture NormEnemyN = new Texture("Enemydirectionassets/EnemyRifleNorth.png");
+    private Texture NormEnemyS = new Texture("Enemydirectionassets/EnemyRifleSouth.png");
+    private Texture NormEnemyE = new Texture("Enemydirectionassets/EnemyRifleEast.png");
+    private Texture NormEnemyW = new Texture("Enemydirectionassets/EnemyRifleWest.png");
+    private Texture FastEnemyN = new Texture("Enemydirectionassets/EnemyFastNorth.png");
+    private Texture FastEnemyS = new Texture("Enemydirectionassets/EnemyFastSouth.png");
+    private Texture FastEnemyE = new Texture("Enemydirectionassets/EnemyFastEast.png");
+    private Texture FastEnemyW = new Texture("Enemydirectionassets/EnemyFastWest.png");
+    private Texture TigerBaseN = new Texture("Enemydirectionassets/TigerEast.png");
+    private Texture TigerBaseS = new Texture("Enemydirectionassets/TigerEast.png");
+    private Texture TigerBaseE = new Texture("Enemydirectionassets/TigerEast.png");
+    private Texture TigerBaseW = new Texture("Enemydirectionassets/TigerWest.png");
 
     public List<Enemy> enemyList;
     public List<Enemy> enemiesToBeRemoved;
@@ -75,13 +82,11 @@ public class NewEnemyManager extends Actor{
      * Creates and adds an enemy to the list of current enemies.
      *
      * @param type
-     * @param baseTexture
-     * @param otherTexture
      * @param path
      */
-    public void addEnemy(Entity.Type type, Texture baseTexture, Texture otherTexture, List<WayPoint> path)
+    public void addEnemy(Entity.Type type, Texture north, Texture south, Texture east, Texture west, List<WayPoint> path)
     {
-        Enemy enemy = EnemyFactory.createEnemy(type, baseTexture, otherTexture, 0, 0);
+        Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
         enemy.entityID = idCounter;
         idCounter++; // TODO: This will have to be changed to reflect getting the true entity ID from the host.
 
@@ -203,7 +208,7 @@ public class NewEnemyManager extends Actor{
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
                 //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemy, NullLayer, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
@@ -220,7 +225,7 @@ public class NewEnemyManager extends Actor{
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
                 //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemy, NullLayer, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
@@ -230,7 +235,7 @@ public class NewEnemyManager extends Actor{
             if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
                 //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
-                addEnemy(Entity.Type.ENEMY_FAST, FastEnemy, NullLayer, path);
+                addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
 
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
@@ -247,7 +252,7 @@ public class NewEnemyManager extends Actor{
             if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
                 //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemy, NullLayer, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
@@ -257,7 +262,7 @@ public class NewEnemyManager extends Actor{
             if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
                 //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
-                addEnemy(Entity.Type.ENEMY_FAST, FastEnemy, NullLayer, path);
+                addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
 
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;
@@ -267,7 +272,7 @@ public class NewEnemyManager extends Actor{
             if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
             {
                 //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
-                addEnemy(Entity.Type.ENEMY_HEAVY, TigerBase, TigerTurret, path);
+                addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
 
                 timeSinceLastHeavy = 0;
                 waveToBeSpawnedHeavy--;
