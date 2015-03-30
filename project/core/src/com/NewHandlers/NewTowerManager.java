@@ -48,7 +48,7 @@ public class NewTowerManager extends Actor
 
     public void addTower(Entity.Type type, float x, float y)
     {
-        Tower tower = TowerFactory.createTower(type, textureMap.get(type), towerShadow, x - 16, y - 16);
+        Tower tower = TowerFactory.createTower(type, textureMap.get(type), towerShadow, x - 16, y - 16, getStage());
 
         tower.entityID = idCounter;
         idCounter++;
@@ -77,6 +77,13 @@ public class NewTowerManager extends Actor
         return false;
     }
 
+    public void towerAct(float delta)
+    {
+        for(Tower tower : towerList)
+        {
+            tower.buttonAct(delta);
+        }
+    }
 
     //Upgrades selected tower based on upgrade constants.
     public void upgradeTower(int towerID)

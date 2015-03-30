@@ -231,6 +231,7 @@ public class NewPlay extends  NewGameState {
                 sniperButton.act(delta);
                 mortarButton.act(delta);
                 readyButton.act(delta);
+                towerManager.towerAct(delta);
                 batch.end();
                 if(towerPlacement == 1)
                 {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 /**
  * Created by NeilMoore on 3/25/2015.
@@ -15,9 +16,9 @@ public class RifleTower extends Tower
     public static final int PRICE = 100;
     public static final float FIRING_DELAY = 1f;
 
-    public RifleTower(Texture baseTexture, Texture otherTexture, float x, float y)
+    public RifleTower(Texture baseTexture, Texture otherTexture, float x, float y, Stage stage)
     {
-        super(Type.TOWER_RIFLE, baseTexture, otherTexture, x, y);
+        super(Type.TOWER_RIFLE, baseTexture, otherTexture, x, y, stage);
 
         damage = BASE_DAMAGE;
         range = BASE_RANGE;

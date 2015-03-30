@@ -1,12 +1,22 @@
 package com.NewEntities;
 
+import com.NewHandlers.NewTowerManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.entities.*;
 import com.mygdx.entities.Enemy;
+import com.mygdx.handlers.TowerManager;
+
 
 /**
  * Created by NeilMoore on 3/25/2015.
@@ -21,14 +31,21 @@ public abstract class Tower extends Entity
     protected float timeSinceLastShot;
 
     // display attributes
+    private boolean clicked = false;
     protected Sprite base;
     protected Sprite other;
     protected int target;
     protected float targetDistanceTraveled;
 
-    public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y)
+
+    private TextButton upgradeButton;
+    private TextButton cancelButton;
+    Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
+
+    public Tower(Type type, Texture baseTexture, Texture otherTexture, float x, float y, Stage stage)
     {
         super(x, y);
+        final Stage STage = stage;
 
         this.type = type;
         this.timeSinceLastShot = 0;
@@ -40,6 +57,32 @@ public abstract class Tower extends Entity
         other = new Sprite(otherTexture);
         other.setPosition(x + 9, y - 23);
         other.rotate(-45);
+
+
+        Image imageActor = new Image(otherTexture);
+        imageActor.setPosition(x, y);
+        imageActor.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("Clicked");
+                upgradeButton = new TextButton("upgrade", skin);
+                upgradeButton.setSize(64, 16);
+                upgradeButton.setPosition(base.getX() + 40, base.getY() + 32);
+                upgradeButton.addListener(new ClickListener());
+
+                cancelButton = new TextButton("cancel", skin);
+                cancelButton.setSize(64, 16);
+                cancelButton.setPosition(upgradeButton.getX(), upgradeButton.getY() - 24);
+                cancelButton.addListener(new ClickListener());
+
+
+                STage.addActor(upgradeButton);
+                STage.addActor(cancelButton);
+                clicked = true;
+            }
+
+        });
+        STage.addActor(imageActor);
+
     }
 
     public abstract void draw(Batch batch, float parentAlpha);
@@ -47,6 +90,24 @@ public abstract class Tower extends Entity
     public float getTimeSinceLastShot()
     {
         return timeSinceLastShot;
+    }
+
+    public void buttonAct(float delta)
+    {
+        if (clicked) {
+            upgradeButton.act(delta);
+            cancelButton.act(delta);
+            if (upgradeButton.isPressed())
+            {
+
+            }
+
+            else if (cancelButton.isPressed())
+            {
+                upgradeButton = null;
+                cancelButton = null;
+            }
+        }
     }
 
     public boolean readyToFire(){
