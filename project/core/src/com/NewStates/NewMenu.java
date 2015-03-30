@@ -28,7 +28,7 @@ public class NewMenu extends NewGameState{
 
         /* Menu Music */
         AssetManager.loadMusic(1);
-        //AssetManager.music.play();
+        AssetManager.music.play();
         AssetManager.loadSound(1);
 
         singleplayer = new TextButton("Single Player",skin);

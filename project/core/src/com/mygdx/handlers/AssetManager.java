@@ -26,7 +26,7 @@ public class AssetManager {
                 sound = Gdx.audio.newSound(Gdx.files.internal("data/start.wav"));
                 break;
             default:
-                sound = Gdx.audio.newSound(Gdx.files.internal("data/epic.ogg"));
+                sound = Gdx.audio.newSound(Gdx.files.internal("data/start.wav"));
                 break;
         }
     }
@@ -35,10 +35,10 @@ public class AssetManager {
     {
         switch(musicID){
             case 1:
-                music = Gdx.audio.newMusic(Gdx.files.internal("data/epic.ogg"));
+                music = Gdx.audio.newMusic(Gdx.files.internal("data/MainMenu.ogg"));
                 break;
             default:
-                music = Gdx.audio.newMusic(Gdx.files.internal("data/bass.mp3"));
+                music = Gdx.audio.newMusic(Gdx.files.internal("data/start.wav"));
                 break;
         }
     }
