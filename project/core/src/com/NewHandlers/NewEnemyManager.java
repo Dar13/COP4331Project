@@ -3,6 +3,9 @@ package com.NewHandlers;
 import com.NewEntities.Enemy;
 import com.NewEntities.EnemyFactory;
 import com.NewEntities.Entity;
+import com.NewEntities.FastEnemy;
+import com.NewEntities.HeavyEnemy;
+import com.NewEntities.NormalEnemy;
 import com.NewEntities.Tower;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -26,6 +29,7 @@ public class NewEnemyManager extends Actor{
     protected static final int waveInfoHeavy = 1;
 
     public int currentWave = 1;
+    private int gold = 0;
 
     public int numEnemies = 0;
     private int numDeadEnemies = 0;
@@ -144,9 +148,9 @@ public class NewEnemyManager extends Actor{
     //Calculates the multiplier to be used in the next round based on player towers.
     public float NextWaveCalculator()
     {
-        float multiplier = 0;
-        multiplierS = currentWave * .05f;
-        multiplierA = currentWave * .05f;
+        float multiplier = 0 + (gold * .001f);
+        multiplierS = (currentWave * .05f) + (gold * .001f);
+        multiplierA = currentWave * .05f + (gold * .001f);
         for(Tower tower : towerList)
         {
             switch(tower.type)
@@ -169,11 +173,17 @@ public class NewEnemyManager extends Actor{
                 multiplierA = multiplierA + .17f;
                 multiplierSp = multiplierSp + .1f;
                 break;
+            case TOWER_MORTAR:
+                multiplier = multiplier + 1.3f;
+                multiplierS = multiplierS + .04f;
+                multiplierA = multiplierA + .17f;
+                multiplierSp = multiplierSp + .1f;
+                break;
             }
         }
 
         incrementer = incrementer + .07f;
-        multiplierSp = multiplierSp + .5f;
+        multiplierSp = multiplierSp + .5f + (gold * .001f);
         return multiplier;
     }
 
@@ -336,7 +346,18 @@ public class NewEnemyManager extends Actor{
                         enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
                         switch (tower.type){
                             case TOWER_MORTAR:
-                                enemy.decrimentVelocity(2);
+                                switch (enemy.type){
+                                  case ENEMY_NORMAL:
+                                      enemy.decrimentVelocity(NormalEnemy.BASE_VELOCITY / 2);
+                                      break;
+                                  case ENEMY_FAST:
+                                      enemy.decrimentVelocity(FastEnemy.BASE_VELOCITY / 2);
+                                      break;
+                                  case ENEMY_HEAVY:
+                                      enemy.decrimentVelocity(HeavyEnemy.BASE_VELOCITY / 2);
+                                      break;
+                                }
+                                enemy.decrimentVelocity(enemy.getVelocity() );
                         }
 
                         //System.out.println("Attacking: " + enemy.type + "   Enemy ID: " + enemy.entityID + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
@@ -425,6 +446,8 @@ public class NewEnemyManager extends Actor{
         numDeadEnemies = 0;
         return temp;
     }
+
+    public void setGold(int gold){ this.gold = gold; }
 
     //Checks to see if there is any enemies at the end waypoint, removes them if there are, then
     //returns the number at the end to the play class.

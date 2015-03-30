@@ -277,6 +277,7 @@ public class NewPlay extends  NewGameState {
                 enemyManager.SetTowers(towers);
                 stage.act(delta);
                 stage.draw();
+                enemyManager.setGold(gold);
                 batch = stage.getBatch();
                 if(towerPlacement == 1)
                 {
