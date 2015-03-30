@@ -46,11 +46,11 @@ public class NewMenu extends NewGameState{
     @Override
     public void update() {
         if(singleplayer.isChecked()){
-            gameStateManager.setState(NewGameStateManager.LEVELSELECT);
+            gameStateManager.setState(NewGameStateManager.LEVELSELECT, 0);
             AssetManager.sound.play();
         }
         if(multiplayer.isChecked()) {
-            gameStateManager.setState(NewGameStateManager.NET);
+            gameStateManager.setState(NewGameStateManager.NET, 0);
         }
     }
 

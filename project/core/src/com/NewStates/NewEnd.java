@@ -48,7 +48,7 @@ public class NewEnd extends NewGameState {
     @Override
     public void update() {
         if(backtostart.isChecked()){
-            gameStateManager.setState(NewGameStateManager.MENU);
+            gameStateManager.setState(NewGameStateManager.MENU, 0);
         }
     }
 

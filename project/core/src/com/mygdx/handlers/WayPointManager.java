@@ -24,10 +24,15 @@ public class WayPointManager
     boolean inAndroid;
     //Hardcoded int array of waypoints for android version.
     private int[] map1 = new int[]{0, 448, 2, 0, 0, 3, 96, 0, 1, 96, 448, 3, 192, 448, 2, 192, 0, 3, 288, 0, 1, 288, 448, 3, 384, 448, 2, 384, 0, 3, 480, 0, 1, 480, 448, 3, 576, 448, 2, 576, 256, 3, 608, 256, 5};
+    private int[] map2 = new int[]{0, 352, 3, 480, 352, 2, 480, 96, 4, 160, 96, 1, 160, 352, 3, 480, 352, 2, 480, 96, 4, 160, 96, 1, 160, 352, 3, 480, 352, 2, 480, 96, 3, 608, 96, 5};
 
-    public WayPointManager(boolean inAndroid)
+    private int mapnum = 0;
+
+
+
+    public WayPointManager(int MapLoad)
     {
-        this.inAndroid = inAndroid;
+        mapnum = MapLoad;
         this.wayPoints = new LinkedList<WayPoint>();
         this.paths = new LinkedList<Path>();
         try
@@ -47,13 +52,31 @@ public class WayPointManager
      */
     private void ReadInWaypoints() throws FileNotFoundException
     {
+        int[] maptemp = null;
+
+            switch (mapnum){
+                case 1:
+                    maptemp = map1;
+                    break;
+                case 2:
+                    maptemp = map2;
+                    break;
+                case 3:
+                    //int[] maptemp = map3;
+                    break;
+                case 4:
+                    //int[] maptemp = map4;
+                    break;
+            }
+
+
             for(int i = 0; i < map1.length; i ++)
             {
-                int x = map1[i];
+                int x = maptemp[i];
                 i++;
-                int y = map1[i];
+                int y = maptemp[i];
                 i++;
-                int dir = map1[i];
+                int dir = maptemp[i];
                 if (dir == 1)
                 {
                     wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.NORTH));

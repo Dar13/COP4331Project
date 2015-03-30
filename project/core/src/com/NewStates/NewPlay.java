@@ -95,14 +95,28 @@ public class NewPlay extends  NewGameState {
     }
     private SubState state;
 
-    public NewPlay(NewGameStateManager gameStateManager,NetworkManager networkManager, boolean inAndroid)
+    public NewPlay(NewGameStateManager gameStateManager,NetworkManager networkManager, int MapLoad)
     {
         super(gameStateManager,networkManager);
         state = SubState.SETUP;
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
-        mapImg = new Texture("MapEasy.png");
+        switch (MapLoad){
+            case 1:
+                mapImg = new Texture("MapEasy.png");
+                break;
+            case 2:
+                mapImg = new Texture("Slightlyhardermap.png");
+                break;
+            case 3:
+                mapImg = new Texture("MapEasy.png");
+                break;
+            case 4:
+                mapImg = new Texture("MapEasy.png");
+                break;
+        }
+
         map = new Actor(mapImg,0,0);
 
         // load textures
@@ -119,7 +133,7 @@ public class NewPlay extends  NewGameState {
 
 
         towers = new LinkedList<>();
-        wayPointManager = new WayPointManager(inAndroid);
+        wayPointManager = new WayPointManager(MapLoad);
         enemyManager = new NewEnemyManager(wayPointManager.wayPoints, stage.getBatch());
         towerManager = new NewTowerManager(towers);
 
@@ -186,12 +200,12 @@ public class NewPlay extends  NewGameState {
         }
         if(health <= 0)
         {
-            gameStateManager.setState(NewGameStateManager.BADEND);
+            gameStateManager.setState(NewGameStateManager.BADEND, 0);
         }
 
         else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0 && enemyManager.enemyList.size() == 0)
         {
-            gameStateManager.setState(NewGameStateManager.GOODEND);
+            gameStateManager.setState(NewGameStateManager.GOODEND, 0);
         }
 
 

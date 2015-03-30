@@ -54,7 +54,7 @@ public class GameStateManager
     {
         if (state == PLAY)
         {
-            return new Play(this, networkManager, inAndroid);
+            return new Play(this, networkManager, 0);
         }
         if (state == MENU)
         {

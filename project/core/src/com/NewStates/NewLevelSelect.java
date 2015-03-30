@@ -53,16 +53,16 @@ public class NewLevelSelect extends NewGameState{
     @Override
     public void update() {
         if(easy.isChecked()){
-            gameStateManager.setState(NewGameStateManager.PLAY);
+            gameStateManager.setState(NewGameStateManager.PLAY, 1);
         }
         if(medium.isChecked()) {
-            gameStateManager.setState(NewGameStateManager.PLAY);
+            gameStateManager.setState(NewGameStateManager.PLAY, 2);
         }
         if(hard.isChecked()) {
-            gameStateManager.setState(NewGameStateManager.PLAY);
+            gameStateManager.setState(NewGameStateManager.PLAY, 3);
         }
         if(insane.isChecked()) {
-            gameStateManager.setState(NewGameStateManager.PLAY);
+            gameStateManager.setState(NewGameStateManager.PLAY, 4);
         }
     }
 

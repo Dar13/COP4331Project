@@ -57,7 +57,7 @@ public class Play extends GameState
     Sprite towerToBePlaced;
     Sprite towerToBePlacedS;
 
-    public Play(GameStateManager gameStateManager, NetworkManager networkManager, boolean inAndroid)
+    public Play(GameStateManager gameStateManager, NetworkManager networkManager, int inAndroid)
     {
         super(gameStateManager, networkManager);
         towers = new LinkedList<Tower>();

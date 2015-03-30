@@ -37,7 +37,7 @@ public class NewGameStateManager {
         this.networkManager = networkManager;
 
         gameStates = new Stack<NewGameState>();
-        pushState(MENU);
+        pushState(MENU, 0);
     }
 
     public MyGame getGame()
@@ -55,11 +55,11 @@ public class NewGameStateManager {
         gameStates.peek().render(deltaTime);
     }
 
-    private NewGameState getState(int state)
+    private NewGameState getState(int state, int mapnum)
     {
         if (state == PLAY)
         {
-            return new NewPlay(this, networkManager, inAndroid);
+            return new NewPlay(this, networkManager, mapnum);
         }
         if (state == MENU)
         {
@@ -80,15 +80,15 @@ public class NewGameStateManager {
         return null;
     }
 
-    public void setState(int state)
+    public void setState(int state, int mapnum)
     {
         popState();
-        pushState(state);
+        pushState(state, mapnum);
     }
 
-    public void pushState(int state)
+    public void pushState(int state, int mapnum)
     {
-        gameStates.push(getState(state));
+        gameStates.push(getState(state, mapnum));
     }
 
     public void popState()
