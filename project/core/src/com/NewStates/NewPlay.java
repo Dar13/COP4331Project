@@ -53,7 +53,7 @@ public class NewPlay extends  NewGameState {
     private int mortar = 0;
 
     private boolean clicked = false;
-    private boolean debuggerOn = true;
+    private boolean debuggerOn = false;
 
     //private LinkedList<NewTower> towers;
     private  Actor map;
@@ -188,10 +188,12 @@ public class NewPlay extends  NewGameState {
         {
             gameStateManager.setState(NewGameStateManager.BADEND);
         }
-        else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0)
+
+        else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0 && enemyManager.enemyList.size() == 0)
         {
-            gameStateManager.setState(NewGameStateManager.MENU);
+            gameStateManager.setState(NewGameStateManager.GOODEND);
         }
+
 
 
     }
@@ -436,15 +438,6 @@ public class NewPlay extends  NewGameState {
                     towerPlacement = 0;
                     break;
             }
-        }
-
-        if(health <= 0)
-        {
-            gameStateManager.setState(NewGameStateManager.BADEND);
-        }
-        else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0)
-        {
-            gameStateManager.setState(NewGameStateManager.MENU);
         }
 
 

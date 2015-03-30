@@ -3,6 +3,7 @@ package com.NewEntities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 /**
  * Created by NeilMoore on 3/25/2015.
@@ -22,6 +23,7 @@ public class RifleTower extends Tower
         range = BASE_RANGE;
         price = PRICE;
         firingDelay = FIRING_DELAY;
+
     }
 
     @Override

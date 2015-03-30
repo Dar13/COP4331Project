@@ -44,8 +44,8 @@ public class NewEnemyManager extends Actor{
     private Texture FastEnemyS = new Texture("Enemydirectionassets/EnemyFastSouth.png");
     private Texture FastEnemyE = new Texture("Enemydirectionassets/EnemyFastEast.png");
     private Texture FastEnemyW = new Texture("Enemydirectionassets/EnemyFastWest.png");
-    private Texture TigerBaseN = new Texture("Enemydirectionassets/TigerEast.png");
-    private Texture TigerBaseS = new Texture("Enemydirectionassets/TigerEast.png");
+    private Texture TigerBaseN = new Texture("Enemydirectionassets/TigerNorth.png");
+    private Texture TigerBaseS = new Texture("Enemydirectionassets/TigerSouth.png");
     private Texture TigerBaseE = new Texture("Enemydirectionassets/TigerEast.png");
     private Texture TigerBaseW = new Texture("Enemydirectionassets/TigerWest.png");
 
