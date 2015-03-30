@@ -344,20 +344,21 @@ public class NewEnemyManager extends Actor{
                     if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.entityID == tower.getTarget())
                     {
                         enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
-                        switch (tower.type){
-                            case TOWER_MORTAR:
-                                switch (enemy.type){
-                                  case ENEMY_NORMAL:
-                                      enemy.decrimentVelocity(NormalEnemy.BASE_VELOCITY / 2);
-                                      break;
-                                  case ENEMY_FAST:
-                                      enemy.decrimentVelocity(FastEnemy.BASE_VELOCITY / 2);
-                                      break;
-                                  case ENEMY_HEAVY:
-                                      enemy.decrimentVelocity(HeavyEnemy.BASE_VELOCITY / 2);
-                                      break;
-                                }
-                                enemy.decrimentVelocity(enemy.getVelocity() );
+                        switch (tower.type)
+                        {
+                        case TOWER_MORTAR:
+                            switch (enemy.type)
+                            {
+                            case ENEMY_NORMAL:
+                                enemy.decrementVelocity(NormalEnemy.BASE_VELOCITY / 2);
+                                break;
+                            case ENEMY_FAST:
+                                enemy.decrementVelocity(FastEnemy.BASE_VELOCITY / 2);
+                                break;
+                            case ENEMY_HEAVY:
+                                enemy.decrementVelocity(HeavyEnemy.BASE_VELOCITY / 2);
+                                break;
+                            }
                         }
 
                         //System.out.println("Attacking: " + enemy.type + "   Enemy ID: " + enemy.entityID + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));

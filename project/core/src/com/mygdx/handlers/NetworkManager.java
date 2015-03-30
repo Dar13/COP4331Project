@@ -592,8 +592,10 @@ public class NetworkManager extends Listener implements Runnable
      */
     public void addToSendQueue(Action action)
     {
+        /*
         if(isServer && action.needsID)
             action.entity.entityID = entityID.getAndIncrement();
+            */
 
         queuedLocalChanges.add(action);
     }
