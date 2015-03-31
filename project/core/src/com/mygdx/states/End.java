@@ -31,6 +31,10 @@ public class End extends GameState {
 
         //Stop all game music and game sounds
         AssetManager.dispose();
+        //Load and Start End Music
+        AssetManager.loadMusic(2);
+        AssetManager.music.play();
+        AssetManager.music.setLooping(true);
 
         backtostart = new TextButton("Return to Menu",skin);
         backtostart.setSize(200,60);
