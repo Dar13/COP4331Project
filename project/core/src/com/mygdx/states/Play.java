@@ -188,8 +188,21 @@ public class Play extends GameState {
 
     @Override
     public void update() {
-        //((OrthographicCamera)stage.getCamera()).zoom +=.001f;
+        /**
+         * TODO: the actual sending of info to server should probably be located in the CheckEnemiesAtEnd function
+         * Instead of locally checking health, send this to the server.
+         * The server will only decrement health if this client is the
+         * very last client. Otherwise it will send it to the next screen.
+         */
         health = health - enemyManager.CheckEnemiesAtEnd();
+
+        /**
+         * TODO
+         * Similarly with getting the amount of gold, depending on how
+         * we implement resource management. We would presumably send the
+         * amount of gold we got this update, and the server would return
+         * the global amount of gold.
+         */
         gold = gold + (enemyManager.GetDeadEnemies() * 15);
 
         placeATower();
@@ -199,11 +212,13 @@ public class Play extends GameState {
         }
         if(health <= 0)
         {
+            // TODO: send this info to the Server so all clients end.
             gameStateManager.setState(GameStateManager.BADEND, 0);
         }
 
         else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0 && enemyManager.enemyList.size() == 0)
         {
+            // TODO: send this info to the Server so all clients end.
             gameStateManager.setState(GameStateManager.GOODEND, 0);
         }
 
