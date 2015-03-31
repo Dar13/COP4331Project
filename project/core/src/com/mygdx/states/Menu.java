@@ -28,8 +28,8 @@ public class Menu extends GameState {
 
         /* Menu Music */
         AssetManager.loadMusic(1);
-        AssetManager.music.play();
-        AssetManager.music.setLooping(true);
+        //AssetManager.music.play();
+        //AssetManager.music.setLooping(true);
         AssetManager.loadSound(1);
 
         singleplayer = new TextButton("Single Player",skin);
