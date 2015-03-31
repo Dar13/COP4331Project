@@ -33,9 +33,6 @@ public class EnemyManager extends Actor{
 
     public int numEnemies = 0;
     private int numDeadEnemies = 0;
-    private int numDeadNormals = 0;
-    private int numDeadFast = 0;
-    private int numDeadHeavy = 0;
     public int waveToBeSpawnedNorm;
     public int waveToBeSpawnedFast;
     public int waveToBeSpawnedHeavy;
@@ -433,13 +430,7 @@ public class EnemyManager extends Actor{
         {
             if(!enemy.isAlive())
             {
-                //numDeadEnemies++;
-                if(enemy.type == enemy.type.ENEMY_NORMAL)
-                    numDeadNormals++;
-                else if(enemy.type == enemy.type.ENEMY_FAST)
-                    numDeadFast++;
-                else if(enemy.type == enemy.type.ENEMY_HEAVY)
-                    numDeadHeavy++;
+                numDeadEnemies++;
                 removeEnemy(enemy.entityID);
                 numEnemies--;
             }
@@ -449,24 +440,11 @@ public class EnemyManager extends Actor{
         enemiesToBeRemoved.clear();
     }
 
-
-    /*
-    //Returns number of enemies killed in the update.
+    //Returns the number of enemies killed in the update.
     public int GetDeadEnemies()
     {
         int temp = numDeadEnemies;
         numDeadEnemies = 0;
-        return temp;
-    }
-    */
-
-    //Returns the amount of gold earned for enemies killed in the update.
-    public int GetGoldEarned()
-    {
-        int temp = numDeadNormals*10 + numDeadFast*5 + numDeadHeavy*15;
-        numDeadHeavy = 0;
-        numDeadFast = 0;
-        numDeadNormals = 0;
         return temp;
     }
 

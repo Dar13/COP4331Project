@@ -190,8 +190,7 @@ public class Play extends GameState {
     public void update() {
         //((OrthographicCamera)stage.getCamera()).zoom +=.001f;
         health = health - enemyManager.CheckEnemiesAtEnd();
-        gold = gold + (enemyManager.GetGoldEarned());
-        //gold = gold + (enemyManager.GetDeadEnemies()*15);
+        gold = gold + (enemyManager.GetDeadEnemies() * 15);
 
         placeATower();
         if(readyButton.isPressed()){
