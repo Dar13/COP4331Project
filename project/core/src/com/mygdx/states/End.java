@@ -29,7 +29,7 @@ public class End extends GameState {
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
-        //Stop all music and sounds
+        //Stop all game music and game sounds
         AssetManager.dispose();
 
         backtostart = new TextButton("Return to Menu",skin);
@@ -47,6 +47,8 @@ public class End extends GameState {
     @Override
     public void update() {
         if(backtostart.isChecked()){
+            //Stop all end state music and sounds
+            AssetManager.dispose();
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
     }
