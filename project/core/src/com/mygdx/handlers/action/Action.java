@@ -47,6 +47,5 @@ public abstract class Action
     }
 
     //These methods will contain the implementation specific code for each type of action
-    public abstract void updateGamestate();
     public abstract void updateNetMan();
 }

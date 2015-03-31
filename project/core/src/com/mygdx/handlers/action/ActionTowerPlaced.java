@@ -21,16 +21,7 @@ public class ActionTowerPlaced extends Action
         tower.entityID = tempEntityID.getAndIncrement();
         needsID = true;
 
-        updateGamestate();
         updateNetMan();
-    }
-
-    @Override
-    public void updateGamestate()
-    {
-        /**
-         * TODO -- add gameState changes
-         */
     }
 
     @Override

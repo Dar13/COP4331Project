@@ -18,16 +18,7 @@ public class ActionEnemyDestroy extends Action
         actionClass = ActionClass.ACTION_ENEMY_DESTROY;
         this.entity = enemy;
 
-        updateGamestate();
         updateNetMan();
-    }
-
-    @Override
-    public void updateGamestate()
-    {
-        /**
-         * TODO -- add gameState changes
-         */
     }
 
     @Override

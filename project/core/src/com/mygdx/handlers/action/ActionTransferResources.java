@@ -22,16 +22,7 @@ public class ActionTransferResources extends Action
         this.playerFrom = playerFrom;
         this.playerTo = playerTo;
 
-        updateGamestate();
         updateNetMan();
-    }
-
-    @Override
-    public void updateGamestate()
-    {
-        /**
-         * TODO -- add gameState changes
-         */
     }
 
     @Override

@@ -18,16 +18,7 @@ public class ActionTowerUpgraded extends Action
         actionClass = Action.ActionClass.ACTION_TOWER_UPGRADED;
         this.entity = tower;
 
-        updateGamestate();
         updateNetMan();
-    }
-
-    @Override
-    public void updateGamestate()
-    {
-        /**
-         * TODO -- add gameState changes
-         */
     }
 
     @Override

@@ -14,14 +14,6 @@ public class ActionHostPause extends Action
     }
 
     @Override
-    public void updateGamestate()
-    {
-        /**
-         * TODO -- add gameState changes
-         */
-    }
-
-    @Override
     public void updateNetMan()
     {
         networkManager.addToSendQueue(this);
