@@ -34,19 +34,6 @@ public abstract class Action
     public boolean localChange, needsID;
     public ActionClass actionClass; //not sure if this will be needed -- would rather have it
     public Entity entity = null;
-    protected NetworkManager networkManager;
 
     public static AtomicInteger tempEntityID = new AtomicInteger(0);
-
-    public Action(NetworkManager networkManager)
-    {
-        this.networkManager = networkManager;
-
-        localChange = true;
-        needsID = false;
-    }
-
-    //These methods will contain the implementation specific code for each type of action
-    public abstract void updateGamestate();
-    public abstract void updateNetMan();
 }

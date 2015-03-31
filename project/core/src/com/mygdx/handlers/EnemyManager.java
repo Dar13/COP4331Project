@@ -207,6 +207,11 @@ public class EnemyManager extends Actor{
         //accumulator +=deltaTime;
         if (totalWavesToBeSpawned == 0 && enemyList.size() == 0)
         {
+            /**
+             * TODO: would we need to capture a signal from the network manager here instead?
+             * A server would 'command?' that a new wave would start. Would it send all the info
+             * about the wave, or leave that logic on the client?
+             */
             currentWave++;
             float multiplier = NextWaveCalculator();
             NextWave(multiplier);

@@ -8,22 +8,8 @@ import com.mygdx.states.GameState;
  */
 public class ActionHostPause extends Action
 {
-    public ActionHostPause(NetworkManager networkManager)
+    public ActionHostPause()
     {
-        super(networkManager);
-    }
 
-    @Override
-    public void updateGamestate()
-    {
-        /**
-         * TODO -- add gameState changes
-         */
-    }
-
-    @Override
-    public void updateNetMan()
-    {
-        networkManager.addToSendQueue(this);
     }
 }
