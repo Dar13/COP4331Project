@@ -195,6 +195,7 @@ public class Play extends GameState {
          * very last client. Otherwise it will send it to the next screen.
          */
         health = health - enemyManager.CheckEnemiesAtEnd();
+<<<<<<< HEAD
 
         /**
          * TODO
@@ -204,6 +205,10 @@ public class Play extends GameState {
          * the global amount of gold.
          */
         gold = gold + (enemyManager.GetDeadEnemies() * 15);
+=======
+        gold = gold + (enemyManager.GetGoldEarned());
+        //gold = gold + (enemyManager.GetDeadEnemies()*15);
+>>>>>>> parent of 56dd8c8... Revert "Different enemy types give different amounts of gold when killed"
 
         placeATower();
         if(readyButton.isPressed()){
