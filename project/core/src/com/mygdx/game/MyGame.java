@@ -1,6 +1,6 @@
 package com.mygdx.game;
 
-import com.NewHandlers.NewGameStateManager;
+import com.mygdx.handlers.GameStateManager;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,7 +22,7 @@ public class MyGame extends ApplicationAdapter
     private SpriteBatch spriteBatch;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
-    private NewGameStateManager gameStateManager;
+    private GameStateManager gameStateManager;
    // private GameStateManager gameStateManager;
 
     private float fps = 1f/60f;
@@ -44,7 +44,7 @@ public class MyGame extends ApplicationAdapter
         Gdx.input.setInputProcessor(new MyInputProcessor());
         spriteBatch = new SpriteBatch();
         //gameStateManager = new GameStateManager(this, networkManager, inAndroid);
-        gameStateManager = new NewGameStateManager(this, networkManager, inAndroid);
+        gameStateManager = new GameStateManager(this, networkManager, inAndroid);
 
         // This must be done in MyGame.create()! putting this in render() will lock up the game.
         networkThread = new Thread(networkManager);

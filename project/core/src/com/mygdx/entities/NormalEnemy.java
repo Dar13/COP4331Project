@@ -1,20 +1,20 @@
-package com.NewEntities;
+package com.mygdx.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
- * Created by NeilMoore on 3/25/2015.
+ * Created by NeilMoore on 3/24/2015.
  */
-public class HeavyEnemy extends Enemy
+public class NormalEnemy extends Enemy
 {
-    public static final float BASE_VELOCITY = .5f;
-    public static final float BASE_ARMOR = 3.0f;
+    public static final float BASE_VELOCITY = 3.0f;
+    public static final float BASE_ARMOR = 1.0f;
 
-    public HeavyEnemy(Texture north, Texture south, Texture east, Texture west, float x, float y)
+    public NormalEnemy(Texture north, Texture south, Texture east, Texture west, float x, float y)
     {
-        super(Type.ENEMY_HEAVY, x, y);
+        super(Type.ENEMY_NORMAL, x, y);
 
         this.north = new Sprite(north);
         this.south = new Sprite(south);
@@ -25,7 +25,7 @@ public class HeavyEnemy extends Enemy
         velocity = BASE_VELOCITY;
         armor = BASE_ARMOR;
 
-        navigationTolerance = velocity + 16f;
+        navigationTolerance = velocity / 2.0f;
     }
 
     public void draw(Batch batch, float parentAlpha)

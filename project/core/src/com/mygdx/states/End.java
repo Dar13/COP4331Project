@@ -1,13 +1,12 @@
-package com.NewStates;
+package com.mygdx.states;
 
-import com.NewHandlers.NewGameStateManager;
-import com.NewUI.MyStage;
+import com.mygdx.handlers.GameStateManager;
+import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -18,13 +17,13 @@ import com.mygdx.handlers.NetworkManager;
 /**
  * Created by LordNeah on 3/22/2015.
  */
-public class NewEnd extends NewGameState {
+public class End extends GameState {
     private MyStage stage;
     private TextButton backtostart;
     private Batch batch;
     private BitmapFont font;
 
-    public NewEnd(NewGameStateManager gameStateManager,NetworkManager networkManager){
+    public End(GameStateManager gameStateManager, NetworkManager networkManager){
         super(gameStateManager,networkManager);
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
@@ -48,7 +47,7 @@ public class NewEnd extends NewGameState {
     @Override
     public void update() {
         if(backtostart.isChecked()){
-            gameStateManager.setState(NewGameStateManager.MENU, 0);
+            gameStateManager.setState(GameStateManager.MENU, 0);
         }
     }
 

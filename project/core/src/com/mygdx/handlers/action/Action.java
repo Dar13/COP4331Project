@@ -1,8 +1,7 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.Entity;
+import com.mygdx.entities.Entity;
 import com.mygdx.handlers.NetworkManager;
-import com.mygdx.states.GameState;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,15 +34,13 @@ public abstract class Action
     public boolean localChange, needsID;
     public ActionClass actionClass; //not sure if this will be needed -- would rather have it
     public Entity entity = null;
-    protected GameState gameState;
     protected NetworkManager networkManager;
 
     public static AtomicInteger tempEntityID = new AtomicInteger(0);
 
-    public Action(GameState gameState, NetworkManager networkManager)
+    public Action(NetworkManager networkManager)
     {
         this.networkManager = networkManager;
-        this.gameState = gameState;
 
         localChange = true;
         needsID = false;

@@ -1,29 +1,34 @@
 package com.mygdx.handlers;
 
-import com.mygdx.game.MyGame;
-import com.mygdx.states.GameOver;
+import com.mygdx.states.End;
 import com.mygdx.states.GameState;
+import com.mygdx.states.LevelSelect;
 import com.mygdx.states.Menu;
 import com.mygdx.states.NetTest;
 import com.mygdx.states.Play;
+import com.mygdx.states.WinState;
+import com.mygdx.game.MyGame;
+import com.mygdx.handlers.NetworkManager;
 
 import java.util.Stack;
 
 /**
- * Created by James on 2/1/2015.
+ * Created by James on 3/18/2015.
  */
-public class GameStateManager
-{
+public class GameStateManager {
     private MyGame game;
     private Stack<GameState> gameStates;
     private NetworkManager networkManager;
     private boolean inAndroid = false;
 
     //A random number to represent PlayState.
-    public static final int PLAY = 388031654;
+
     public static final int MENU = 131587867;
-    public static final int LOSE = 321123321;
-    public static final int NET  = 111113333;
+    public static final int PLAY = 321123321;
+    public static final int BADEND = 1234321;
+    public static final int GOODEND = 123123123;
+    public static final int NET = 12341542;
+    public static final int LEVELSELECT = 321321321;
 
     public GameStateManager(MyGame game, NetworkManager networkManager, boolean inAndroid)
     {
@@ -32,7 +37,7 @@ public class GameStateManager
         this.networkManager = networkManager;
 
         gameStates = new Stack<GameState>();
-        pushState(MENU);
+        pushState(MENU, 0);
     }
 
     public MyGame getGame()
@@ -40,46 +45,50 @@ public class GameStateManager
         return game;
     }
 
-    public void update(float deltaTime)
+    public void update()
     {
-        gameStates.peek().update(deltaTime);
+        gameStates.peek().update();
     }
 
-    public void render()
+    public void render(float deltaTime)
     {
-        gameStates.peek().render();
+        gameStates.peek().render(deltaTime);
     }
 
-    private GameState getState(int state)
+    private GameState getState(int state, int mapnum)
     {
         if (state == PLAY)
         {
-            return new Play(this, networkManager, 0);
+            return new Play(this, networkManager, mapnum);
         }
         if (state == MENU)
         {
-            return new Menu(this, networkManager);
+            return new Menu(this,networkManager);
         }
-        if (state == LOSE){
-            return new GameOver(this, networkManager);
+        if(state == BADEND){
+            return new End(this, networkManager);
         }
-        if (state == NET)
-        {
+        if(state == GOODEND){
+            return new WinState(this, networkManager);
+        }
+        if(state == NET) {
             return new NetTest(this, networkManager);
         }
-
+        if(state == LEVELSELECT){
+            return new LevelSelect(this, networkManager);
+        }
         return null;
     }
 
-    public void setState(int state)
+    public void setState(int state, int mapnum)
     {
         popState();
-        pushState(state);
+        pushState(state, mapnum);
     }
 
-    public void pushState(int state)
+    public void pushState(int state, int mapnum)
     {
-        gameStates.push(getState(state));
+        gameStates.push(getState(state, mapnum));
     }
 
     public void popState()

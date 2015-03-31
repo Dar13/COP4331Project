@@ -1,4 +1,4 @@
-package com.NewEntities;
+package com.mygdx.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 

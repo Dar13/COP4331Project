@@ -2,16 +2,16 @@ package com.mygdx.states;
 
 // LibGDX includes
 
+import com.mygdx.handlers.GameStateManager;
+import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygdx.game.MyGame;
-import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.NetworkManager;
 
 /**
@@ -20,7 +20,7 @@ import com.mygdx.handlers.NetworkManager;
 public class NetTest extends GameState
 {
     protected boolean connected = false;
-    private Stage stage;
+    private MyStage stage;
     private TextButton serverButton;
     private TextButton clientButton;
     private OrthographicCamera cam;
@@ -29,12 +29,13 @@ public class NetTest extends GameState
     {
         super(gameStateManager, networkManager);
 
-        stage = new Stage();
+        stage = new MyStage();
         cam = (OrthographicCamera) stage.getCamera();
         cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
+        Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
-        serverButton = new TextButton("Server", textButtonStyle);
+        serverButton = new TextButton("Server", skin);
         serverButton.setPosition(MyGame.V_WIDTH / 4, MyGame.V_HEIGHT * 5 / 8);
         serverButton.addListener(new ChangeListener() {
             @Override
@@ -47,7 +48,7 @@ public class NetTest extends GameState
         });
         stage.addActor(serverButton);
 
-        clientButton = new TextButton("Client", textButtonStyle);
+        clientButton = new TextButton("Client", skin);
         clientButton.setPosition(MyGame.V_WIDTH / 4, MyGame.V_HEIGHT / 4);
         clientButton.addListener(new ChangeListener() {
             @Override
@@ -62,22 +63,42 @@ public class NetTest extends GameState
     }
 
     @Override
-    public void handleInput()
+    public void update()
     {
     }
 
     @Override
-    public void update(float dt)
-    {
+    public void show() {
+
     }
 
     @Override
-    public void render()
+    public void render(float delta)
     {
         // clear screen, then draw stage
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
     }
 
     @Override

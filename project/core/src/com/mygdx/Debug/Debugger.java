@@ -1,13 +1,11 @@
 package com.mygdx.Debug;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Tower;
-import com.mygdx.game.MyGame;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.LinkedList;
@@ -20,14 +18,14 @@ public class Debugger
 {
     public ShapeRenderer shapeRenderer;
     private LinkedList<WayPoint> path;
-    private List<com.NewEntities.Tower> towers;
-    private List<com.NewEntities.Enemy> enemies;
+    private List<Tower> towers;
+    private List<Enemy> enemies;
     Batch batch;
     private boolean finished = false;
     int waypointindex = 0;
 
 
-    public Debugger(LinkedList<WayPoint> path, List<com.NewEntities.Tower> towers, List<com.NewEntities.Enemy> enemies, Batch batch)
+    public Debugger(LinkedList<WayPoint> path, List<Tower> towers, List<Enemy> enemies, Batch batch)
     {
         this.batch = batch;
         shapeRenderer = new ShapeRenderer();

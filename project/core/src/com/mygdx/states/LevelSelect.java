@@ -1,10 +1,9 @@
-package com.NewStates;
+package com.mygdx.states;
 
-import com.NewHandlers.NewGameStateManager;
-import com.NewUI.MyStage;
+import com.mygdx.handlers.GameStateManager;
+import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -13,14 +12,14 @@ import com.mygdx.handlers.NetworkManager;
 /**
  * Created by LordNeah on 3/22/2015.
  */
-public class NewLevelSelect extends NewGameState{
+public class LevelSelect extends GameState {
     private MyStage stage;
     private TextButton easy;
     private TextButton medium;
     private TextButton hard;
     private TextButton insane;
 
-    public NewLevelSelect(NewGameStateManager gameStateManager,NetworkManager networkManager){
+    public LevelSelect(GameStateManager gameStateManager, NetworkManager networkManager){
         super(gameStateManager,networkManager);
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
@@ -53,16 +52,16 @@ public class NewLevelSelect extends NewGameState{
     @Override
     public void update() {
         if(easy.isChecked()){
-            gameStateManager.setState(NewGameStateManager.PLAY, 1);
+            gameStateManager.setState(GameStateManager.PLAY, 1);
         }
         if(medium.isChecked()) {
-            gameStateManager.setState(NewGameStateManager.PLAY, 2);
+            gameStateManager.setState(GameStateManager.PLAY, 2);
         }
         if(hard.isChecked()) {
-            gameStateManager.setState(NewGameStateManager.PLAY, 3);
+            gameStateManager.setState(GameStateManager.PLAY, 3);
         }
         if(insane.isChecked()) {
-            gameStateManager.setState(NewGameStateManager.PLAY, 4);
+            gameStateManager.setState(GameStateManager.PLAY, 4);
         }
     }
 

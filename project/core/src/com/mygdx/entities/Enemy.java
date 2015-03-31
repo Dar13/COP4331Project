@@ -1,438 +1,192 @@
 package com.mygdx.entities;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.triggers.WayPoint;
 
-import java.util.LinkedList;
+import java.util.List;
 
 /**
- * Created by James on 2/14/2015.
+ * Created by NeilMoore on 3/24/2015.
  */
-public class Enemy extends Entities
+public abstract class Enemy extends Entity
 {
-    public static final int VELOCITY = 3;
-    public static final int ARMOR = 1;
+    public static final int BASE_HEALTH = 100;
 
-    public Sprite sprite;
-    public Sprite sprite2;
-    public float x = 0;
-    public float y = 0;
-    public float velocity = 0;
-    public WayPoint.Direction heading;
-    private float tolerance;
-    public LinkedList<WayPoint> wayPoints;
-    private int currentWaypoint = 0;
-    public float health = 100;
-    public float armor = 1;
-    public boolean atEnd = false;
+    // basic gameplay attirbutes
+    protected float velocity;
+    protected float armor;
+    protected float health;
 
-    //Enums for enemy type.
-    public enum Type
+    // navigation attributes
+    protected float navigationTolerance;
+    protected WayPoint.Direction heading;
+    protected List<WayPoint> wayPoints;
+    protected int currentWayPoint;
+    protected boolean navigationFinished;
+    protected float distanceTraveled;
+
+    // These might need to be the other way around.
+    // base = sprite, other = sprite2
+    protected Sprite south;
+    protected Sprite north;
+    protected Sprite east;
+    protected Sprite west;
+    protected Sprite current;
+
+    public Enemy(Type type, float x, float y)
     {
-        HEAVY,
-        NORMAL,
-        FAST
-    }
+        super(x, y);
 
-    public Type type;
+        health = BASE_HEALTH;
 
-
-    public Enemy(Texture img, Texture img2, float velocity, float armor, LinkedList<WayPoint> path, Type type)
-    {
-        super(img, path.getFirst().x, path.getFirst().y);
-        currentWaypoint++;
-        this.wayPoints = path;
-        this.sprite = new Sprite(img);
-        this.sprite2 = new Sprite(img2);
-        this.velocity = velocity;
-        this.tolerance = velocity / 2;
         this.type = type;
-        switch (type){
-            case HEAVY:
-                this.tolerance = velocity + 16;
-        }
-        sprite.setPosition(x, y);
-        sprite2.setPosition(x + 12, y + 2);
-        heading = wayPoints.getFirst().direction;
-        this.armor = armor;
+        distanceTraveled = 0;
     }
 
-    /*
-        Move the enemy based on the enemy's heading and its velocity.
-     */
-    public void Move()
+    public abstract void draw(Batch batch, float parentAlpha);
+
+    public void applyVelocityMultiplier(float mult)
     {
-        switch (heading)
-        {
+        velocity *= mult;
+
+        // reset navigation tolerance
+        navigationTolerance = velocity / 2.0f;
+    }
+
+    public void applyArmorMultiplier(float mult)
+    {
+        armor *= mult;
+    }
+
+    public void setWayPoints(List<WayPoint> waypoints)
+    {
+        wayPoints = waypoints;
+        currentWayPoint = 0;
+
+        position.x = wayPoints.get(currentWayPoint).x;
+        position.y = wayPoints.get(currentWayPoint).y;
+
+        current.setX(position.x);
+        current.setY(position.y);
+
+        heading = wayPoints.get(currentWayPoint).direction;
+    }
+
+    public void move()
+    {
+        position.x += (velocity * heading.x);
+        position.y += (velocity * heading.y);
+
+        current.setPosition(position.x, position.y);
+        
+        distanceTraveled += Math.abs(velocity);
+    }
+
+    public void rotateToDirection(WayPoint.Direction direction)
+    {
+        switch (direction){
             case NORTH:
-                sprite.setPosition(sprite.getX(), sprite.getY() + velocity);
-                sprite2.setPosition(sprite2.getX(), sprite2.getY() + velocity);
-                break;
-            case EAST:
-                sprite.setPosition(sprite.getX() + velocity, sprite.getY());
-                sprite2.setPosition(sprite2.getX() + velocity, sprite2.getY());
+                north.setPosition(current.getX(), current.getY());
+                current = north;
                 break;
             case SOUTH:
-                sprite.setPosition(sprite.getX(), sprite.getY() - velocity);
-                sprite2.setPosition(sprite2.getX(), sprite2.getY() - velocity);
+                south.setPosition(current.getX(), current.getY());
+                current = south;
+                break;
+            case EAST:
+                east.setPosition(current.getX(), current.getY());
+                current = east;
                 break;
             case WEST:
-                sprite.setPosition(sprite.getX() - velocity, sprite.getY());
-                sprite2.setPosition(sprite2.getX() - velocity, sprite2.getY());
+                west.setPosition(current.getX(), current.getY());
+                current = west;
                 break;
         }
     }
 
-    /*
-        The Check function looks at the top of wayPoints and sees if the enemy's position is within
-    wayPoints' tolerance and then moves the player in the appropriate heading out side the
-    wayPoints' tolerance.
-    */
-    public boolean Check()
+    public boolean check()
     {
-        if (!wayPoints.isEmpty())
+        if(currentWayPoint >= 0 && currentWayPoint < wayPoints.size())
         {
-            switch (wayPoints.get(currentWaypoint).direction)
+            WayPoint wayPoint = wayPoints.get(currentWayPoint);
+            Vector2 wpPosition = new Vector2(wayPoint.x, wayPoint.y);
+            Vector2 curPosition = new Vector2(position);
+            Vector2 distance = curPosition.sub(wpPosition);
+            // within the tolerance radius of the waypoint
+            if(distance.len2() <= (navigationTolerance * navigationTolerance))
             {
-                case NORTH:
-                    if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
-                            (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
-                            (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
-                            (sprite.getY() < (wayPoints.get(currentWaypoint).y + tolerance)))
-                    {
+                position.x = wayPoint.x;
+                position.y = wayPoint.y;
 
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x, wayPoints.get(currentWaypoint).y);
-                        changeSpriteRotation();
-                        heading = WayPoint.Direction.NORTH;
-                        currentWaypoint++;
-                        return true;
-                    }
-                    return false;
-                case EAST:
-                    if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
-                            (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
-                            (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
-                            (sprite.getY() < (wayPoints.get(currentWaypoint).y + tolerance)))
-                    {
+                rotateToDirection(wayPoint.direction);
 
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x, wayPoints.get(currentWaypoint).y);
-                        changeSpriteRotation();
-                        heading = WayPoint.Direction.EAST;
-                        currentWaypoint++;
-                        return true;
-                    }
-                    return false;
-                case SOUTH:
-                    if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
-                            (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
-                            (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
-                            (sprite.getY() < (wayPoints.get(currentWaypoint).y + tolerance)))
-                    {
+                heading = wayPoint.direction;
+                currentWayPoint++;
 
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x, wayPoints.get(currentWaypoint).y);
-                        changeSpriteRotation();
-                        heading = WayPoint.Direction.SOUTH;
-                        currentWaypoint++;
-                        return true;
-                    }
-                    return false;
-                case WEST:
-                    if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
-                            (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
-                            (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
-                            (sprite.getY() < (wayPoints.get(currentWaypoint).y + tolerance)))
-                    {
+                if(wayPoint.direction == WayPoint.Direction.END)
+                {
+                    velocity = 0;
+                    navigationFinished = true;
+                }
 
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x, wayPoints.get(currentWaypoint).y);
-                        changeSpriteRotation();
-                        heading = WayPoint.Direction.WEST;
-                        currentWaypoint++;
-
-                        return true;
-                    }
-                    return false;
-                case END:
-                    if ((sprite.getX() > (wayPoints.get(currentWaypoint).x - tolerance)) &&
-                            (sprite.getX() < (wayPoints.get(currentWaypoint).x + tolerance)) &&
-                            (sprite.getY() > (wayPoints.get(currentWaypoint).y - tolerance)) &&
-                            (sprite.getY() < (wayPoints.get(currentWaypoint).y + tolerance)))
-                    {
-
-                        velocity = 0;
-                        atEnd = true;
-                        return true;
-                    }
-                    return false;
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
+
         return false;
     }
 
-    //Rotating the sprites at each waypoint based on enemy type. Very broken at the moment.
-    public void changeSpriteRotation()
+    public float getVelocity()
     {
-        switch (type)
-        {
-            case HEAVY:
-            if (heading == WayPoint.Direction.EAST)
-            {
-                switch (wayPoints.get(currentWaypoint).direction)
-                {
-                    case NORTH:
-                        sprite.rotate(90);
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
-                        sprite2.rotate(90);
-                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                        break;
-                    case SOUTH:
-                        sprite.rotate(-90);
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                        sprite2.rotate(-90);
-                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                        break;
-                    case WEST:
-                        sprite.rotate(180);
-                        sprite2.rotate(180);
-                        break;
-                }
-            }
-
-            if (heading == WayPoint.Direction.WEST)
-            {
-                switch (wayPoints.get(currentWaypoint).direction)
-                {
-                    case NORTH:
-                        sprite.rotate(-90);
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                        sprite2.rotate(-90);
-                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                        break;
-                    case SOUTH:
-                        sprite.rotate(90);
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
-                        sprite2.rotate(90);
-                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y - 2);
-                        break;
-                    case EAST:
-                        sprite.rotate(180);
-                        sprite2.rotate(180);
-                        break;
-                }
-            }
-
-            if (heading == WayPoint.Direction.NORTH)
-            {
-                switch (wayPoints.get(currentWaypoint).direction)
-                {
-                    case EAST:
-                        sprite.rotate(-90);
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                        sprite2.rotate(-90);
-                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 2);
-                        break;
-                    case SOUTH:
-                        sprite.rotate(180);
-                        sprite2.rotate(180);
-                        break;
-                    case WEST:
-                        sprite.rotate(90);
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x - 16, wayPoints.get(currentWaypoint).y);
-                        sprite2.rotate(90);
-                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 13, wayPoints.get(currentWaypoint).y + 3);
-                        break;
-                }
-            }
-
-            if (heading == WayPoint.Direction.SOUTH)
-            {
-                switch (wayPoints.get(currentWaypoint).direction)
-                {
-                    case NORTH:
-                        sprite.rotate(180);
-                        sprite2.rotate(180);
-                        break;
-                    case EAST:
-                        sprite.rotate(90);
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                        sprite2.rotate(90);
-                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                        break;
-                    case WEST:
-                        sprite.rotate(-90);
-                        sprite.setPosition(wayPoints.get(currentWaypoint).x + 16, wayPoints.get(currentWaypoint).y);
-                        sprite2.rotate(-90);
-                        sprite2.setPosition(wayPoints.get(currentWaypoint).x - 8, wayPoints.get(currentWaypoint).y + 6);
-                        break;
-                }
-            }
-            case NORMAL:
-                if (heading == WayPoint.Direction.EAST)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case NORTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(0);
-                            break;
-                        case SOUTH:
-                            sprite.rotate(-90);
-                            sprite2.rotate(0);
-                            break;
-                        case WEST:
-                            sprite.rotate(180);
-                            sprite2.rotate(180);
-                            break;
-                    }
-                }
-
-                if (heading == WayPoint.Direction.WEST)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case NORTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(0);
-                            break;
-                        case SOUTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(0);
-                            break;
-                        case EAST:
-                            sprite.rotate(180);
-                            sprite2.rotate(0);
-                            break;
-                    }
-                }
-
-                if (heading == WayPoint.Direction.NORTH)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case EAST:
-                            sprite.rotate(-90);
-                            sprite2.rotate(0);
-                            break;
-                        case SOUTH:
-                            sprite.rotate(180);
-                            sprite2.rotate(0);
-                            break;
-                        case WEST:
-                            sprite.rotate(90);
-                            sprite2.rotate(0);
-                            break;
-                    }
-                }
-
-                if (heading == WayPoint.Direction.SOUTH)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case NORTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
-                            break;
-                        case EAST:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
-                            break;
-                        case WEST:
-                            sprite.rotate(0);
-                            sprite2.rotate(0);
-                            break;
-                    }
-                }
-            case FAST:
-                if (heading == WayPoint.Direction.EAST)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case NORTH:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
-                            break;
-                        case SOUTH:
-                            sprite.rotate(0);
-                            sprite2.rotate(0);
-                            break;
-                        case WEST:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
-                            break;
-                    }
-                }
-
-                if (heading == WayPoint.Direction.WEST)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case NORTH:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
-                            break;
-                        case SOUTH:
-                            sprite.rotate(0);
-                            sprite2.rotate(0);
-                            break;
-                        case EAST:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
-                            break;
-                    }
-                }
-
-                if (heading == WayPoint.Direction.NORTH)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case EAST:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
-                            break;
-                        case SOUTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
-                            break;
-                        case WEST:
-                            sprite.rotate(0);
-                            sprite2.rotate(0);
-                            break;
-                    }
-                }
-
-                if (heading == WayPoint.Direction.SOUTH)
-                {
-                    switch (wayPoints.get(currentWaypoint).direction)
-                    {
-                        case NORTH:
-                            sprite.rotate(90);
-                            sprite2.rotate(90);
-                            break;
-                        case EAST:
-                            sprite.rotate(0);
-                            sprite2.rotate(0);
-                            break;
-                        case WEST:
-                            sprite.rotate(-0);
-                            sprite2.rotate(-0);
-                            break;
-                    }
-                }
-        }
+        return velocity;
     }
 
-    //Update the linked list contained in enemy.
-    public void setWayPointsLL(LinkedList<WayPoint> wayPoints)
+    public void decrementVelocity(float decrement) {velocity = decrement;}
+
+    public float getArmor()
     {
-        this.wayPoints = wayPoints;
+        return armor;
     }
 
-    public void render(SpriteBatch sb)
+    public float getHealth()
     {
-        sprite.draw(sb);
-        sprite2.draw(sb);
+        return health;
+    }
+
+    public void takeDamage(float damageAmount)
+    {
+        decrementHealth(damageAmount / armor);
+    }
+
+    public void decrementHealth(float amount)
+    {
+        health -= amount;
+    }
+
+    public void incrementHealth(float amount)
+    {
+        health += amount;
+    }
+
+    public boolean isAlive()
+    {
+        return (health > 0.0f);
+    }
+
+    public boolean isNavigationFinished()
+    {
+        return navigationFinished;
+    }
+
+    public float getDistanceTraveled()
+    {
+        return distanceTraveled;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.Enemy;
+import com.mygdx.entities.Enemy;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
 
@@ -9,12 +9,11 @@ import com.mygdx.states.GameState;
  */
 public class ActionEnemyDestroy extends Action
 {
-    public ActionEnemyDestroy(GameState gameState, NetworkManager networkManager, Enemy enemy)
+    public ActionEnemyDestroy(NetworkManager networkManager, Enemy enemy)
     {
-        super(gameState, networkManager);
+        super(networkManager);
 
         this.networkManager = networkManager;
-        this.gameState = gameState;
 
         actionClass = ActionClass.ACTION_ENEMY_DESTROY;
         this.entity = enemy;

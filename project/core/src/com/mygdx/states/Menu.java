@@ -1,74 +1,97 @@
 package com.mygdx.states;
 
+import com.mygdx.handlers.GameStateManager;
+import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.mygdx.game.MyGame;
-import com.mygdx.handlers.GameStateManager;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.NetworkManager;
 
+
 /**
- * Created by James on 2/22/2015.
+ * Created by James on 3/18/2015.
  */
-public class Menu extends GameState
-{
-    private TextButton startButton;
-    private TextButton netButton;
-    private Stage stage;
-    private OrthographicCamera cam;
+public class Menu extends GameState {
 
-    public Menu(final GameStateManager gameStateManager, NetworkManager networkManager)
-    {
-        super(gameStateManager, networkManager);
+    private MyStage stage;
+    private TextButton singleplayer;
+    private TextButton multiplayer;
 
-        stage = new Stage();
-        cam = (OrthographicCamera) stage.getCamera();
-        cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
+    public Menu(GameStateManager gameStateManager, NetworkManager networkManager){
+        super(gameStateManager,networkManager);
+        stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
+        Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
-        startButton = new TextButton("Start", textButtonStyle);
-        startButton.setPosition(MyGame.V_WIDTH / 4, MyGame.V_HEIGHT * 5 / 8);
-        startButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                gameStateManager.setState(GameStateManager.PLAY);
-            }
-        });
-        stage.addActor(startButton);
+        /* Menu Music */
+        AssetManager.loadMusic(1);
+        AssetManager.music.play();
+        AssetManager.loadSound(1);
 
-        netButton = new TextButton("Net", textButtonStyle);
-        netButton.setPosition(MyGame.V_WIDTH / 4, MyGame.V_HEIGHT / 4);
-        netButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                gameStateManager.setState(GameStateManager.NET);
-            }
-        });
-        stage.addActor(netButton);
+        singleplayer = new TextButton("Single Player",skin);
+        singleplayer.setSize(200, 60);
+        singleplayer.setPosition(game.V_WIDTH/2- singleplayer.getWidth()/2, game.V_HEIGHT*3/4);
+        singleplayer.addListener(new ClickListener());
+        stage.addActor(singleplayer);
+
+        multiplayer = new TextButton("Multiplayer",skin);
+        multiplayer.setSize(200, 60);
+        multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, game.V_HEIGHT / 4);
+        multiplayer.addListener(new ClickListener());
+        stage.addActor(multiplayer);
+   }
+    @Override
+    public void update() {
+        if(singleplayer.isChecked()){
+            gameStateManager.setState(GameStateManager.LEVELSELECT, 0);
+            AssetManager.sound.play();
+        }
+        if(multiplayer.isChecked()) {
+            gameStateManager.setState(GameStateManager.NET, 0);
+        }
     }
 
-    public void handleInput()
-    {
+    @Override
+    public void show() {
+
     }
 
-    public void update(float deltaTime)
-    {
-    }
-
-    public void render()
-    {
-        // clear screen, then draw stage
+    @Override
+    public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        update();
+        stage.act(delta);
         stage.draw();
+        //((OrthographicCamera)stage.getCamera()).zoom += .01;
+
     }
 
-    public void dispose()
-    {
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
 
     }
 }

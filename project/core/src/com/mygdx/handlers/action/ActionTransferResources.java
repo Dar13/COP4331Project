@@ -10,12 +10,11 @@ public class ActionTransferResources extends Action
 {
     public int gold, playerFrom, playerTo;
 
-    public ActionTransferResources(GameState gameState, NetworkManager networkManager, int gold, int playerFrom, int playerTo)
+    public ActionTransferResources(NetworkManager networkManager, int gold, int playerFrom, int playerTo)
     {
-        super(gameState, networkManager);
+        super(networkManager);
 
         this.networkManager = networkManager;
-        this.gameState = gameState;
 
         actionClass = ActionClass.ACTION_TRANSFER_RESOURCES;
 

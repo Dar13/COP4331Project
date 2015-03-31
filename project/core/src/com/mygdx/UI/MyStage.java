@@ -1,4 +1,4 @@
-package com.NewUI;
+package com.mygdx.UI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;

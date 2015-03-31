@@ -1,74 +1,101 @@
 package com.mygdx.handlers;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.entities.Entity;
 import com.mygdx.entities.Tower;
+import com.mygdx.entities.TowerFactory;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by LordNeah on 2/23/2015.
+ * Created by James on 3/20/2015.
  */
-public class TowerManager
+public class TowerManager extends Actor
 {
-    protected static final int upgradeDamageConstatnt = 2;
+    public static final String rifleTexturePath = "RifleBunker.png";
+    public static final String bazookaTexturePath = "BazookaBunker.png";
+    public static final String sniperTexturePath = "SniperBunker.png";
+    public static final String mortarTexturePath = "Mortarteam.png";
+    public static final String shadowTexturePath = "nulllayer.png";
+
+    protected static final int upgradeDamageConstant = 2;
     protected static final float upgradeRangeConstant = 1.25f;
-    protected static final int baseRifleRange = 2;
-    protected static final int baseRifleDamage = 1;
-    protected static final int baseBazookaRange = 2;
-    protected static final int baseBazookaDamage = 4;
-    protected static final int baseSniperRange = 5;
-    protected static final int baseSniperDamage = 5;
-    public int rifleBasePrice = 100;
-    public int bazookaBasePrice = 150;
-    public int sniperBasePrice = 300;
 
+    public List<Tower> towerList;
+    protected Map<Entity.Type, Texture> textureMap;
+    protected Texture towerShadow;
 
-    Texture RifleTower = new Texture("RifleTower.png");
-    Texture BazookaTower = new Texture("BazookaTower.png");
-    Texture TowerShadow = new Texture("shadowtower.png");
+    protected int idCounter = 0;
 
-    public LinkedList<Tower> towers;
-
-    public TowerManager(LinkedList<Tower> towers)
+    //public NewTowerManager(LinkedList<NewTower> towers)
+    public TowerManager(List<Tower> towers)
     {
-        this.towers = towers;
+        //this.towers = towers;
+        towerList = towers;
+
+        textureMap = new HashMap<>();
+        textureMap.put(Entity.Type.TOWER_RIFLE, new Texture(rifleTexturePath));
+        textureMap.put(Entity.Type.TOWER_BAZOOKA, new Texture(bazookaTexturePath));
+        textureMap.put(Entity.Type.TOWER_SNIPER, new Texture(sniperTexturePath));
+        textureMap.put(Entity.Type.TOWER_MORTAR, new Texture(mortarTexturePath));
+
+        towerShadow = new Texture(shadowTexturePath);
     }
 
-    //Adds new rifle tower to the tower linked list.
-    public void addRifleTower(float x, float y)
+    public void addTower(Entity.Type type, float x, float y)
     {
-        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseRifleDamage, baseRifleRange, Tower.Type.RIFLE);
-        towers.addLast(New);
+        Tower tower = TowerFactory.createTower(type, textureMap.get(type), towerShadow, x - 16, y - 16, getStage());
+
+        tower.entityID = idCounter;
+        idCounter++;
+
+        towerList.add(tower);
     }
 
-    //Adds new bazooka tower to the tower linked list.
-    public void addBazookaTower(float x, float y)
+    @Override
+    public void draw(Batch batch, float parentAlpha)
     {
-        Tower New = new Tower(BazookaTower, TowerShadow, x, y, baseBazookaDamage, baseBazookaRange, Tower.Type.BAZOOKA);
-        towers.addLast(New);
-    }
-
-    //Adds new sniper tower to the tower linked list.
-    public void addSniperTower(float x, float y)
-    {
-        Tower New = new Tower(RifleTower, TowerShadow, x, y, baseSniperDamage, baseSniperRange, Tower.Type.SNIPER);
-        towers.addLast(New);
-    }
-
-    public void RenderAll(SpriteBatch sb)
-    {
-        for (int i = 0; i < towers.size(); i++)
+        for(Tower tower : towerList)
         {
-            towers.get(i).render(sb);
+            tower.draw(batch, parentAlpha);
+        }
+    }
+
+    public boolean onAnotherTower(float x, float y){
+
+        for(int i = 0; i < towerList.size(); i++)
+        {
+            if(towerList.get(i).steppingOnToes(x, y)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void towerAct(float delta)
+    {
+        for(Tower tower : towerList)
+        {
+            tower.buttonAct(delta);
         }
     }
 
     //Upgrades selected tower based on upgrade constants.
-    public void upgradeTower(int towerToBeUpgraded)
+    public void upgradeTower(int towerID)
     {
-        towers.get(towerToBeUpgraded).damages = towers.get(towerToBeUpgraded).damages * upgradeDamageConstatnt;
-        towers.get(towerToBeUpgraded).range = towers.get(towerToBeUpgraded).range * upgradeRangeConstant;
+        // maybe reconsider this. We do want to upgrade based on entityID rather than a list index however.
+        for(Tower tower : towerList)
+        {
+            if(tower.entityID == towerID)
+            {
+                tower.upgrade(upgradeDamageConstant, upgradeRangeConstant);
+            }
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 package com.mygdx.handlers.action;
 
-import com.NewEntities.Tower;
+import com.mygdx.entities.Tower;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.states.GameState;
 
@@ -11,10 +11,9 @@ public class ActionTowerPlaced extends Action
 {
     public ActionTowerPlaced(GameState gameState, NetworkManager networkManager, Tower tower)
     {
-        super(gameState, networkManager);
+        super(networkManager);
 
         this.networkManager = networkManager;
-        this.gameState = gameState;
 
         actionClass = Action.ActionClass.ACTION_TOWER_PLACED;
         this.entity = tower;

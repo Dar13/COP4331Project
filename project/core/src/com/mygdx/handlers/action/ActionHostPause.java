@@ -8,9 +8,9 @@ import com.mygdx.states.GameState;
  */
 public class ActionHostPause extends Action
 {
-    public ActionHostPause(GameState gameState, NetworkManager networkManager)
+    public ActionHostPause(NetworkManager networkManager)
     {
-        super(gameState, networkManager);
+        super(networkManager);
     }
 
     @Override
