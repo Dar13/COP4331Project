@@ -9,21 +9,9 @@ import com.mygdx.states.GameState;
  */
 public class ActionEnemyWin extends Action
 {
-    public ActionEnemyWin(NetworkManager networkManager, Enemy enemy)
+    public ActionEnemyWin(Enemy enemy)
     {
-        super(networkManager);
-
-        this.networkManager = networkManager;
-
         actionClass = ActionClass.ACTION_ENEMY_WIN;
         this.entity = enemy;
-
-        updateNetMan();
-    }
-
-    @Override
-    public void updateNetMan()
-    {
-        networkManager.addToSendQueue(this);
     }
 }

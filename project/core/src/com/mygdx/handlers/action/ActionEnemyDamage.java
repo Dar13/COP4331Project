@@ -10,21 +10,9 @@ public class ActionEnemyDamage extends Action
 {
     private int damage;
 
-    public ActionEnemyDamage(NetworkManager networkManager, Enemy enemy, int damage)
+    public ActionEnemyDamage(Enemy enemy, int damage)
     {
-        super(networkManager);
-
-        this.networkManager = networkManager;
-
         actionClass = ActionClass.ACTION_ENEMY_DAMAGE;
         this.entity = enemy;
-
-        updateNetMan();
-    }
-
-    @Override
-    public void updateNetMan()
-    {
-        networkManager.addToSendQueue(this);
     }
 }

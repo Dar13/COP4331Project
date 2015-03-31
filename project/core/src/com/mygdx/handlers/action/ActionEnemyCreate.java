@@ -11,22 +11,12 @@ public class ActionEnemyCreate extends Action
 {
     public int tempID;
 
-    public ActionEnemyCreate(NetworkManager networkManager, Enemy newEnemy)
+    public ActionEnemyCreate(Enemy newEnemy)
     {
-        super(networkManager);
-
         actionClass = ActionClass.ACTION_ENEMY_CREATE;
         this.entity = newEnemy;
 
         newEnemy.entityID = tempEntityID.getAndIncrement();
         needsID = true;
-
-        updateNetMan();
-    }
-
-    @Override
-    public void updateNetMan()
-    {
-        networkManager.addToSendQueue(this);
     }
 }

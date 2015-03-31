@@ -9,21 +9,9 @@ import com.mygdx.states.GameState;
  */
 public class ActionTowerUpgraded extends Action
 {
-    public ActionTowerUpgraded(NetworkManager networkManager, Tower tower)
+    public ActionTowerUpgraded(Tower tower)
     {
-        super(networkManager);
-
-        this.networkManager = networkManager;
-
         actionClass = Action.ActionClass.ACTION_TOWER_UPGRADED;
         this.entity = tower;
-
-        updateNetMan();
-    }
-
-    @Override
-    public void updateNetMan()
-    {
-        networkManager.addToSendQueue(this);
     }
 }
