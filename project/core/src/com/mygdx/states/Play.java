@@ -248,6 +248,7 @@ public class Play extends GameState {
     {
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+       // ((OrthographicCamera)stage.getCamera()).zoom += 0.001;
         switch (state){
             case SETUP:
                 batch = stage.getBatch();
@@ -350,7 +351,7 @@ public class Play extends GameState {
                             {
                                 shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
                                 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                                shapeRenderer.setColor(Color.RED);
+                                shapeRenderer.setColor(Color.WHITE);
                                 Vector2 towerPosition = tower.getPosition();
                                 Vector2 enemyPosition = enemy.getPosition();
                                 shapeRenderer.line(towerPosition.x + enemyManager.centerOffset, towerPosition.y + enemyManager.centerOffset, enemyPosition.x + enemyManager.centerOffset, enemyPosition.y + enemyManager.centerOffset);
