@@ -208,6 +208,7 @@ public class Play extends GameState {
             }
         }
 
+
         /**
          * TODO
          * Similarly with getting the amount of gold, depending on how
@@ -215,7 +216,11 @@ public class Play extends GameState {
          * amount of gold we got this update, and the server would return
          * the global amount of gold.
          */
-        gold = gold + (enemyManager.GetDeadEnemies() * 15);
+        //gold = gold + (enemyManager.GetDeadEnemies() * 15);
+
+        gold = gold + (enemyManager.GetGoldEarned());
+        //gold = gold + (enemyManager.GetDeadEnemies()*15);
+
 
         placeATower();
         if(readyButton.isPressed()){
