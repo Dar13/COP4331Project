@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.action.ActionEnemyEnd;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ public class EnemyManager extends Actor{
 
     public int currentWave = 1;
     private int gold = 0;
+
+    protected NetworkManager networkManager;
 
     public int numEnemies = 0;
     private int numDeadEnemies = 0;
@@ -65,8 +68,9 @@ public class EnemyManager extends Actor{
     private float multiplierSp = 0;
     Batch batch;
 
-    public EnemyManager(LinkedList<WayPoint> path, Batch batch)
+    public EnemyManager(NetworkManager netManager, LinkedList<WayPoint> path, Batch batch)
     {
+        networkManager = netManager;
         timeSinceLastNorm = 0;
         timeSinceLastFast = 0;
         timeSinceLastHeavy = 0;
@@ -443,6 +447,9 @@ public class EnemyManager extends Actor{
 
         enemyList.removeAll(enemiesToBeRemoved);
         enemiesToBeRemoved.clear();
+
+        // netcode
+        CheckEnemiesAtEnd();
     }
 
     //Returns the number of enemies killed in the update.
@@ -457,31 +464,20 @@ public class EnemyManager extends Actor{
 
     //Checks to see if there is any enemies at the end waypoint, removes them if there are, then
     //returns the number at the end to the play class.
-    public int CheckEnemiesAtEnd()
+    // Also sends enemies that are at end info to the server
+    public void CheckEnemiesAtEnd()
     {
-        int enemyAtEnd = 0;
-        /*
-        for (int i = 0; i < enemies.size(); i++)
-        {
-            if (enemies.get(i).atEnd)
-            {
-                removeEnemy(i);
-                numEnemies--;
-                enemyAtEnd++;
-            }
-
-        }
-        */
         for(ListIterator<Enemy> iterator = enemyList.listIterator(); iterator.hasNext();)
         {
-            if(iterator.next().isNavigationFinished())
+            Enemy enemy = iterator.next();
+            if(enemy.isNavigationFinished())
             {
                 iterator.remove();
                 numEnemies--;
-                enemyAtEnd++;
+
+                networkManager.addToSendQueue(new ActionEnemyEnd(enemy));
             }
         }
-        return enemyAtEnd;
     }
 
 

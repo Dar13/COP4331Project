@@ -10,6 +10,7 @@ public class GameConnection
 {
     public static class ServerAuth
     {
+
         public int key = MyGame.VERSION;
     }
 

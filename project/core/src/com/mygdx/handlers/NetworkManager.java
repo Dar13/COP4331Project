@@ -7,6 +7,9 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.action.Action;
+import com.mygdx.handlers.action.Action.*;
+import com.mygdx.handlers.action.ActionEnemyEnd;
+import com.mygdx.handlers.action.ActionHealthChanged;
 import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
 
@@ -69,12 +72,11 @@ public class NetworkManager extends Listener implements Runnable
     protected AtomicBoolean initialized;
     protected Boolean ready;
     protected boolean initializeManager;
-    protected boolean singleplayer;
 
     // server
     protected Boolean isServer;
     protected Server server;
-    protected int uidCounter = 0;
+    protected int uidCounter = 1; // All connections have UID >= 1
     protected ArrayList<GameConnection> connections;
     protected int expectedAmountClients;
     private AtomicInteger entityID;
@@ -93,6 +95,10 @@ public class NetworkManager extends Listener implements Runnable
 
     // threading stuff
     protected ReentrantReadWriteLock mutex;
+
+    // serverstate that will eventually be moved to a new class
+    protected int health = 10;
+    protected int lastUID = 0; // this represents the connectionID of the 'last' screen
 
     public NetworkManager(HashMap<ConnectionMode, NetworkInterface> modes)
     {
@@ -244,11 +250,6 @@ public class NetworkManager extends Listener implements Runnable
         }
     }
 
-    public synchronized void setSinglePlayer(boolean singleplayer)
-    {
-        this.singleplayer = singleplayer;
-    }
-
     public void setExpectedAmountClients(int amount)
     {
         expectedAmountClients = amount;
@@ -375,6 +376,8 @@ public class NetworkManager extends Listener implements Runnable
                 ready = true;
             }
 
+            sendLocalChanges();
+
             if (isServer)
             {
                 // server is sending packets out and waiting for incoming connections.
@@ -406,7 +409,7 @@ public class NetworkManager extends Listener implements Runnable
 
     public boolean syncReady()
     {
-        return false;
+        return true;
     }
 
     private boolean setupServer()
@@ -596,8 +599,9 @@ public class NetworkManager extends Listener implements Runnable
         if(isServer && action.needsID)
             action.entity.entityID = entityID.getAndIncrement();
             */
-
+        mutex.writeLock().lock();
         queuedLocalChanges.add(action);
+        mutex.writeLock().unlock();
     }
 
 
@@ -605,10 +609,13 @@ public class NetworkManager extends Listener implements Runnable
      * This method is to be called from within the Game State to request the updates that were
      * received by the network manager
      */
-    public List<Action> updateGameState()
+    public List<Action> fetchChanges()
     {
-        if(syncReady())
-            return queuedRemoteChanges;
+        if(syncReady()) {
+            List<Action> tmp = queuedRemoteChanges;
+            queuedRemoteChanges = new ArrayList<Action>();
+            return tmp;
+        }
 
         else
             return null;
@@ -619,14 +626,21 @@ public class NetworkManager extends Listener implements Runnable
      */
     private void sendLocalChanges()
     {
-        if(!singleplayer)
+        if(!isServer)
         {
 
         }
         else
         {
             // just pass through to receiveChanges, no processing needed
-            //receiveChanges(this.queuedLocalChanges);
+            List<Action> tmp;
+
+            mutex.writeLock().lock();
+            tmp = queuedLocalChanges;
+            queuedLocalChanges = new ArrayList<Action>();
+            mutex.writeLock().unlock();
+
+            receiveChanges(tmp);
         }
         /**
          * TODO: implement this method with Kryonet, Pseudocode follows:
@@ -648,6 +662,40 @@ public class NetworkManager extends Listener implements Runnable
          *     push valid changes to send queue (so they can be sent back out to other clients)
          * add all changes to update queue, so game can read them in when needed
          */
+        if(changes == null)
+            return;
+
+        // if we are a client, we just take the new changes and leave
+        if(!isServer) {
+            queuedRemoteChanges.addAll(changes);
+            return;
+        }
+
+        boolean healthChanged = false;
+
+        for(Action a : changes) {
+
+            // create resposne within switch
+            switch(a.actionClass) {
+                case ACTION_ENEMY_END:
+                    //see if this is the last UID, i.e., the end of the road.
+                    if(((ActionEnemyEnd) a).UID == lastUID) {
+                        health--;
+                        healthChanged = true;
+                    }
+                    else {
+                        // make and send new action to the screen after this actions UID.
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if(healthChanged) {
+            // TODO: loop through all connections and update
+            queuedRemoteChanges.add(new ActionHealthChanged(health));
+        }
     }
 
     protected boolean handleValidation(GameConnection gameConnection, Connection connection, Object object)

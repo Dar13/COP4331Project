@@ -32,10 +32,13 @@ import com.mygdx.game.MyGame;
 import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.handlers.WayPointManager;
+import com.mygdx.handlers.action.Action;
+import com.mygdx.handlers.action.ActionHealthChanged;
 
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 
 /**
@@ -133,7 +136,7 @@ public class Play extends GameState {
 
         towers = new LinkedList<>();
         wayPointManager = new WayPointManager(MapLoad);
-        enemyManager = new EnemyManager(wayPointManager.wayPoints, stage.getBatch());
+        enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
         towerManager = new TowerManager(towers);
 
         rifleButton = new TextButton("rifle",skin);
@@ -179,7 +182,11 @@ public class Play extends GameState {
         stage.addActor(mortarButton);
         stage.addActor(readyButton);
 
-
+        // TODO: logic to decide whether or not this is a server
+        networkManager.prepInitialize(true,
+                                      NetworkManager.ConnectionMode.WIFI_LAN,
+                                      NetworkManager.ConnectionMode.NONE,
+                                      true);
 
 
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, enemyManager.enemyList, stage.getBatch());
@@ -187,14 +194,19 @@ public class Play extends GameState {
     }
 
     @Override
-    public void update() {
-        /**
-         * TODO: the actual sending of info to server should probably be located in the CheckEnemiesAtEnd function
-         * Instead of locally checking health, send this to the server.
-         * The server will only decrement health if this client is the
-         * very last client. Otherwise it will send it to the next screen.
-         */
-        health = health - enemyManager.CheckEnemiesAtEnd();
+    public void update()
+    {
+        List<Action> changes = networkManager.fetchChanges();
+        if(changes != null) {
+            for (ListIterator<Action> iter = changes.listIterator(); iter.hasNext();) {
+                Action a = iter.next();
+                switch (a.actionClass) {
+                    case ACTION_HEALTH_CHANGED:
+                        health = ((ActionHealthChanged) a).newHealth;
+                }
+                iter.remove();
+            }
+        }
 
         /**
          * TODO
@@ -212,18 +224,14 @@ public class Play extends GameState {
         }
         if(health <= 0)
         {
-            // TODO: send this info to the Server so all clients end.
             gameStateManager.setState(GameStateManager.BADEND, 0);
         }
 
         else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0 && enemyManager.enemyList.size() == 0)
         {
-            // TODO: send this info to the Server so all clients end.
+            // TODO: send this info to the Server so all clients end. Also move alot of the if-statement logic to the server?
             gameStateManager.setState(GameStateManager.GOODEND, 0);
         }
-
-
-
     }
 
     @Override
