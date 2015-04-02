@@ -47,6 +47,12 @@ public class Menu extends GameState {
     @Override
     public void update() {
         if(singleplayer.isChecked()){
+            if(!networkManager.isInitialized()) {
+                networkManager.prepInitialize(true,
+                        NetworkManager.ConnectionMode.WIFI_LAN,
+                        NetworkManager.ConnectionMode.NONE,
+                        true);
+            }
             gameStateManager.setState(GameStateManager.LEVELSELECT, 0);
             AssetManager.sound.play();
         }

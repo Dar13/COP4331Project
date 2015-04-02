@@ -182,13 +182,6 @@ public class Play extends GameState {
         stage.addActor(mortarButton);
         stage.addActor(readyButton);
 
-        // TODO: logic to decide whether or not this is a server
-        networkManager.prepInitialize(true,
-                                      NetworkManager.ConnectionMode.WIFI_LAN,
-                                      NetworkManager.ConnectionMode.NONE,
-                                      true);
-
-
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, enemyManager.enemyList, stage.getBatch());
 
     }
@@ -197,12 +190,17 @@ public class Play extends GameState {
     public void update()
     {
         List<Action> changes = networkManager.fetchChanges();
-        if(changes != null) {
-            for (ListIterator<Action> iter = changes.listIterator(); iter.hasNext();) {
+        if(changes != null)
+        {
+            for (ListIterator<Action> iter = changes.listIterator(); iter.hasNext();)
+            {
                 Action a = iter.next();
-                switch (a.actionClass) {
+
+                switch (a.actionClass)
+                {
                     case ACTION_HEALTH_CHANGED:
                         health = ((ActionHealthChanged) a).newHealth;
+                        break;
                 }
                 iter.remove();
             }
@@ -216,11 +214,7 @@ public class Play extends GameState {
          * amount of gold we got this update, and the server would return
          * the global amount of gold.
          */
-        //gold = gold + (enemyManager.GetDeadEnemies() * 15);
-
         gold = gold + (enemyManager.GetGoldEarned());
-        //gold = gold + (enemyManager.GetDeadEnemies()*15);
-
 
         placeATower();
         if(readyButton.isPressed()){
@@ -235,6 +229,7 @@ public class Play extends GameState {
         else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0 && enemyManager.enemyList.size() == 0)
         {
             // TODO: send this info to the Server so all clients end. Also move alot of the if-statement logic to the server?
+            // Maybe server indeed needs to count how many enemy killed in order to send this action
             gameStateManager.setState(GameStateManager.GOODEND, 0);
         }
     }

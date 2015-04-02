@@ -97,7 +97,7 @@ public class NetworkManager extends Listener implements Runnable
     protected ReentrantReadWriteLock mutex;
 
     // serverstate that will eventually be moved to a new class
-    protected int health = 10;
+    protected int health = 10; // should be in MyGame maybe, so client can also load?
     protected int lastUID = 0; // this represents the connectionID of the 'last' screen
 
     public NetworkManager(HashMap<ConnectionMode, NetworkInterface> modes)
@@ -684,9 +684,13 @@ public class NetworkManager extends Listener implements Runnable
                         healthChanged = true;
                     }
                     else {
-                        // make and send new action to the screen after this actions UID.
+                        // make and send new action to the screen after this actions UID. with full enemy info
                     }
                     break;
+
+                case ACTION_ENEMY_DESTROY:
+                    break;
+
                 default:
                     break;
             }

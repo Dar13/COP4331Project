@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
 import com.mygdx.triggers.WayPoint;
 
@@ -119,6 +120,7 @@ public class EnemyManager extends Actor{
             Enemy enemy = iterator.next();
             if(enemy.entityID == id)
             {
+                networkManager.addToSendQueue(new ActionEnemyDestroy(enemy));
                 enemiesToBeRemoved.add(enemy);
             }
         }
