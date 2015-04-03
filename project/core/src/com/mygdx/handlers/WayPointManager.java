@@ -138,39 +138,52 @@ public class WayPointManager
 
     //constructs the paths between the waypoints, so that towers cannot be placed on the paths.
     private void ConstructPaths()
-    {
-        int i = 0;
-        while(i < wayPoints.size() - 1)
+    {   if (mapnum == 4)
         {
-            if (wayPoints.get(i).x == wayPoints.get(i+1).x)
+            Path NEW = new Path(0, 225, 160, 257);
+            paths.addLast(NEW);
+            NEW = new Path(128, 0, 160, 480);
+            paths.addLast(NEW);
+            NEW = new Path(544, 0, 576, 480);
+            paths.addLast(NEW);
+            NEW = new Path(544, 225, 680, 257);
+            paths.addLast(NEW);
+        }
+
+        else
+        {
+        int i = 0;
+        while (i < wayPoints.size() - 1)
+        {
+            if (wayPoints.get(i).x == wayPoints.get(i + 1).x)
             {
-                if(wayPoints.get(i).y > wayPoints.get(i+1).y)
+                if (wayPoints.get(i).y > wayPoints.get(i + 1).y)
                 {
-                    Path NEW = new Path(wayPoints.get(i+1).x, wayPoints.get(i+1).y, wayPoints.get(i).x + 32, wayPoints.get(i).y + 32);
+                    Path NEW = new Path(wayPoints.get(i + 1).x, wayPoints.get(i + 1).y, wayPoints.get(i).x + 32, wayPoints.get(i).y + 32);
                     paths.addLast(NEW);
                 }
                 else
                 {
-                    Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i+1).x + 32, wayPoints.get(i+1).y + 32);
+                    Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i + 1).x + 32, wayPoints.get(i + 1).y + 32);
                     paths.addLast(NEW);
                 }
             }
-
-            else if (wayPoints.get(i).y == wayPoints.get(i+1).y)
+            else if (wayPoints.get(i).y == wayPoints.get(i + 1).y)
             {
-                if(wayPoints.get(i).x > wayPoints.get(i+1).x)
+                if (wayPoints.get(i).x > wayPoints.get(i + 1).x)
                 {
-                    Path NEW = new Path(wayPoints.get(i+1).x, wayPoints.get(i+1).y, wayPoints.get(i).x + 32, wayPoints.get(i).y + 32);
+                    Path NEW = new Path(wayPoints.get(i + 1).x, wayPoints.get(i + 1).y, wayPoints.get(i).x + 32, wayPoints.get(i).y + 32);
                     paths.addLast(NEW);
                 }
                 else
                 {
-                    Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i+1).x + 32, wayPoints.get(i+1).y + 32);
+                    Path NEW = new Path(wayPoints.get(i).x, wayPoints.get(i).y, wayPoints.get(i + 1).x + 32, wayPoints.get(i + 1).y + 32);
                     paths.addLast(NEW);
                 }
             }
             i++;
         }
+    }
     }
 
     //checks to see if the tower x,y is within a any path.
