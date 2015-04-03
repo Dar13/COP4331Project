@@ -95,13 +95,30 @@ public abstract class Tower extends Entity
             cancelButton.act(delta);
             if (upgradeButton.isPressed())
             {
-
+                switch (this.type) {
+                    case TOWER_BAZOOKA:
+                        upgrade(1.50f, 1.25f);
+                        break;
+                    case TOWER_RIFLE:
+                        upgrade(1.75f, 1.25f);
+                        break;
+                    case TOWER_SNIPER:
+                        upgrade(1.25f, 1.25f);
+                        break;
+                    case TOWER_MORTAR:
+                        upgrade(1.50f, 1.25f);
+                        break;
+                }
+                cancelButton.remove();
+                upgradeButton.remove();
+                clicked = false;
             }
 
             else if (cancelButton.isPressed())
             {
-                upgradeButton = null;
-                cancelButton = null;
+                cancelButton.remove();
+                upgradeButton.remove();
+                clicked = false;
             }
         }
     }

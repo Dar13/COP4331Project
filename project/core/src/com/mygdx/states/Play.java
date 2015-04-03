@@ -55,7 +55,7 @@ public class Play extends GameState {
     private int mortar = 0;
 
     private boolean clicked = false;
-    private boolean debuggerOn = false;
+    private boolean debuggerOn = true;
 
     //private LinkedList<NewTower> towers;
     private  Actor map;
@@ -299,6 +299,7 @@ public class Play extends GameState {
             case PLAY:
                 enemyManager.SetTowers(towers);
                 stage.act(delta);
+                towerManager.towerAct(delta);
                 stage.draw();
                 enemyManager.setGold(gold);
                 batch = stage.getBatch();
