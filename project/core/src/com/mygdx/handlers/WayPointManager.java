@@ -34,6 +34,11 @@ public class WayPointManager
                                     3, 480, 352, 2, 480, 96, 4,
                                     160, 96, 1, 160, 352, 3, 480,
                                     352, 2, 480, 96, 3, 608, 96, 5};
+    private int[] map3 = new int[]{0, 448, 2, 0, 352, 3, 96, 352, 2,
+                                   96, 256, 3, 192, 256, 2, 192, 160, 3,
+                                   352, 160, 1, 352, 256, 3, 448, 256, 1,
+                                   448, 352, 3, 544, 352, 1, 544, 448, 3,
+                                   608, 448, 5};
 
     private int mapnum = 0;
 
@@ -71,7 +76,7 @@ public class WayPointManager
                     maptemp = map2;
                     break;
                 case 3:
-                    //int[] maptemp = map3;
+                    maptemp = map3;
                     break;
                 case 4:
                     //int[] maptemp = map4;

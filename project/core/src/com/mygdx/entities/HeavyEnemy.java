@@ -25,7 +25,7 @@ public class HeavyEnemy extends Enemy
         velocity = BASE_VELOCITY;
         armor = BASE_ARMOR;
 
-        navigationTolerance = velocity + 16f;
+        navigationTolerance = velocity / 2.0f;
     }
 
     public void draw(Batch batch, float parentAlpha)
