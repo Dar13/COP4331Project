@@ -115,7 +115,7 @@ public class Play extends GameState {
                 mapImg = new Texture("MapMoreHarder.png");
                 break;
             case 4:
-                mapImg = new Texture("MapEasy.png");
+                mapImg = new Texture("mapinsane.png");
                 break;
         }
 

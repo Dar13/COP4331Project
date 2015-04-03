@@ -117,6 +117,12 @@ public abstract class Enemy extends Entity
             // within the tolerance radius of the waypoint
             if(distance.len2() <= (navigationTolerance * navigationTolerance))
             {
+                if (wayPoint.direction == WayPoint.Direction.RAND){
+                    currentWayPoint = wayPoint.returnRandPath();
+                    wayPoint = wayPoints.get(currentWayPoint);
+                    System.out.println(currentWayPoint);
+                }
+
                 position.x = wayPoint.x;
                 position.y = wayPoint.y;
 
@@ -124,6 +130,8 @@ public abstract class Enemy extends Entity
 
                 heading = wayPoint.direction;
                 currentWayPoint++;
+
+
 
                 if(wayPoint.direction == WayPoint.Direction.END)
                 {

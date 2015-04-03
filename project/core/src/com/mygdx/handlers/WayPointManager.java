@@ -39,6 +39,15 @@ public class WayPointManager
                                    352, 160, 1, 352, 256, 3, 448, 256, 1,
                                    448, 352, 3, 544, 352, 1, 544, 448, 3,
                                    608, 448, 5};
+    private int[] map4 = new int[]{0, 225, 3, 128, 225, 6, 2, 7, 12, 17,
+                                   128, 225, 1, 128, 416, 3, 544, 416, 2,
+                                   544, 232, 3, 608, 232, 5, 128, 225, 1,
+                                   128, 288, 3, 544, 288, 2, 544, 232, 3,
+                                   608, 232, 5, 128, 225, 2, 128, 191, 3,
+                                   544, 191, 1, 544, 232, 3, 608, 232, 5,
+                                   128, 225, 2, 128, 0, 3, 544, 0, 1,
+                                   544, 232, 3, 608, 232, 5};
+
 
     private int mapnum = 0;
 
@@ -79,12 +88,12 @@ public class WayPointManager
                     maptemp = map3;
                     break;
                 case 4:
-                    //int[] maptemp = map4;
+                    maptemp = map4;
                     break;
             }
 
 
-            for(int i = 0; i < map1.length; i ++)
+            for(int i = 0; i < maptemp.length; i ++)
             {
                 int x = maptemp[i];
                 i++;
@@ -110,6 +119,19 @@ public class WayPointManager
                 else if (dir == 5)
                 {
                     wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.END));
+                }
+                else if (dir == 6)
+                {
+                    i++;
+                    int path1 = maptemp[i];
+                    i++;
+                    int path2 = maptemp[i];
+                    i++;
+                    int path3 = maptemp[i];
+                    i++;
+                    int path4 = maptemp[i];
+                    wayPoints.addLast(new WayPoint(x, y, WayPoint.Direction.RAND));
+                    wayPoints.getLast().randWaypointInfo(path1, path2, path3, path4);
                 }
             }
     }
