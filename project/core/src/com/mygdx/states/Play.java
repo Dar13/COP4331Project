@@ -53,6 +53,7 @@ public class Play extends GameState {
     private int Rifle = 0;
     private int sniper = 0;
     private int mortar = 0;
+    private int totalWaves = 0;
 
     private boolean clicked = false;
     private boolean debuggerOn = true;
@@ -107,15 +108,19 @@ public class Play extends GameState {
         switch (MapLoad){
             case 1:
                 mapImg = new Texture("MapEasy.png");
+                totalWaves = 20;
                 break;
             case 2:
                 mapImg = new Texture("Slightlyhardermap.png");
+                totalWaves = 30;
                 break;
             case 3:
                 mapImg = new Texture("MapMoreHarder.png");
+                totalWaves = 40;
                 break;
             case 4:
                 mapImg = new Texture("mapinsane.png");
+                totalWaves = 50;
                 gold += 200;
                 break;
         }
@@ -137,7 +142,6 @@ public class Play extends GameState {
 
         towers = new LinkedList<>();
         wayPointManager = new WayPointManager(MapLoad);
-        enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
         towerManager = new TowerManager(towers);
 
         rifleButton = new TextButton("rifle",skin);
@@ -175,7 +179,6 @@ public class Play extends GameState {
 
 
         stage.addActor(map);
-        stage.addActor(enemyManager);
         stage.addActor(towerManager);
         stage.addActor(rifleButton);
         stage.addActor(bazookaButton);
@@ -183,12 +186,12 @@ public class Play extends GameState {
         stage.addActor(mortarButton);
         stage.addActor(readyButton);
 
-        debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, enemyManager.enemyList, stage.getBatch());
+        debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, stage.getBatch());
 
     }
 
     @Override
-    public void update()
+    public void update(float delta)
     {
         List<Action> changes = networkManager.fetchChanges();
         if(changes != null)
@@ -215,24 +218,52 @@ public class Play extends GameState {
          * amount of gold we got this update, and the server would return
          * the global amount of gold.
          */
-        gold = gold + (enemyManager.GetGoldEarned());
 
         placeATower();
         if(readyButton.isPressed()){
             state = SubState.PLAY;
             readyButton.remove();
         }
-        if(health <= 0)
-        {
-            gameStateManager.setState(GameStateManager.BADEND, 0);
+
+        switch (state) {
+            case SETUP:
+                rifleButton.act(delta);
+                bazookaButton.act(delta);
+                sniperButton.act(delta);
+                mortarButton.act(delta);
+                readyButton.act(delta);
+                gold -= towerManager.towerAct(delta);
+                stage.act(delta);
+                break;
+            case PLAY:
+                if(enemyManager == null) {
+                    enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
+                    stage.addActor(enemyManager);
+                }
+                stage.act(delta);
+                gold -= towerManager.towerAct(delta);
+                gold = gold + (enemyManager.GetGoldEarned());
+
+                if(health <= 0)
+                {
+                    gameStateManager.setState(GameStateManager.BADEND, 0);
+                }
+
+                else if (enemyManager.currentWave == totalWaves && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0 && enemyManager.enemyList.size() == 0)
+                {
+                    // TODO: send this info to the Server so all clients end. Also move alot of the if-statement logic to the server?
+                    // Maybe server indeed needs to count how many enemy killed in order to send this action
+                    gameStateManager.setState(GameStateManager.GOODEND, 0);
+                }
+                break;
+
         }
 
-        else if (enemyManager.currentWave == 10 && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0 && enemyManager.enemyList.size() == 0)
-        {
-            // TODO: send this info to the Server so all clients end. Also move alot of the if-statement logic to the server?
-            // Maybe server indeed needs to count how many enemy killed in order to send this action
-            gameStateManager.setState(GameStateManager.GOODEND, 0);
-        }
+
+
+
+
+
     }
 
     @Override
@@ -250,12 +281,6 @@ public class Play extends GameState {
                 batch = stage.getBatch();
                 batch.begin();
                 map.draw(batch, 1);
-                rifleButton.act(delta);
-                bazookaButton.act(delta);
-                sniperButton.act(delta);
-                mortarButton.act(delta);
-                readyButton.act(delta);
-                gold -= towerManager.towerAct(delta);
                 batch.end();
                 if(towerPlacement == 1)
                 {
@@ -287,7 +312,7 @@ public class Play extends GameState {
                 batch.begin();
                 font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
-                font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
+                font.draw(batch, "Wave: 0", 192, MyGame.V_HEIGHT - 10);
                 debugger.setBatch(batch);
                 rifleButton.draw(batch, 1);
                 bazookaButton.draw(batch, 1);
@@ -299,8 +324,6 @@ public class Play extends GameState {
                 break;
             case PLAY:
                 enemyManager.SetTowers(towers);
-                stage.act(delta);
-                gold -= towerManager.towerAct(delta);
                 stage.draw();
                 enemyManager.setGold(gold);
                 batch = stage.getBatch();

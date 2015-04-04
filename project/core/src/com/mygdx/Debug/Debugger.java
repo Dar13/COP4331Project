@@ -25,14 +25,13 @@ public class Debugger
     int waypointindex = 0;
 
 
-    public Debugger(LinkedList<WayPoint> path, List<Tower> towers, List<Enemy> enemies, Batch batch)
+    public Debugger(LinkedList<WayPoint> path, List<Tower> towers, Batch batch)
     {
         this.batch = batch;
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
         this.path = path;
         this.towers = towers;
-        this.enemies = enemies;
     }
 
     public void setBatch(Batch batch){
@@ -77,7 +76,7 @@ public class Debugger
         /* Representing the enemy hp as a green line, 6 pixels above the enemy. above the enemy
          */
         int j = 0;
-        while (j < enemies.size())
+        /*while (j < enemies.size())
         {
             shapeRenderer.setColor(Color.GREEN);
             Vector2 enemyPosition = enemies.get(j).getPosition();
@@ -85,7 +84,7 @@ public class Debugger
             //shapeRenderer.line(enemies.get(j).returnX(), enemies.get(j).returnY() + 38, enemies.get(j).returnX() + enemies.get(j).getHealth() / 4, enemies.get(j).returnY() + 38);
             j++;
         }
-
+        */
         shapeRenderer.end();
         waypointindex = 0;
         finished = false;

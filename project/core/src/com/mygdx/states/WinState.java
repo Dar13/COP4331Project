@@ -40,7 +40,7 @@ public class WinState extends GameState {
         stage.addActor(backtostart);
     }
     @Override
-    public void update() {
+    public void update(float delta) {
         if(backtostart.isChecked()){
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
@@ -55,7 +55,7 @@ public class WinState extends GameState {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        update();
+        update(delta);
         stage.act(delta);
         stage.draw();
         batch = stage.getBatch();

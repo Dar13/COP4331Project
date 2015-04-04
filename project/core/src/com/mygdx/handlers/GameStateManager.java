@@ -45,9 +45,9 @@ public class GameStateManager {
         return game;
     }
 
-    public void update()
+    public void update(float deltatime)
     {
-        gameStates.peek().update();
+        gameStates.peek().update(deltatime);
     }
 
     public void render(float deltaTime)

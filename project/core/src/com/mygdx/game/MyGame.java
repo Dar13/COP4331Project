@@ -84,7 +84,7 @@ public class MyGame extends ApplicationAdapter
                 e.printStackTrace();
             }
         }
-        gameStateManager.update();
+        gameStateManager.update(fps);
         gameStateManager.render(fps);
         //gameStateManager.update(fps);
         //gameStateManager.render();

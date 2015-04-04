@@ -20,7 +20,7 @@ public abstract class GameState implements Screen {
 
         game = gameStateManager.getGame();
     }
-    public abstract void update();
+    public abstract void update(float deltatime);
 
     @Override
     public void resize(int width, int height) {

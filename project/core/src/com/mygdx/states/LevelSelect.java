@@ -50,7 +50,7 @@ public class LevelSelect extends GameState {
         stage.addActor(insane);
     }
     @Override
-    public void update() {
+    public void update(float delta) {
         if(easy.isChecked()){
             gameStateManager.setState(GameStateManager.PLAY, 1);
         }
@@ -74,7 +74,7 @@ public class LevelSelect extends GameState {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        update();
+        update(delta);
         stage.act(delta);
         stage.draw();
         //((OrthographicCamera)stage.getCamera()).zoom += .01;

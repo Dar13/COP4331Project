@@ -46,7 +46,7 @@ public class Menu extends GameState {
         stage.addActor(multiplayer);
    }
     @Override
-    public void update() {
+    public void update(float delta) {
         if(singleplayer.isChecked()){
             if(!networkManager.isInitialized()) {
                 networkManager.prepInitialize(true,
@@ -71,7 +71,7 @@ public class Menu extends GameState {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        update();
+        update(delta);
         stage.act(delta);
         stage.draw();
         //((OrthographicCamera)stage.getCamera()).zoom += .01;
