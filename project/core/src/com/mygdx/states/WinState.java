@@ -19,6 +19,7 @@ import com.mygdx.handlers.NetworkManager;
 public class WinState extends GameState {
     private MyStage stage;
     private TextButton backtostart;
+    private TextButton endlessReplay;
     private Batch batch;
     private BitmapFont font;
 
@@ -32,17 +33,26 @@ public class WinState extends GameState {
         backtostart.setPosition(game.V_WIDTH/2-backtostart.getWidth()/2, game.V_HEIGHT/2-backtostart.getHeight()/2);
         backtostart.addListener(new ClickListener());
 
+        endlessReplay = new TextButton("Endless Mode.",skin);
+        endlessReplay.setSize(200,60);
+        endlessReplay.setPosition(game.V_WIDTH/2-backtostart.getWidth()/2, backtostart.getY() - 65);
+        endlessReplay.addListener(new ClickListener());
+
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.scale(.5f);
 
         stage.addActor(backtostart);
-        stage.addActor(backtostart);
+        stage.addActor(endlessReplay);
     }
     @Override
     public void update(float delta) {
+        stage.act(delta);
         if(backtostart.isChecked()){
             gameStateManager.setState(GameStateManager.MENU, 0);
+        }
+        if(endlessReplay.isChecked()){
+            gameStateManager.popState();
         }
     }
 
@@ -56,7 +66,6 @@ public class WinState extends GameState {
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
-        stage.act(delta);
         stage.draw();
         batch = stage.getBatch();
         batch.begin();

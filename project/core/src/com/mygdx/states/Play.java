@@ -253,7 +253,7 @@ public class Play extends GameState {
                 {
                     // TODO: send this info to the Server so all clients end. Also move alot of the if-statement logic to the server?
                     // Maybe server indeed needs to count how many enemy killed in order to send this action
-                    gameStateManager.setState(GameStateManager.GOODEND, 0);
+                    gameStateManager.pushState(GameStateManager.GOODEND, 0);
                 }
                 break;
 
