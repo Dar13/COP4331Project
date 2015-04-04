@@ -116,6 +116,7 @@ public class Play extends GameState {
                 break;
             case 4:
                 mapImg = new Texture("mapinsane.png");
+                gold += 200;
                 break;
         }
 
