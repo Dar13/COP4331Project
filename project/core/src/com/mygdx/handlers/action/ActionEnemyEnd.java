@@ -5,7 +5,7 @@ import com.mygdx.entities.Enemy;
 /**
  * Created by rob on 3/25/15.
  */
-public class ActionEnemyEnd extends Action
+public class ActionEnemyEnd extends ActionEnemyBase
 {
     /**
      * This action is created when an enemy reaches the end of the client screen.
@@ -14,7 +14,8 @@ public class ActionEnemyEnd extends Action
      */
     public ActionEnemyEnd(Enemy enemy)
     {
+        super(enemy);
+
         actionClass = ActionClass.ACTION_ENEMY_END;
-        this.entity = enemy;
     }
 }

@@ -5,14 +5,14 @@ import com.mygdx.entities.Tower;
 /**
  * Created by rob on 3/25/15.
  */
-public class ActionTowerPlaced extends Action
+public class ActionTowerPlaced extends ActionTowerBase
 {
     public ActionTowerPlaced(Tower tower)
     {
-        actionClass = Action.ActionClass.ACTION_TOWER_PLACED;
-        this.entity = tower;
+        super(tower);
 
-        tower.entityID = tempEntityID.getAndIncrement();
+        actionClass = Action.ActionClass.ACTION_TOWER_PLACED;
+
         needsID = true;
     }
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.NetworkManager;
+import com.mygdx.net.ConnectionMode;
 
 /**
  * Created by NeilMoore on 2/14/2015.
@@ -41,8 +42,8 @@ public class NetTest extends GameState
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 networkManager.prepInitialize(true,
-                                              NetworkManager.ConnectionMode.WIFI_LAN,
-                                              NetworkManager.ConnectionMode.NONE,
+                                              ConnectionMode.WIFI_LAN,
+                                              ConnectionMode.NONE,
                                               true);
             }
         });
@@ -54,8 +55,8 @@ public class NetTest extends GameState
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 networkManager.prepInitialize(false,
-                                              NetworkManager.ConnectionMode.WIFI_LAN,
-                                              NetworkManager.ConnectionMode.NONE,
+                                              ConnectionMode.WIFI_LAN,
+                                              ConnectionMode.NONE,
                                               true);
             }
         });

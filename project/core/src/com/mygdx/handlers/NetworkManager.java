@@ -7,11 +7,15 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.action.Action;
-import com.mygdx.handlers.action.Action.*;
+import com.mygdx.handlers.action.ActionEnemyCreate;
+import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
-import com.mygdx.handlers.action.ActionHealthChanged;
+import com.mygdx.net.ConnectionMode;
+import com.mygdx.net.EnemyStatus;
+import com.mygdx.net.EntityStatus;
 import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
+import com.mygdx.net.TowerStatus;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,6 +23,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -31,43 +36,11 @@ public class NetworkManager extends Listener implements Runnable
     public static final int SERVER_TCP_PORT = 0xDDD;
     public static final int SERVER_UDP_PORT = 0xDDE;
     public static final int MAX_CLIENTS = 4;
-    public static final int INITIAL_ENTITY_ID = 2048;
+    public static final int ENTITY_ID_START = 0;
 
     //These lists will hold changes temporarily until they are either sent or applied
     private List<Action> queuedLocalChanges;
     private List<Action> queuedRemoteChanges;
-
-    public enum ConnectionMode
-    {
-        WIFI_P2P(1),
-        WIFI_LAN(2),
-        DATA_4G(3),
-        NONE(-1);
-
-        public int index;
-
-        ConnectionMode(int idx)
-        {
-            index = idx;
-        }
-
-        public static ConnectionMode fromIndex(int idx)
-        {
-            switch (idx)
-            {
-            case -1:
-                return NONE;
-            case 1:
-                return WIFI_P2P;
-            case 2:
-                return WIFI_LAN;
-            case 3:
-                return DATA_4G;
-            default:
-                return null;
-            }
-        }
-    }
 
     protected AtomicBoolean initialized;
     protected Boolean ready;
@@ -79,7 +52,9 @@ public class NetworkManager extends Listener implements Runnable
     protected int uidCounter = 1; // All connections have UID >= 1
     protected ArrayList<GameConnection> connections;
     protected int expectedAmountClients;
-    private AtomicInteger entityID;
+
+    protected int lastEntityID = ENTITY_ID_START;
+    protected Map<Integer, EntityStatus> entityStatus;
 
     // client
     protected Client client;
@@ -182,7 +157,7 @@ public class NetworkManager extends Listener implements Runnable
                 server = new Server();
                 server.addListener(this);
 
-                entityID = new AtomicInteger(INITIAL_ENTITY_ID);
+                entityStatus = new HashMap<>();
             }
             else
             {
@@ -566,6 +541,12 @@ public class NetworkManager extends Listener implements Runnable
                         // handle normally.
                         // decode to List<BaseChange> and then call receiveChanges()
 
+                        if(object instanceof Action)
+                        {
+                            Action action = (Action)object;
+                            action.region = gameConnection.getUID();
+                            receiveChange(action);
+                        }
                     }
                 }
             }
@@ -600,8 +581,14 @@ public class NetworkManager extends Listener implements Runnable
             action.entity.entityID = entityID.getAndIncrement();
             */
         mutex.writeLock().lock();
-        queuedLocalChanges.add(action);
-        mutex.writeLock().unlock();
+        try
+        {
+            queuedLocalChanges.add(action);
+        }
+        finally
+        {
+            mutex.writeLock().unlock();
+        }
     }
 
 
@@ -628,7 +615,28 @@ public class NetworkManager extends Listener implements Runnable
     {
         if(!isServer)
         {
+            mutex.readLock().lock();
+            try
+            {
+                for(Action action : queuedLocalChanges)
+                {
+                    client.sendTCP(action);
+                }
+            }
+            finally
+            {
+                mutex.readLock().unlock();
+            }
 
+            mutex.writeLock().lock();
+            try
+            {
+                queuedLocalChanges.clear();
+            }
+            finally
+            {
+                mutex.writeLock().unlock();
+            }
         }
         else
         {
@@ -636,9 +644,15 @@ public class NetworkManager extends Listener implements Runnable
             List<Action> tmp;
 
             mutex.writeLock().lock();
-            tmp = queuedLocalChanges;
-            queuedLocalChanges = new ArrayList<Action>();
-            mutex.writeLock().unlock();
+            try
+            {
+                tmp = queuedLocalChanges;
+                queuedLocalChanges = new ArrayList<Action>();
+            }
+            finally
+            {
+                mutex.writeLock().unlock();
+            }
 
             receiveChanges(tmp);
         }
@@ -663,42 +677,83 @@ public class NetworkManager extends Listener implements Runnable
          * add all changes to update queue, so game can read them in when needed
          */
         if(changes == null)
+        {
             return;
+        }
 
         // if we are a client, we just take the new changes and leave
-        if(!isServer) {
+        if(!isServer)
+        {
             queuedRemoteChanges.addAll(changes);
             return;
         }
 
-        boolean healthChanged = false;
-
-        for(Action a : changes) {
-
-            // create resposne within switch
-            switch(a.actionClass) {
-                case ACTION_ENEMY_END:
-                    //see if this is the last UID, i.e., the end of the road.
-                    if(((ActionEnemyEnd) a).UID == lastUID) {
-                        health--;
-                        healthChanged = true;
-                    }
-                    else {
-                        // make and send new action to the screen after this actions UID. with full enemy info
-                    }
-                    break;
-
-                case ACTION_ENEMY_DESTROY:
-                    break;
-
-                default:
-                    break;
-            }
+        for(Action change : changes)
+        {
+            receiveChange(change);
         }
+    }
 
-        if(healthChanged) {
-            // TODO: loop through all connections and update
-            queuedRemoteChanges.add(new ActionHealthChanged(health));
+    private void receiveChange(Action change)
+    {
+        switch(change.actionClass)
+        {
+        case ACTION_ENEMY_CREATE:
+            ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
+            actionCreate.entityID = lastEntityID + 1;
+            lastEntityID++;
+
+            mutex.writeLock().lock();
+            try
+            {
+                entityStatus.put(actionCreate.entityID, new EnemyStatus(actionCreate));
+            }
+            finally
+            {
+                mutex.writeLock().unlock();
+            }
+
+            break;
+        case ACTION_ENEMY_END:
+            ActionEnemyEnd actionEnd = (ActionEnemyEnd)change;
+
+            mutex.writeLock().lock();
+            try
+            {
+                if(entityStatus.containsKey(actionEnd.entityID))
+                {
+                    // Move enemy to next region.
+                    entityStatus.get(actionEnd.entityID).region += 1;
+
+                    ActionEnemyCreate actionEndCreate = new ActionEnemyCreate((EnemyStatus) entityStatus.get(actionEnd.entityID));
+
+                    //add actionEndCreate to the queue that's going back out to the clients.
+                }
+            }
+            finally
+            {
+                mutex.writeLock().unlock();
+            }
+            break;
+        case ACTION_ENEMY_DESTROY:
+            ActionEnemyDestroy actionDestroy = (ActionEnemyDestroy)change;
+
+            mutex.writeLock().lock();
+            try
+            {
+                if (entityStatus.containsKey(actionDestroy.entityID))
+                {
+                    entityStatus.remove(actionDestroy.entityID);
+                }
+            }
+            finally
+            {
+                mutex.writeLock().unlock();
+            }
+            break;
+        case ACTION_ENEMY_DAMAGE:
+            // ignore for now
+            break;
         }
     }
 

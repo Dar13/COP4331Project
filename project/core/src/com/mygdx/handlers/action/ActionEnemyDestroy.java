@@ -7,12 +7,13 @@ import com.mygdx.states.GameState;
 /**
  * Created by rob on 3/25/15.
  */
-public class ActionEnemyDestroy extends Action
+public class ActionEnemyDestroy extends ActionEnemyBase
 {
     public ActionEnemyDestroy(Enemy enemy)
     {
+        super(enemy);
+
         actionClass = ActionClass.ACTION_ENEMY_DESTROY;
-        this.entity = enemy;
     }
 }
 

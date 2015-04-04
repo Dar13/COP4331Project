@@ -2,21 +2,32 @@ package com.mygdx.handlers.action;
 
 import com.mygdx.entities.Enemy;
 import com.mygdx.handlers.NetworkManager;
+import com.mygdx.net.EnemyStatus;
 import com.mygdx.states.GameState;
 
 /**
  * Created by rob on 3/23/15.
  */
-public class ActionEnemyCreate extends Action
+public class ActionEnemyCreate extends ActionEnemyBase
 {
-    public int tempID;
+    public float health;
+    public float armor;
 
     public ActionEnemyCreate(Enemy newEnemy)
     {
-        actionClass = ActionClass.ACTION_ENEMY_CREATE;
-        this.entity = newEnemy;
+        super(newEnemy);
 
-        newEnemy.entityID = tempEntityID.getAndIncrement();
-        needsID = true;
+        actionClass = ActionClass.ACTION_ENEMY_CREATE;
+
+        health = newEnemy.getHealth();
+        armor = newEnemy.getArmor();
+    }
+
+    public ActionEnemyCreate(EnemyStatus enemyStatus)
+    {
+        super(enemyStatus);
+
+        health = enemyStatus.health;
+        armor = enemyStatus.armor;
     }
 }

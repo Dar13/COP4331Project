@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class Action
 {
+    protected static AtomicInteger uniqueIDCounter = new AtomicInteger(1);
+
     public enum ActionClass {
         ACTION_ENEMY_CREATE,
         ACTION_ENEMY_DAMAGE,
@@ -24,11 +26,15 @@ public abstract class Action
         ACTION_HEALTH_CHANGED,
     }
 
-    //This bool differentiates between locally generated actions and actions received from server
-    public boolean localChange, needsID;
-    public ActionClass actionClass; //not sure if this will be needed -- would rather have it
-    public Entity entity = null;
-    public int UID = 0; // UID being 0 represents an action sent by the server/singleplayer to itself
+    public Action()
+    {
+        uniqueID = uniqueIDCounter.getAndIncrement();
+    }
 
-    public static AtomicInteger tempEntityID = new AtomicInteger(0);
+    //This bool differentiates between locally generated actions and actions received from server
+    public boolean localChange;
+    public boolean needsID;
+    public int region;
+    public ActionClass actionClass; //not sure if this will be needed -- would rather have it
+    public int uniqueID = 0; // UID being 0 represents an action sent by the server/singleplayer to itself
 }

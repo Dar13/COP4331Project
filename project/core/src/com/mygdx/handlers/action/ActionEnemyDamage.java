@@ -6,13 +6,16 @@ import com.mygdx.handlers.NetworkManager;
 /**
  * Created by rob on 3/23/15.
  */
-public class ActionEnemyDamage extends Action
+public class ActionEnemyDamage extends ActionEnemyBase
 {
-    private int damage;
+    public int damage;
 
     public ActionEnemyDamage(Enemy enemy, int damage)
     {
+        super(enemy);
+
         actionClass = ActionClass.ACTION_ENEMY_DAMAGE;
-        this.entity = enemy;
+
+        damage = damage;
     }
 }

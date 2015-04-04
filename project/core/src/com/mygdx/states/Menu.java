@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.NetworkManager;
+import com.mygdx.net.ConnectionMode;
 
 
 /**
@@ -49,8 +50,8 @@ public class Menu extends GameState {
         if(singleplayer.isChecked()){
             if(!networkManager.isInitialized()) {
                 networkManager.prepInitialize(true,
-                        NetworkManager.ConnectionMode.WIFI_LAN,
-                        NetworkManager.ConnectionMode.NONE,
+                        ConnectionMode.WIFI_LAN,
+                        ConnectionMode.NONE,
                         true);
             }
             gameStateManager.setState(GameStateManager.LEVELSELECT, 0);

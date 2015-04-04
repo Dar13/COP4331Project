@@ -7,11 +7,10 @@ import com.mygdx.states.GameState;
 /**
  * Created by rob on 3/25/15.
  */
-public class ActionTowerUpgraded extends Action
+public class ActionTowerUpgraded extends ActionTowerBase
 {
     public ActionTowerUpgraded(Tower tower)
     {
-        actionClass = Action.ActionClass.ACTION_TOWER_UPGRADED;
-        this.entity = tower;
+        super(tower);
     }
 }

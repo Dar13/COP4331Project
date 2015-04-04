@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.handlers.MyInputProcessor;
 import com.mygdx.handlers.NetworkManager;
+import com.mygdx.net.ConnectionMode;
 import com.mygdx.net.NetworkInterface;
 
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class MyGame extends ApplicationAdapter
     private Thread networkThread;
     public boolean inAndroid = false;
 
-    public MyGame(HashMap<NetworkManager.ConnectionMode, NetworkInterface> networkImpls, boolean inAndroid)
+    public MyGame(HashMap<ConnectionMode, NetworkInterface> networkImpls, boolean inAndroid)
     {
         networkManager = new NetworkManager(networkImpls);
         this.inAndroid = true;
