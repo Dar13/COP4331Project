@@ -12,6 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.handlers.EnemyManager;
+import com.mygdx.states.GameState;
+import com.mygdx.states.Play;
 
 
 /**
@@ -31,6 +34,7 @@ public abstract class Tower extends Entity
     protected Sprite base;
     protected Sprite other;
     protected int target;
+    protected int towerLevel;
     protected float targetDistanceTraveled;
 
 
@@ -42,6 +46,7 @@ public abstract class Tower extends Entity
     {
         super(x, y);
         final Stage STage = stage;
+        towerLevel = 0;
 
         this.type = type;
         this.timeSinceLastShot = 0;
@@ -88,30 +93,36 @@ public abstract class Tower extends Entity
         return timeSinceLastShot;
     }
 
-    public void buttonAct(float delta)
+    public int buttonAct(float delta)
     {
         if (clicked) {
             upgradeButton.act(delta);
             cancelButton.act(delta);
             if (upgradeButton.isPressed())
             {
+                int gold = 0;
                 switch (this.type) {
                     case TOWER_BAZOOKA:
-                        upgrade(1.50f, 1.25f);
+                        upgrade(1.50f, 1.15f);
+                        gold = towerLevel * BazookaTower.PRICE;
                         break;
                     case TOWER_RIFLE:
-                        upgrade(1.75f, 1.25f);
+                        upgrade(1.65f, 1.15f);
+                        gold = towerLevel * RifleTower.PRICE;
                         break;
                     case TOWER_SNIPER:
                         upgrade(1.25f, 1.25f);
+                        gold = towerLevel * SniperTower.PRICE;
                         break;
                     case TOWER_MORTAR:
-                        upgrade(1.50f, 1.25f);
+                        upgrade(1.50f, 1.0f);
+                        gold = towerLevel * MortarTower.PRICE;
                         break;
                 }
                 cancelButton.remove();
                 upgradeButton.remove();
                 clicked = false;
+                return gold;
             }
 
             else if (cancelButton.isPressed())
@@ -119,8 +130,10 @@ public abstract class Tower extends Entity
                 cancelButton.remove();
                 upgradeButton.remove();
                 clicked = false;
+                return 0;
             }
         }
+        return 0;
     }
 
     public boolean readyToFire(){
@@ -255,5 +268,6 @@ public abstract class Tower extends Entity
     {
         damage *= damageMultiplier;
         range *= rangeMultiplier;
+        towerLevel++;
     }
 }

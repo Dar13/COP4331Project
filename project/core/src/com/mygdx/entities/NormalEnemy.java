@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class NormalEnemy extends Enemy
 {
     public static final float BASE_VELOCITY = 3.0f;
-    public static final float BASE_ARMOR = 1.0f;
+    public static final float BASE_ARMOR = .75f;
 
     public NormalEnemy(Texture north, Texture south, Texture east, Texture west, float x, float y)
     {

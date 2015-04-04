@@ -255,7 +255,7 @@ public class Play extends GameState {
                 sniperButton.act(delta);
                 mortarButton.act(delta);
                 readyButton.act(delta);
-                towerManager.towerAct(delta);
+                gold -= towerManager.towerAct(delta);
                 batch.end();
                 if(towerPlacement == 1)
                 {
@@ -300,7 +300,7 @@ public class Play extends GameState {
             case PLAY:
                 enemyManager.SetTowers(towers);
                 stage.act(delta);
-                towerManager.towerAct(delta);
+                gold -= towerManager.towerAct(delta);
                 stage.draw();
                 enemyManager.setGold(gold);
                 batch = stage.getBatch();
@@ -482,6 +482,11 @@ public class Play extends GameState {
         }
 
 
+    }
+
+    public void decrimentGold(int sub)
+    {
+        gold = gold - sub;
     }
 
     @Override
