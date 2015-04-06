@@ -232,7 +232,7 @@ public class Play extends GameState {
                 sniperButton.act(delta);
                 mortarButton.act(delta);
                 readyButton.act(delta);
-                gold -= towerManager.towerAct(delta);
+                gold -= towerManager.towerAct(delta, gold);
                 stage.act(delta);
                 break;
             case PLAY:
@@ -241,7 +241,7 @@ public class Play extends GameState {
                     stage.addActor(enemyManager);
                 }
                 stage.act(delta);
-                gold -= towerManager.towerAct(delta);
+                gold -= towerManager.towerAct(delta, gold);
                 gold = gold + (enemyManager.GetGoldEarned());
 
                 if(health <= 0)

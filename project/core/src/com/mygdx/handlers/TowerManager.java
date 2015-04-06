@@ -77,14 +77,14 @@ public class TowerManager extends Actor
         return false;
     }
 
-    public int towerAct(float delta)
+    public int towerAct(float delta, int gold)
     {
-        int gold = 0;
+        int gold1 = 0;
         for(Tower tower : towerList)
         {
-            gold += tower.buttonAct(delta);
+            gold1 += tower.buttonAct(delta, gold);
         }
-        return gold;
+        return gold1;
     }
 
     //Upgrades selected tower based on upgrade constants.

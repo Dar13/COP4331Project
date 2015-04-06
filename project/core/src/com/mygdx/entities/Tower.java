@@ -93,36 +93,44 @@ public abstract class Tower extends Entity
         return timeSinceLastShot;
     }
 
-    public int buttonAct(float delta)
+    public int buttonAct(float delta, int gold)
     {
         if (clicked) {
             upgradeButton.act(delta);
             cancelButton.act(delta);
             if (upgradeButton.isPressed())
             {
-                int gold = 0;
+                int gold1 = 0;
                 switch (this.type) {
                     case TOWER_BAZOOKA:
-                        upgrade(1.50f, 1.15f);
-                        gold = towerLevel * BazookaTower.PRICE;
+                        if (gold > towerLevel * BazookaTower.PRICE) {
+                            upgrade(1.50f, 1.15f);
+                            gold1 = towerLevel * BazookaTower.PRICE;
+                        }
                         break;
                     case TOWER_RIFLE:
-                        upgrade(1.65f, 1.15f);
-                        gold = towerLevel * RifleTower.PRICE;
+                        if (gold > towerLevel * RifleTower.PRICE) {
+                            upgrade(1.65f, 1.15f);
+                            gold1 = towerLevel * RifleTower.PRICE;
+                        }
                         break;
                     case TOWER_SNIPER:
-                        upgrade(1.25f, 1.25f);
-                        gold = towerLevel * SniperTower.PRICE;
+                        if (gold > towerLevel * SniperTower.PRICE) {
+                            upgrade(1.25f, 1.25f);
+                            gold1 = towerLevel * SniperTower.PRICE;
+                        }
                         break;
                     case TOWER_MORTAR:
-                        upgrade(1.50f, 1.0f);
-                        gold = towerLevel * MortarTower.PRICE;
+                        if (gold > towerLevel * MortarTower.PRICE) {
+                            upgrade(1.50f, 1.0f);
+                            gold1 = towerLevel * MortarTower.PRICE;
+                        }
                         break;
                 }
                 cancelButton.remove();
                 upgradeButton.remove();
                 clicked = false;
-                return gold;
+                return gold1;
             }
 
             else if (cancelButton.isPressed())
