@@ -10,6 +10,8 @@ import com.mygdx.handlers.action.Action;
 import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
+import com.mygdx.handlers.action.ActionHealthChanged;
+import com.mygdx.handlers.action.ActionTowerPlaced;
 import com.mygdx.net.ConnectionMode;
 import com.mygdx.net.EnemyStatus;
 import com.mygdx.net.EntityStatus;
@@ -598,7 +600,8 @@ public class NetworkManager extends Listener implements Runnable
      */
     public List<Action> fetchChanges()
     {
-        if(syncReady()) {
+        if(syncReady())
+        {
             List<Action> tmp = queuedRemoteChanges;
             queuedRemoteChanges = new ArrayList<Action>();
             return tmp;
@@ -725,9 +728,17 @@ public class NetworkManager extends Listener implements Runnable
                     // Move enemy to next region.
                     entityStatus.get(actionEnd.entityID).region += 1;
 
+                    if(entityStatus.get(actionEnd.entityID).region >= connections.size())
+                    {
+                        health--;
+                        ActionHealthChanged actionHealth = new ActionHealthChanged(health);
+                        addToSendQueue(actionHealth);
+                    }
+
                     ActionEnemyCreate actionEndCreate = new ActionEnemyCreate((EnemyStatus) entityStatus.get(actionEnd.entityID));
 
                     //add actionEndCreate to the queue that's going back out to the clients.
+                    addToSendQueue(actionEndCreate);
                 }
             }
             finally
@@ -753,6 +764,22 @@ public class NetworkManager extends Listener implements Runnable
             break;
         case ACTION_ENEMY_DAMAGE:
             // ignore for now
+            break;
+        case ACTION_TOWER_PLACED:
+            ActionTowerPlaced actionTowerPlaced = (ActionTowerPlaced)change;
+
+            actionTowerPlaced.entityID = lastEntityID + 1;
+            lastEntityID++;
+
+            mutex.writeLock().lock();
+            try
+            {
+                entityStatus.put(actionTowerPlaced.entityID, new TowerStatus(actionTowerPlaced));
+            }
+            finally
+            {
+                mutex.writeLock().unlock();
+            }
             break;
         }
     }
