@@ -46,7 +46,7 @@ public abstract class Tower extends Entity
     {
         super(x, y);
         final Stage STage = stage;
-        towerLevel = 0;
+        towerLevel = 1;
 
         this.type = type;
         this.timeSinceLastShot = 0;
@@ -104,26 +104,26 @@ public abstract class Tower extends Entity
                 switch (this.type) {
                     case TOWER_BAZOOKA:
                         if (gold > towerLevel * BazookaTower.PRICE) {
-                            upgrade(1.50f, 1.15f);
                             gold1 = towerLevel * BazookaTower.PRICE;
+                            upgrade(1.50f, 1.15f);
                         }
                         break;
                     case TOWER_RIFLE:
                         if (gold > towerLevel * RifleTower.PRICE) {
-                            upgrade(1.65f, 1.15f);
                             gold1 = towerLevel * RifleTower.PRICE;
+                            upgrade(1.65f, 1.15f);
                         }
                         break;
                     case TOWER_SNIPER:
                         if (gold > towerLevel * SniperTower.PRICE) {
-                            upgrade(1.25f, 1.25f);
                             gold1 = towerLevel * SniperTower.PRICE;
+                            upgrade(1.25f, 1.25f);
                         }
                         break;
                     case TOWER_MORTAR:
                         if (gold > towerLevel * MortarTower.PRICE) {
-                            upgrade(1.50f, 1.0f);
                             gold1 = towerLevel * MortarTower.PRICE;
+                            upgrade(1.50f, 1.0f);
                         }
                         break;
                 }
