@@ -37,6 +37,17 @@ public abstract class Tower extends Entity
     protected int towerLevel;
     protected float targetDistanceTraveled;
 
+    private static final float DAMAGE_MULTIPLIER_BAZOOKA = 1.50f;
+    private static final float DAMAGE_MULTIPLIER_RIFLE = 1.65f;
+    private static final float DAMAGE_MULTIPLIER_SNIPER = 1.25f;
+    private static final float DAMAGE_MULTIPLIER_MORTAR = 1.50f;
+
+    private static final float RANGE_MULTIPLIER_BAZOOKA = 1.15f;
+    private static final float RANGE_MULTIPLIER_RIFLE = 1.15f;
+    private static final float RANGE_MULTIPLIER_SNIPER = 1.25f;
+    private static final float RANGE_MULTIPLIER_MORTAR = 1.0f;
+
+
 
     private TextButton upgradeButton;
     private TextButton cancelButton;
@@ -105,25 +116,25 @@ public abstract class Tower extends Entity
                     case TOWER_BAZOOKA:
                         if (gold > towerLevel * BazookaTower.PRICE) {
                             gold1 = towerLevel * BazookaTower.PRICE;
-                            upgrade(1.50f, 1.15f);
+                            upgrade(DAMAGE_MULTIPLIER_BAZOOKA, RANGE_MULTIPLIER_BAZOOKA);
                         }
                         break;
                     case TOWER_RIFLE:
                         if (gold > towerLevel * RifleTower.PRICE) {
                             gold1 = towerLevel * RifleTower.PRICE;
-                            upgrade(1.65f, 1.15f);
+                            upgrade(DAMAGE_MULTIPLIER_RIFLE, RANGE_MULTIPLIER_RIFLE);
                         }
                         break;
                     case TOWER_SNIPER:
                         if (gold > towerLevel * SniperTower.PRICE) {
                             gold1 = towerLevel * SniperTower.PRICE;
-                            upgrade(1.25f, 1.25f);
+                            upgrade(DAMAGE_MULTIPLIER_SNIPER, RANGE_MULTIPLIER_SNIPER);
                         }
                         break;
                     case TOWER_MORTAR:
                         if (gold > towerLevel * MortarTower.PRICE) {
                             gold1 = towerLevel * MortarTower.PRICE;
-                            upgrade(1.50f, 1.0f);
+                            upgrade(DAMAGE_MULTIPLIER_MORTAR, RANGE_MULTIPLIER_MORTAR);
                         }
                         break;
                 }
