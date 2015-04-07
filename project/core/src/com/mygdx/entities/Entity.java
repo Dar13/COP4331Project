@@ -31,6 +31,8 @@ public abstract class Entity extends Actor
     {
         position = new Vector2(x,y);
 
+        entityID = -1;
+
         tempID = uidCounter;
         uidCounter++;
     }

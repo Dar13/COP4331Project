@@ -10,9 +10,5 @@ public class ActionTowerPlaced extends ActionTowerBase
     public ActionTowerPlaced(Tower tower)
     {
         super(tower);
-
-        actionClass = Action.ActionClass.ACTION_TOWER_PLACED;
-
-        needsID = true;
     }
 }

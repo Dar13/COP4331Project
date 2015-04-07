@@ -9,10 +9,13 @@ public class ActionTowerBase extends ActionEntityBase
 {
     public Class<?> towerType;
 
+    public int level;
+
     public ActionTowerBase(Tower tower)
     {
         super(tower);
 
         towerType = tower.getClass();
+        level = tower.getTowerLevel();
     }
 }

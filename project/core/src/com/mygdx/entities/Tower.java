@@ -174,6 +174,11 @@ public abstract class Tower extends Entity
         this.target = targetID;
     }
 
+    public int getTowerLevel()
+    {
+        return towerLevel;
+    }
+
     public void setTargetDistanceTraveled(float targetDistanceTraveled)
     {
         this.targetDistanceTraveled = targetDistanceTraveled;
@@ -186,51 +191,59 @@ public abstract class Tower extends Entity
 
     public float getDamage(Type type)
     {
-        switch (this.type) {
-            case TOWER_BAZOOKA:
-                switch (type){
-                    case ENEMY_NORMAL:
-                        return (damage / 3);
-                    case ENEMY_FAST:
-                        return (damage / 3);
-                    case ENEMY_HEAVY:
-                        return (damage * 2);
-                }
-                break;
-
-            case TOWER_RIFLE:
-                switch (type){
-                    case ENEMY_NORMAL:
-                        return damage;
-                    case ENEMY_FAST:
-                        return damage;
-                    case ENEMY_HEAVY:
-                        return (damage / 3);
-                }
-                break;
-
-            case TOWER_SNIPER:
-                switch (type){
-                    case ENEMY_NORMAL:
-                        return (damage * 2);
-                    case ENEMY_FAST:
-                        return damage;
-                    case ENEMY_HEAVY:
-                        return (damage / 2);
-                }
-                break;
-            case TOWER_MORTAR:
-                switch (type){
-                    case ENEMY_NORMAL:
-                        return damage;
-                    case ENEMY_FAST:
-                        return damage;
-                    case ENEMY_HEAVY:
-                        return (damage / 2);
-                }
-                break;
+        switch (this.type)
+        {
+        case TOWER_BAZOOKA:
+            switch (type)
+            {
+            case ENEMY_NORMAL:
+                return (damage / 3);
+            case ENEMY_FAST:
+                return (damage / 3);
+            case ENEMY_HEAVY:
+                return (damage * 2);
             }
-        return damage / 2;
+            break;
+
+        case TOWER_RIFLE:
+            switch (type)
+            {
+            case ENEMY_NORMAL:
+                return damage;
+            case ENEMY_FAST:
+                return damage;
+            case ENEMY_HEAVY:
+                return (damage / 3);
+            }
+            break;
+
+        case TOWER_SNIPER:
+            switch (type)
+            {
+            case ENEMY_NORMAL:
+                return (damage * 2);
+            case ENEMY_FAST:
+                return damage;
+            case ENEMY_HEAVY:
+                return (damage / 2);
+            }
+            break;
+        case TOWER_MORTAR:
+            switch (type)
+            {
+            case ENEMY_NORMAL:
+                return damage;
+            case ENEMY_FAST:
+                return damage;
+            case ENEMY_HEAVY:
+                return (damage / 2);
+            }
+            break;
+        default:
+            return damage;
+        }
+
+        return damage;
     }
 
     public float getRange()
