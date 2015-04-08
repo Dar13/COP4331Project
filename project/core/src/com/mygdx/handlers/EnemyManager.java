@@ -99,10 +99,8 @@ public class EnemyManager extends Actor{
     public void addEnemy(Entity.Type type, Texture north, Texture south, Texture east, Texture west, List<WayPoint> path)
     {
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
-        enemy.entityID = idCounter;
+        enemy.tempID = idCounter;
         idCounter++; // TODO: This will have to be changed to reflect getting the true entity ID from the host.
-
-
 
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()

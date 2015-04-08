@@ -9,8 +9,12 @@ public class ActionCreateWave extends Action
 {
     public int waveNumber;
     public float armorMultiplier;
-    public float delayMultiplier;
+    public float delay;
     public float speedMultiplier;
+
+    public int amountHeavyEnemies;
+    public int amountFastEnemies;
+    public int amountNormalEnemies;
 
     public ActionCreateWave(int waveNumber)
     {
@@ -21,6 +25,6 @@ public class ActionCreateWave extends Action
         WaveCalculator.setWaveNumber(waveNumber);
         armorMultiplier = WaveCalculator.getArmorMultiplier();
         speedMultiplier = WaveCalculator.getSpeedMultiplier();
-        delayMultiplier = WaveCalculator.getDelayMultiplier();
+        delay = WaveCalculator.getDelay();
     }
 }

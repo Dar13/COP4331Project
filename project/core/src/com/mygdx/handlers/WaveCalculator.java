@@ -25,8 +25,37 @@ public class WaveCalculator
         return 1.0f + ((waveNumber * waveNumber) / 2500);
     }
 
-    public static float getDelayMultiplier()
+    public static float getDelay()
     {
         return (BASE_DELAY / (waveNumber * DELAY_MULTIPLIER));
+    }
+
+    public static int getAmountHeavyEnemies()
+    {
+        if(waveNumber < 10)
+        {
+            return 0;
+        }
+        else
+        {
+            return Math.round(waveNumber / 5);
+        }
+    }
+
+    public static int getAmountFastEnemies()
+    {
+        if(waveNumber < 5)
+        {
+            return 0;
+        }
+        else
+        {
+            return Math.round(waveNumber * 2);
+        }
+    }
+
+    public static int getAmountNormalEnemies()
+    {
+        return (int)Math.round(10 * Math.log((double)waveNumber * waveNumber)) + 5;
     }
 }
