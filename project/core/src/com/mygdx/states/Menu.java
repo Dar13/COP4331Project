@@ -23,6 +23,7 @@ public class Menu extends GameState {
     private MyStage hub;
     private TextButton singleplayer;
     private TextButton multiplayer;
+    private TextButton tutorial;
 
 
     public Menu(GameStateManager gameStateManager, NetworkManager networkManager){
@@ -45,9 +46,15 @@ public class Menu extends GameState {
 
         multiplayer = new TextButton("Multiplayer",skin);
         multiplayer.setSize(200, 60);
-        multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, game.V_HEIGHT / 4);
+        multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, singleplayer.getY() - 65);
         multiplayer.addListener(new ClickListener());
         stage.addActor(multiplayer);
+
+        tutorial = new TextButton("Tutorial",skin);
+        tutorial.setSize(200, 60);
+        tutorial.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, multiplayer.getY() - 65);
+        tutorial.addListener(new ClickListener());
+        stage.addActor(tutorial);
 
 
    }
@@ -65,6 +72,9 @@ public class Menu extends GameState {
         }
         if(multiplayer.isChecked()) {
             gameStateManager.setState(GameStateManager.NET, 0);
+        }
+        if(tutorial.isChecked()){
+            gameStateManager.pushState(gameStateManager.TUTORIAL, 0);
         }
     }
 

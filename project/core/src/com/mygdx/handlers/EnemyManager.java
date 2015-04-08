@@ -218,6 +218,10 @@ public class EnemyManager extends Actor{
              * TODO: would we need to capture a signal from the network manager here instead?
              * A server would 'command?' that a new wave would start. Would it send all the info
              * about the wave, or leave that logic on the client?
+             *
+             * Tanner: Yes so far as I know, these three current wave statements would be called
+             * if the client was the spawner client, and then we would need another separate loop
+             * if they were an acceptor client.
              */
             currentWave++;
             float multiplier = NextWaveCalculator();
@@ -355,6 +359,11 @@ public class EnemyManager extends Actor{
                 {
                     if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.entityID == tower.getTarget())
                     {
+                        /**
+                         * TODO: Call ActionEnemyDamage
+                         * Here be where thar enemies be taking damage me captain.
+                         * TODO:Need an action to change the velocity on the server as mortars do that.
+                         */
                         enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
                         switch (tower.type)
                         {

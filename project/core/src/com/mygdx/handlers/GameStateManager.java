@@ -6,6 +6,7 @@ import com.mygdx.states.LevelSelect;
 import com.mygdx.states.Menu;
 import com.mygdx.states.NetTest;
 import com.mygdx.states.Play;
+import com.mygdx.states.Tutorial;
 import com.mygdx.states.WinState;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.NetworkManager;
@@ -29,6 +30,7 @@ public class GameStateManager {
     public static final int GOODEND = 123123123;
     public static final int NET = 12341542;
     public static final int LEVELSELECT = 321321321;
+    public static final int TUTORIAL = 1337;
 
     public GameStateManager(MyGame game, NetworkManager networkManager, boolean inAndroid)
     {
@@ -76,6 +78,9 @@ public class GameStateManager {
         }
         if(state == LEVELSELECT){
             return new LevelSelect(this, networkManager);
+        }
+        if(state == TUTORIAL){
+            return new Tutorial(this, networkManager);
         }
         return null;
     }

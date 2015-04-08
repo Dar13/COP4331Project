@@ -72,25 +72,31 @@ public abstract class Tower extends Entity
         other.setPosition(x + 9, y - 23);
         other.rotate(-45);
 
+        upgradeButton = new TextButton("upgrade", skin);
+        upgradeButton.setSize(64, 16);
+        upgradeButton.setPosition(base.getX() + 40, base.getY() + 32);
+
+        cancelButton = new TextButton("cancel", skin);
+        cancelButton.setSize(64, 16);
+        cancelButton.setPosition(upgradeButton.getX(), upgradeButton.getY() - 24);
+        cancelButton.setDisabled(true);
+        cancelButton.setVisible(false);
+        cancelButton.setChecked(false);
+        upgradeButton.setDisabled(true);
+        upgradeButton.setVisible(false);
+        upgradeButton.setChecked(false);
+        STage.addActor(upgradeButton);
+        STage.addActor(cancelButton);
 
         Image imageActor = new Image(otherTexture);
         imageActor.setPosition(x, y);
         imageActor.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Clicked");
-                upgradeButton = new TextButton("upgrade", skin);
-                upgradeButton.setSize(64, 16);
-                upgradeButton.setPosition(base.getX() + 40, base.getY() + 32);
-                upgradeButton.addListener(new ClickListener());
-
-                cancelButton = new TextButton("cancel", skin);
-                cancelButton.setSize(64, 16);
-                cancelButton.setPosition(upgradeButton.getX(), upgradeButton.getY() - 24);
-                cancelButton.addListener(new ClickListener());
-
-
-                STage.addActor(upgradeButton);
-                STage.addActor(cancelButton);
+                cancelButton.setDisabled(false);
+                cancelButton.setVisible(true);
+                upgradeButton.setDisabled(false);
+                upgradeButton.setVisible(true);
                 clicked = true;
             }
 
@@ -111,7 +117,7 @@ public abstract class Tower extends Entity
         if (clicked) {
             upgradeButton.act(delta);
             cancelButton.act(delta);
-            if (upgradeButton.isPressed())
+            if (upgradeButton.isChecked())
             {
                 int gold1 = 0;
                 switch (this.type) {
@@ -140,16 +146,25 @@ public abstract class Tower extends Entity
                         }
                         break;
                 }
-                cancelButton.remove();
-                upgradeButton.remove();
+                cancelButton.setDisabled(true);
+                cancelButton.setVisible(false);
+                cancelButton.setChecked(false);
+                upgradeButton.setDisabled(true);
+                upgradeButton.setVisible(false);
+                upgradeButton.setChecked(false);
+
                 clicked = false;
                 return gold1;
             }
 
-            else if (cancelButton.isPressed())
+            else if (cancelButton.isChecked())
             {
-                cancelButton.remove();
-                upgradeButton.remove();
+                cancelButton.setDisabled(true);
+                cancelButton.setVisible(false);
+                cancelButton.setChecked(false);
+                upgradeButton.setDisabled(true);
+                upgradeButton.setVisible(false);
+                upgradeButton.setChecked(false);
                 clicked = false;
                 return 0;
             }
