@@ -22,6 +22,8 @@ import com.mygdx.states.Play;
  */
 public abstract class Tower extends Entity
 {
+    public static final int MAX_LEVEL = 6;
+
     // gameplay attributes
     protected float damage;
     protected float range;
@@ -37,15 +39,15 @@ public abstract class Tower extends Entity
     protected int towerLevel;
     protected float targetDistanceTraveled;
 
-    private static final float DAMAGE_MULTIPLIER_BAZOOKA = 1.50f;
-    private static final float DAMAGE_MULTIPLIER_RIFLE = 1.65f;
-    private static final float DAMAGE_MULTIPLIER_SNIPER = 1.25f;
-    private static final float DAMAGE_MULTIPLIER_MORTAR = 1.50f;
+    public static final float DAMAGE_MULTIPLIER_BAZOOKA = 1.50f;
+    public static final float DAMAGE_MULTIPLIER_RIFLE = 1.65f;
+    public static final float DAMAGE_MULTIPLIER_SNIPER = 1.25f;
+    public static final float DAMAGE_MULTIPLIER_MORTAR = 1.50f;
 
-    private static final float RANGE_MULTIPLIER_BAZOOKA = 1.15f;
-    private static final float RANGE_MULTIPLIER_RIFLE = 1.15f;
-    private static final float RANGE_MULTIPLIER_SNIPER = 1.25f;
-    private static final float RANGE_MULTIPLIER_MORTAR = 1.0f;
+    public static final float RANGE_MULTIPLIER_BAZOOKA = 1.15f;
+    public static final float RANGE_MULTIPLIER_RIFLE = 1.15f;
+    public static final float RANGE_MULTIPLIER_SNIPER = 1.25f;
+    public static final float RANGE_MULTIPLIER_MORTAR = 1.0f;
 
 
 

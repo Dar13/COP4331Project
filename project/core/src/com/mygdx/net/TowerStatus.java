@@ -1,5 +1,7 @@
 package com.mygdx.net;
 
+import com.mygdx.entities.BazookaTower;
+import com.mygdx.entities.Tower;
 import com.mygdx.handlers.action.ActionTowerBase;
 import com.mygdx.handlers.action.ActionTowerPlaced;
 
@@ -8,7 +10,7 @@ import com.mygdx.handlers.action.ActionTowerPlaced;
  */
 public class TowerStatus extends EntityStatus
 {
-    public Class<?> towerType;
+    public Class<? extends Tower> towerType;
     public float range;
     public float damage;
     public int level;
@@ -23,7 +25,5 @@ public class TowerStatus extends EntityStatus
             ActionTowerPlaced towerPlaced = (ActionTowerPlaced)action;
             level = towerPlaced.level;
         }
-
-        
     }
 }

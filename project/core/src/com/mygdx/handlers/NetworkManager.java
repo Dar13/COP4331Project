@@ -5,13 +5,17 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.action.Action;
+import com.mygdx.handlers.action.ActionCreateWave;
 import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
 import com.mygdx.handlers.action.ActionHealthChanged;
+import com.mygdx.handlers.action.ActionPlayerWaveReady;
 import com.mygdx.handlers.action.ActionTowerPlaced;
+import com.mygdx.handlers.action.ActionTowerUpgraded;
 import com.mygdx.net.ConnectionMode;
 import com.mygdx.net.EnemyStatus;
 import com.mygdx.net.EntityStatus;
@@ -27,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -57,6 +60,7 @@ public class NetworkManager extends Listener implements Runnable
 
     protected int lastEntityID = ENTITY_ID_START;
     protected Map<Integer, EntityStatus> entityStatus;
+    protected int currentWave = 1;
 
     // client
     protected Client client;
@@ -415,7 +419,30 @@ public class NetworkManager extends Listener implements Runnable
      */
     private void runServer()
     {
+        mutex.readLock().lock();
+        try
+        {
+            boolean isAllReady = true;
+            for (GameConnection connection : connections)
+            {
+                if(!connection.waveReady)
+                {
+                    isAllReady = false;
+                }
+            }
 
+            if(isAllReady)
+            {
+                ActionCreateWave createWave = new ActionCreateWave(currentWave);
+                currentWave++;
+
+                addToSendQueue(createWave);
+            }
+        }
+        finally
+        {
+            mutex.readLock().unlock();
+        }
     }
 
     /**
@@ -701,6 +728,11 @@ public class NetworkManager extends Listener implements Runnable
     {
         switch(change.actionClass)
         {
+        case ACTION_PLAYER_WAVE_READY:
+            ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
+
+            connections.get(playerReady.region).waveReady = true;
+            break;
         case ACTION_ENEMY_CREATE:
             ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
             actionCreate.entityID = lastEntityID + 1;
@@ -780,6 +812,33 @@ public class NetworkManager extends Listener implements Runnable
             {
                 mutex.writeLock().unlock();
             }
+            break;
+        case ACTION_TOWER_UPGRADED:
+            ActionTowerUpgraded actionTowerUpgraded = (ActionTowerUpgraded)change;
+
+            mutex.writeLock().lock();
+            try
+            {
+                if(entityStatus.containsKey(actionTowerUpgraded.entityID))
+                {
+                    TowerStatus towerStatus = (TowerStatus)entityStatus.get(actionTowerUpgraded.entityID);
+                    towerStatus.level++;
+
+                    if(towerStatus.level > Tower.MAX_LEVEL)
+                    {
+                        towerStatus.level = Tower.MAX_LEVEL;
+                        entityStatus.put(actionTowerUpgraded.level, towerStatus);
+
+                        actionTowerUpgraded.level = towerStatus.level;
+                        addToSendQueue(actionTowerUpgraded);
+                    }
+                }
+            }
+            finally
+            {
+                mutex.writeLock().unlock();
+            }
+
             break;
         }
     }

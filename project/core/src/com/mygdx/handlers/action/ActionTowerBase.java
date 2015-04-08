@@ -7,7 +7,7 @@ import com.mygdx.entities.Tower;
  */
 public class ActionTowerBase extends ActionEntityBase
 {
-    public Class<?> towerType;
+    public Class<? extends Tower> towerType;
 
     public int level;
 

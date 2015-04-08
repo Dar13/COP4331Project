@@ -20,6 +20,8 @@ public class GameConnection
     }
 
     public Connection connection;
+    public boolean ready = false;
+    public boolean waveReady = false;
 
     protected int uid;
     protected boolean validated;
