@@ -1,5 +1,7 @@
 package com.mygdx.states;
 
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -18,8 +20,10 @@ import com.mygdx.net.ConnectionMode;
 public class Menu extends GameState {
 
     private MyStage stage;
+    private MyStage hub;
     private TextButton singleplayer;
     private TextButton multiplayer;
+
 
     public Menu(GameStateManager gameStateManager, NetworkManager networkManager){
         super(gameStateManager,networkManager);
@@ -44,6 +48,8 @@ public class Menu extends GameState {
         multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, game.V_HEIGHT / 4);
         multiplayer.addListener(new ClickListener());
         stage.addActor(multiplayer);
+
+
    }
     @Override
     public void update(float delta) {

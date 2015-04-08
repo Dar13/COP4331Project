@@ -1,6 +1,8 @@
 package com.mygdx.states;
 
 
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.entities.Actor;
 import com.mygdx.entities.BazookaTower;
 
@@ -73,6 +75,7 @@ public class Play extends GameState {
 
 
     private MyStage stage;
+    private Stage hub;
     private Texture mapImg;
     private Debugger debugger;
 
@@ -103,7 +106,11 @@ public class Play extends GameState {
         super(gameStateManager,networkManager);
         state = SubState.SETUP;
         stage = new MyStage();
-        Gdx.input.setInputProcessor(stage);
+        hub = new Stage();
+        InputMultiplexer im = new InputMultiplexer();
+        im.addProcessor(stage);
+        im.addProcessor(hub);
+        Gdx.input.setInputProcessor(im);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
         switch (MapLoad){
             case 1:
@@ -180,11 +187,11 @@ public class Play extends GameState {
 
         stage.addActor(map);
         stage.addActor(towerManager);
-        stage.addActor(rifleButton);
-        stage.addActor(bazookaButton);
-        stage.addActor(sniperButton);
-        stage.addActor(mortarButton);
-        stage.addActor(readyButton);
+        hub.addActor(rifleButton);
+        hub.addActor(bazookaButton);
+        hub.addActor(sniperButton);
+        hub.addActor(mortarButton);
+        hub.addActor(readyButton);
 
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, stage.getBatch());
 
@@ -193,8 +200,9 @@ public class Play extends GameState {
     @Override
     public void update(float delta)
     {
+
         List<Action> changes = networkManager.fetchChanges();
-        if(changes != null)
+        if(changes != null && changes.isEmpty() != true)
         {
             for (ListIterator<Action> iter = changes.listIterator(); iter.hasNext();)
             {
@@ -227,13 +235,9 @@ public class Play extends GameState {
 
         switch (state) {
             case SETUP:
-                rifleButton.act(delta);
-                bazookaButton.act(delta);
-                sniperButton.act(delta);
-                mortarButton.act(delta);
-                readyButton.act(delta);
-                gold -= towerManager.towerAct(delta, gold);
+                hub.act(delta);
                 stage.act(delta);
+                gold -= towerManager.towerAct(delta, gold);
                 break;
             case PLAY:
                 if(enemyManager == null) {
@@ -241,6 +245,7 @@ public class Play extends GameState {
                     stage.addActor(enemyManager);
                 }
                 stage.act(delta);
+                hub.act(delta);
                 gold -= towerManager.towerAct(delta, gold);
                 gold = gold + (enemyManager.GetGoldEarned());
 
@@ -261,9 +266,6 @@ public class Play extends GameState {
 
 
 
-
-
-
     }
 
     @Override
@@ -275,13 +277,12 @@ public class Play extends GameState {
     {
         Gdx.gl.glClearColor(0, 0, 0, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-       // ((OrthographicCamera)stage.getCamera()).zoom += 0.001;
+      // ((OrthographicCamera)stage.getCamera()).zoom += 0.001;
         switch (state){
             case SETUP:
+                hub.draw();
+                stage.draw();
                 batch = stage.getBatch();
-                batch.begin();
-                map.draw(batch, 1);
-                batch.end();
                 if(towerPlacement == 1)
                 {
                     // Shape renderer is so heavy it will prevent anything else being drawn
@@ -314,17 +315,13 @@ public class Play extends GameState {
                 font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Wave: 0", 192, MyGame.V_HEIGHT - 10);
                 debugger.setBatch(batch);
-                rifleButton.draw(batch, 1);
-                bazookaButton.draw(batch, 1);
-                sniperButton.draw(batch,1);
-                mortarButton.draw(batch,1);
-                readyButton.draw(batch, 1);
-                towerManager.draw(batch, 1);
+                //towerManager.draw(batch, 1);
                 batch.end();
                 break;
             case PLAY:
                 enemyManager.SetTowers(towers);
                 stage.draw();
+                hub.draw();
                 enemyManager.setGold(gold);
                 batch = stage.getBatch();
                 if(towerPlacement == 1)
@@ -512,28 +509,16 @@ public class Play extends GameState {
         gold = gold - sub;
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() { }
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() { }
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() { }
 
     @Override
-    public void dispose() {
-
-    }
+    public void dispose() {}
 }

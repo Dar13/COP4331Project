@@ -2,6 +2,7 @@ package com.mygdx.states;
 
 // LibGDX includes
 
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.action.Action;
 import com.mygdx.net.ConnectionMode;
 
 /**
@@ -38,34 +40,43 @@ public class NetTest extends GameState
 
         serverButton = new TextButton("Server", skin);
         serverButton.setPosition(MyGame.V_WIDTH / 4, MyGame.V_HEIGHT * 5 / 8);
-        serverButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                networkManager.prepInitialize(true,
-                                              ConnectionMode.WIFI_LAN,
-                                              ConnectionMode.NONE,
-                                              true);
-            }
-        });
+        serverButton.addListener( new ClickListener());
+
         stage.addActor(serverButton);
 
         clientButton = new TextButton("Client", skin);
         clientButton.setPosition(MyGame.V_WIDTH / 4, MyGame.V_HEIGHT / 4);
-        clientButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                networkManager.prepInitialize(false,
-                                              ConnectionMode.WIFI_LAN,
-                                              ConnectionMode.NONE,
-                                              true);
-            }
-        });
+        clientButton.addListener( new ClickListener());
         stage.addActor(clientButton);
     }
 
     @Override
     public void update(float delta)
     {
+        stage.act(delta);
+        if (serverButton.isPressed()){
+            networkManager.prepInitialize(true,
+                    ConnectionMode.WIFI_LAN,
+                    ConnectionMode.NONE,
+                    true);
+            serverButton.setDisabled(true);
+          //  gameStateManager.setState(GameStateManager.PLAY,1);
+        }
+
+        if(clientButton.isPressed()){
+            networkManager.prepInitialize(false,
+                    ConnectionMode.WIFI_LAN,
+                    ConnectionMode.NONE,
+                    true);
+            clientButton.setDisabled(true);
+            //gameStateManager.setState(GameStateManager.PLAY,2);
+        }
+       /*
+        for(Action a : networkManager.fetchChanges()){
+            if(a instanceof Action){
+                gameStateManager.setState(GameStateManager.MENU, 0);
+            }
+        }*/
     }
 
     @Override
