@@ -26,5 +26,9 @@ public class ActionCreateWave extends Action
         armorMultiplier = WaveCalculator.getArmorMultiplier();
         speedMultiplier = WaveCalculator.getSpeedMultiplier();
         delay = WaveCalculator.getDelay();
+
+        amountHeavyEnemies = WaveCalculator.getAmountHeavyEnemies();
+        amountFastEnemies = WaveCalculator.getAmountFastEnemies();
+        amountNormalEnemies = WaveCalculator.getAmountNormalEnemies();
     }
 }
