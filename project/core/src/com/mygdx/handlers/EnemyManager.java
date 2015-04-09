@@ -105,8 +105,6 @@ public class EnemyManager extends Actor{
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()
         numEnemies++;
-
-
     }
 
     //Removes targeted enemy from Enemy Linked list
@@ -228,7 +226,7 @@ public class EnemyManager extends Actor{
             NextWave(multiplier);
         }
 
-        if (currentWave == 1)
+        if (currentWave > 0 && currentWave < 5)
         {
             timeSinceLastNorm++;
 
@@ -243,7 +241,7 @@ public class EnemyManager extends Actor{
 
         }
 
-        else if (currentWave == 2)
+        else if (currentWave > 4 && currentWave < 10)
         {
             timeSinceLastNorm++;
             timeSinceLastFast++;
@@ -269,7 +267,7 @@ public class EnemyManager extends Actor{
             }
         }
 
-        else if (currentWave > 2)
+        else if (currentWave > 9)
         {
             timeSinceLastNorm++;
             timeSinceLastFast++;
@@ -447,6 +445,8 @@ public class EnemyManager extends Actor{
             }
         }
 
+        System.out.println(numEnemies);
+
         for(Enemy enemy : enemyList)
         {
             if(!enemy.isAlive())
@@ -517,7 +517,7 @@ public class EnemyManager extends Actor{
         this.batch = batch;
         for (int i = 0; i < numEnemies; i++)
         {
-            enemyList.get(i).draw(batch,parentAlpha);
+            enemyList.get(i).draw(batch, parentAlpha);
         }
     }
 

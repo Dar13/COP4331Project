@@ -2,8 +2,6 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.entities.Actor;
-import com.mygdx.entities.Tower;
-import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
@@ -13,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.handlers.NetworkManager;
-import com.mygdx.handlers.TowerManager;
 import com.mygdx.handlers.WayPointManager;
 
 import java.util.List;
