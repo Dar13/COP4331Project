@@ -40,19 +40,19 @@ public class Menu extends GameState {
 
         singleplayer = new TextButton("Single Player",skin);
         singleplayer.setSize(200, 60);
-        singleplayer.setPosition(game.V_WIDTH/2- singleplayer.getWidth()/2, game.V_HEIGHT*3/4);
+        singleplayer.setPosition(game.V_WIDTH/2- singleplayer.getWidth()/2, game.V_HEIGHT*3/5);
         singleplayer.addListener(new ClickListener());
         stage.addActor(singleplayer);
 
         multiplayer = new TextButton("Multiplayer",skin);
         multiplayer.setSize(200, 60);
-        multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, singleplayer.getY() - 65);
+        multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, singleplayer.getY() - 61);
         multiplayer.addListener(new ClickListener());
         stage.addActor(multiplayer);
 
         tutorial = new TextButton("Tutorial",skin);
         tutorial.setSize(200, 60);
-        tutorial.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, multiplayer.getY() - 65);
+        tutorial.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, multiplayer.getY() - 61);
         tutorial.addListener(new ClickListener());
         stage.addActor(tutorial);
 
@@ -85,7 +85,7 @@ public class Menu extends GameState {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 2);
+        Gdx.gl.glClearColor(0, 0, .5f, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
         stage.act(delta);

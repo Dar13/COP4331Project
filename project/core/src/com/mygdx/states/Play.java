@@ -58,7 +58,7 @@ public class Play extends GameState {
     private int totalWaves = 0;
 
     private boolean clicked = false;
-    private boolean debuggerOn = true;
+    private boolean debuggerOn = false;
 
     //private LinkedList<NewTower> towers;
     private  Actor map;
@@ -275,7 +275,7 @@ public class Play extends GameState {
     @Override
     public void render(float delta)
     {
-        Gdx.gl.glClearColor(0, 0, 0, 2);
+        Gdx.gl.glClearColor(0, 0, .5f, 2);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
       // ((OrthographicCamera)stage.getCamera()).zoom += 0.001;
         switch (state){
