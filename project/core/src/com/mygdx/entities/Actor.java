@@ -23,4 +23,7 @@ public class Actor extends Entity
     {
         batch.draw(sprite, sprite.getX(), sprite.getY());
     }
+
+    public void setSprite(Texture texture){this.sprite = new Sprite(texture);}
+
 }
