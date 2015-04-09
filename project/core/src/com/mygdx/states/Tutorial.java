@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -16,6 +17,8 @@ import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.net.ConnectionMode;
 
+import java.awt.TextField;
+
 
 /**
  * Created by James on 3/18/2015.
@@ -23,13 +26,13 @@ import com.mygdx.net.ConnectionMode;
 public class Tutorial extends GameState {
 
     private MyStage stage;
-    private MyStage hub;
-    private TextButton next;
     private TextButton Return;
+    private TextButton textfield;
     Skin skin;
     private Texture Tutorial1 = new Texture("Tutorial1.png");
     int text = 0;
-    private String[] tutorialtext = {"Test\n", "Test2\n"};
+    private String[] tutorialtext = {" Welcome to the Over The Rhine Tutorial.\n Thank you for playing our game. \n To continue, click this dialogue box...\n To return to the Menu, click the Menu button.\n",
+                                     "Test2\n"};
     /*private Texture Tutorial2 = new Texture("Tutorial2.png");
     private Texture Tutorial3 = new Texture("Tutorial3.png");
     private Texture Tutorial4 = new Texture("Tutorial4.png");
@@ -49,41 +52,29 @@ public class Tutorial extends GameState {
         //AssetManager.music.setLooping(true);
         AssetManager.loadSound(1);
 
-        next = new TextButton("Next",skin);
-        next.setSize(200, 60);
-        next.setPosition(game.V_WIDTH - 205, 5);
-        next.addListener(new ClickListener());
-        stage.addActor(next);
-
         Return = new TextButton("Menu",skin);
         Return.setSize(200, 60);
-        Return.setPosition(game.V_WIDTH - 205, game.V_HEIGHT - 65);
+        Return.setPosition(game.V_WIDTH - 205, 5);
         Return.addListener(new ClickListener());
         stage.addActor(Return);
 
-        new Dialog("Tutorial", skin, "dialog") {
-            protected void result (Object object) {
-                System.out.println("Chosen: " + object);
-                if(object.equals(true)) {
-                    text++;
-                }
-                else{
-                    gameStateManager.popState();
-                }
-            }
-        }       .text(tutorialtext[text])
-                .button("Next", true)
-                .button("Menu", false)
-                .key(Input.Keys.ENTER, true)
-                .key(Input.Keys.ESCAPE, false)
-                .show(stage);
-
-
-
+        textfield = new TextButton(tutorialtext[text], skin);
+        textfield.setSize(400, 100);
+        textfield.setPosition(5, 5);
+        textfield.getLabel().setAlignment(Align.left);
+        textfield.addListener(new ClickListener());
+        stage.addActor(textfield);
     }
     @Override
     public void update(float delta) {
-
+        if(textfield.isChecked() && text < tutorialtext.length - 1){
+            text++;
+            textfield.setText(tutorialtext[text]);
+            textfield.setChecked(false);
+        }
+        if(Return.isChecked()){
+            gameStateManager.setState(GameStateManager.MENU, 0);
+        }
     }
 
     @Override

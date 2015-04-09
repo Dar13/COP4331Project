@@ -74,7 +74,7 @@ public class Menu extends GameState {
             gameStateManager.setState(GameStateManager.NET, 0);
         }
         if(tutorial.isChecked()){
-            gameStateManager.pushState(gameStateManager.TUTORIAL, 0);
+            gameStateManager.setState(gameStateManager.TUTORIAL, 0);
         }
     }
 
