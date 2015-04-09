@@ -232,7 +232,7 @@ public class EnemyManager extends Actor{
         {
             timeSinceLastNorm++;
 
-            if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
+            if (timeSinceLastNorm > ((MyGame.fpsretrieve * 2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
                 //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
                 addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 

@@ -32,12 +32,21 @@ public class Tutorial extends GameState {
     Skin skin;
     int text = 0;
     private String[] tutorialtext = {" Welcome to the Over The Rhine Tutorial.\n Thank you for playing our game. \n To continue, click this dialogue box...\n To return to the Menu, click the Menu button.\n",
-                                     " The highlighted area shows your health, gold,\n and the current enemy wave.\n The path that is highlighted represents the path\n the enemies will take.",
+                                     " The highlighted area shows your health, gold,\n and the current enemy wave.\n The blue lines and squares represent the path\n the enemies will take.",
                                      " This is a Rifle Squad Bunker, it costs 100 gold.\n The blue circle represents the range.\n The blue square represents the bounds.\n You cannot place any tower on a path.\n",
                                      " The Rile squad has a low attack power, but high\n attack speed. It is ideal for dealing \n with the normal enemy type.\n",
                                      " This is a Bazooka Squad Bunker, it costs 150 gold.\n It has a high attack power, but a slower attack speed\n when compared to the rifle tower.\n It is ideal for dealing with the Tiger Tank.",
                                      " This is the Sniper Bunker, it costs 350 gold.\n It has a higher attack compared to the rifle and\n a faster attack speed when compared to the bazooka.\n It is ideal for dealing with the Fast enemies.",
-                                     " This is the Mortar Team Bunker, it costs 350 gold.\n It has an attack speed between the Sniper and the\n bazooka. It's damage is slightly higher than the rifle.\n It can slow the enemies greatly. Ideal for all enemies."
+                                     " This is the Mortar Team Bunker, it costs 350 gold.\n It has an attack speed between the Sniper and the\n bazooka. It's damage is slightly higher than the rifle.\n It can slow the enemies greatly. Ideal for all enemies.",
+                                     " Between every wave you will have a chance to place\n your bunkers. When you are finished press the Ready\n button in the lower left to begin a new wave.",
+                                     " Now to the enemies.\n This is Klaus, your average Wehrmacht solder.\n He has hopes and dreams.\n But he is a Nazi and must be stopped. Poor Klaus.",
+                                     " Like all enemies of his type, Klaus is slow and only\n lightly armoured. A couple of Rifle Bunker Squads\n could deal with Klaus and his friends.",
+                                     " This is Hans. Say hello Hans. \n 'hallo' -Hans\n Unlike his brother Klaus, Hans was selected for the\n Waffen SS. That means he is basically a Super Nazi.",
+                                     " Hans worked hard to get where he is, which\n means he is faster in the field. However he has the\n same armour as Klaus due to supply shortages.\n A mortar team could slow him down for your Rifles.",
+                                     " This is the mighty Tiger I Tank.\n It is commanded by 1st Lt. Bruno.\n Lt. Bruno doesn't say much to the other\n Wehrmacht soldiers, they just wouldn't understand.",
+                                     " Lt. Bruno's tank is slow, but heavily armoured.\n It will give our boys a tough time in the field\n so make sure to have some Bazooka bunkers\n ready to go.",
+                                     " Enemy waves in this game are calculated based on\n how many bunkers you have placed, what wave\n you are on, and how much gold you have stored.\n You will need to play smart to survive.",
+                                     "-_-_-_-_-_-_-_-_-_-_-_-_-End of Tutorial-_-_-_-_-_-_-_-_-_-_-_-_-_-"
                                     };
     Actor background;
     private Texture Tutorial1 = new Texture("Tutorial1.png");
@@ -46,9 +55,15 @@ public class Tutorial extends GameState {
     private Texture Tutorial4 = new Texture("Tutorial4.png");
     private Texture Tutorial5 = new Texture("Tutorial5.png");
     private Texture Tutorial6 = new Texture("Tutorial6.png");
-    private Texture[] texturearray = {Tutorial1, Tutorial2, Tutorial3, Tutorial3, Tutorial4, Tutorial5, Tutorial6};
-    /*private Texture Tutorial7 = new Texture("Tutorial7.png");
-    */
+    private Texture Tutorial7 = new Texture("Tutorial7.png");
+    private Texture Tutorial8 = new Texture("Tutorial8.png");
+    private Texture Tutorial9 = new Texture("Tutorial9.png");
+    private Texture[] texturearray = {Tutorial1, Tutorial2, Tutorial3, Tutorial3,
+                                      Tutorial4, Tutorial5, Tutorial6, Tutorial1,
+                                      Tutorial7, Tutorial7, Tutorial8, Tutorial8,
+                                      Tutorial9, Tutorial9, Tutorial1, Tutorial1};
+
+
     public Tutorial(final GameStateManager gameStateManager, NetworkManager networkManager){
         super(gameStateManager,networkManager);
         stage = new MyStage();
@@ -64,8 +79,8 @@ public class Tutorial extends GameState {
         AssetManager.loadSound(1);
 
         Return = new TextButton("Menu",skin);
-        Return.setSize(200, 60);
-        Return.setPosition(game.V_WIDTH - 205, 5);
+        Return.setSize(60, 60);
+        Return.setPosition(game.V_WIDTH - 130, 5);
         Return.addListener(new ClickListener());
         stage.addActor(Return);
 
