@@ -114,19 +114,19 @@ public class Play extends GameState {
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
         switch (MapLoad){
             case 1:
-                mapImg = new Texture("MapEasy.png");
+                mapImg = new Texture("Maps/MapEasy.png");
                 totalWaves = 20;
                 break;
             case 2:
-                mapImg = new Texture("Slightlyhardermap.png");
+                mapImg = new Texture("Maps/Slightlyhardermap.png");
                 totalWaves = 30;
                 break;
             case 3:
-                mapImg = new Texture("MapMoreHarder.png");
+                mapImg = new Texture("Maps/MapMoreHarder.png");
                 totalWaves = 40;
                 break;
             case 4:
-                mapImg = new Texture("mapinsane.png");
+                mapImg = new Texture("Maps/mapinsane.png");
                 totalWaves = 50;
                 gold += 200;
                 break;

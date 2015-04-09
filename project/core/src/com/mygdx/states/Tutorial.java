@@ -49,15 +49,15 @@ public class Tutorial extends GameState {
                                      "-_-_-_-_-_-_-_-_-_-_-_-_-End of Tutorial-_-_-_-_-_-_-_-_-_-_-_-_-_-"
                                     };
     Actor background;
-    private Texture Tutorial1 = new Texture("Tutorial1.png");
-    private Texture Tutorial2 = new Texture("Tutorial2.png");
-    private Texture Tutorial3 = new Texture("Tutorial3.png");
-    private Texture Tutorial4 = new Texture("Tutorial4.png");
-    private Texture Tutorial5 = new Texture("Tutorial5.png");
-    private Texture Tutorial6 = new Texture("Tutorial6.png");
-    private Texture Tutorial7 = new Texture("Tutorial7.png");
-    private Texture Tutorial8 = new Texture("Tutorial8.png");
-    private Texture Tutorial9 = new Texture("Tutorial9.png");
+    private Texture Tutorial1 = new Texture("TutorialScreens/Tutorial1.png");
+    private Texture Tutorial2 = new Texture("TutorialScreens/Tutorial2.png");
+    private Texture Tutorial3 = new Texture("TutorialScreens/Tutorial3.png");
+    private Texture Tutorial4 = new Texture("TutorialScreens/Tutorial4.png");
+    private Texture Tutorial5 = new Texture("TutorialScreens/Tutorial5.png");
+    private Texture Tutorial6 = new Texture("TutorialScreens/Tutorial6.png");
+    private Texture Tutorial7 = new Texture("TutorialScreens/Tutorial7.png");
+    private Texture Tutorial8 = new Texture("TutorialScreens/Tutorial8.png");
+    private Texture Tutorial9 = new Texture("TutorialScreens/Tutorial9.png");
     private Texture[] texturearray = {Tutorial1, Tutorial2, Tutorial3, Tutorial3,
                                       Tutorial4, Tutorial5, Tutorial6, Tutorial1,
                                       Tutorial7, Tutorial7, Tutorial8, Tutorial8,

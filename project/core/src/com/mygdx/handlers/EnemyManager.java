@@ -232,7 +232,7 @@ public class EnemyManager extends Actor{
         {
             timeSinceLastNorm++;
 
-            if (timeSinceLastNorm > ((MyGame.fpsretrieve * 2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
+            if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
                 //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
                 addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
@@ -519,5 +519,12 @@ public class EnemyManager extends Actor{
         {
             enemyList.get(i).draw(batch,parentAlpha);
         }
+    }
+
+    public void LevelSelectWave(){
+        currentWave = 10;
+        waveToBeSpawnedNorm = 999;
+        waveToBeSpawnedFast = 999;
+        waveToBeSpawnedHeavy = 999;
     }
 }

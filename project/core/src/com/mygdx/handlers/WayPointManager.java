@@ -52,6 +52,9 @@ public class WayPointManager
                                    128, 225, 2, 128, 0, 3, 544, 0, 1,
                                    544, 232, 3, 608, 232, 5};
 
+    private int[] submenumap = new int[]{0, 0, 3, 672, 0, 1, 672, 480, 4,
+                                         0, 480, 2, 0, 32, 5};
+
     private int mapnum = 0;
 
     public WayPointManager(int MapLoad)
@@ -90,6 +93,9 @@ public class WayPointManager
                     break;
                 case 4:
                     maptemp = map4;
+                    break;
+                case 5:
+                    maptemp = submenumap;
                     break;
             }
 

@@ -2,6 +2,8 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.entities.Actor;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -32,6 +34,7 @@ public class Menu extends GameState {
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
+
         /* Menu Music */
         AssetManager.loadMusic(1);
         //AssetManager.music.play();
@@ -46,15 +49,16 @@ public class Menu extends GameState {
 
         multiplayer = new TextButton("Multiplayer",skin);
         multiplayer.setSize(200, 60);
-        multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, singleplayer.getY() - 61);
+        multiplayer.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, singleplayer.getY() - 65);
         multiplayer.addListener(new ClickListener());
         stage.addActor(multiplayer);
 
         tutorial = new TextButton("Tutorial",skin);
         tutorial.setSize(200, 60);
-        tutorial.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, multiplayer.getY() - 61);
+        tutorial.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, multiplayer.getY() - 65);
         tutorial.addListener(new ClickListener());
         stage.addActor(tutorial);
+
 
 
    }

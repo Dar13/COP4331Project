@@ -16,11 +16,11 @@ import java.util.Map;
  */
 public class TowerManager extends Actor
 {
-    public static final String rifleTexturePath = "RifleBunker.png";
-    public static final String bazookaTexturePath = "BazookaBunker.png";
-    public static final String sniperTexturePath = "SniperBunker.png";
-    public static final String mortarTexturePath = "Mortarteam.png";
-    public static final String shadowTexturePath = "nulllayer.png";
+    public static final String rifleTexturePath = "Towers/RifleBunker.png";
+    public static final String bazookaTexturePath = "Towers/BazookaBunker.png";
+    public static final String sniperTexturePath = "Towers/SniperBunker.png";
+    public static final String mortarTexturePath = "Towers/Mortarteam.png";
+    public static final String shadowTexturePath = "Towers/nulllayer.png";
 
     protected static final int upgradeDamageConstant = 2;
     protected static final float upgradeRangeConstant = 1.25f;

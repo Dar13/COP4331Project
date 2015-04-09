@@ -1,6 +1,10 @@
 package com.mygdx.states;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.entities.Actor;
+import com.mygdx.entities.Tower;
 import com.mygdx.handlers.AssetManager;
+import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -9,6 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.TowerManager;
+import com.mygdx.handlers.WayPointManager;
+
+import java.util.List;
 
 /**
  * Created by LordNeah on 3/22/2015.
@@ -19,34 +27,43 @@ public class LevelSelect extends GameState {
     private TextButton medium;
     private TextButton hard;
     private TextButton insane;
+    private Texture Map = new Texture("Maps/SubMenuMap.png");
+    private WayPointManager wayPointManager;
+    private EnemyManager enemyManager;
 
     public LevelSelect(GameStateManager gameStateManager, NetworkManager networkManager){
         super(gameStateManager,networkManager);
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
+        Actor map = new Actor(Map, 0, 0);
+        stage.addActor(map);
+        wayPointManager = new WayPointManager(5);
+        enemyManager = new EnemyManager(networkManager,wayPointManager.wayPoints, stage.getBatch());
+        enemyManager.LevelSelectWave();
+        stage.addActor(enemyManager);
 
         easy = new TextButton("Easy",skin);
         easy.setSize(200, 60);
-        easy.setPosition(game.V_WIDTH/2-easy.getWidth()/2, game.V_HEIGHT*3/4);
+        easy.setPosition(game.V_WIDTH/2-easy.getWidth()/2, game.V_HEIGHT * 2/3);
         easy.addListener(new ClickListener());
         stage.addActor(easy);
 
         medium = new TextButton("Medium",skin);
         medium.setSize(200,60);
-        medium.setPosition(game.V_WIDTH / 2 - easy.getWidth() / 2, easy.getY() - 60);
+        medium.setPosition(game.V_WIDTH / 2 - easy.getWidth() / 2, easy.getY() - 65);
         medium.addListener(new ClickListener());
         stage.addActor(medium);
 
         hard = new TextButton("Hard",skin);
         hard.setSize(200, 60);
-        hard.setPosition(game.V_WIDTH/2-hard.getWidth()/2, medium.getY() - 60);
+        hard.setPosition(game.V_WIDTH/2-hard.getWidth()/2, medium.getY() - 65);
         hard.addListener(new ClickListener());
         stage.addActor(hard);
 
         insane = new TextButton("Insane",skin);
         insane.setSize(200, 60);
-        insane.setPosition(game.V_WIDTH/2-insane.getWidth()/2, hard.getY() - 60);
+        insane.setPosition(game.V_WIDTH/2-insane.getWidth()/2, hard.getY() - 65);
         insane.addListener(new ClickListener());
         stage.addActor(insane);
     }
