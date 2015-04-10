@@ -1,5 +1,6 @@
 package com.mygdx.handlers;
 
+import com.mygdx.states.Credits;
 import com.mygdx.states.End;
 import com.mygdx.states.GameState;
 import com.mygdx.states.LevelSelect;
@@ -31,6 +32,7 @@ public class GameStateManager {
     public static final int NET = 12341542;
     public static final int LEVELSELECT = 321321321;
     public static final int TUTORIAL = 1337;
+    public static final int CREDITS = 987654321;
 
     public GameStateManager(MyGame game, NetworkManager networkManager, boolean inAndroid)
     {
@@ -81,6 +83,9 @@ public class GameStateManager {
         }
         if(state == TUTORIAL){
             return new Tutorial(this, networkManager);
+        }
+        if(state == CREDITS){
+            return new Credits(this, networkManager);
         }
         return null;
     }

@@ -26,6 +26,7 @@ public class Menu extends GameState {
     private TextButton singleplayer;
     private TextButton multiplayer;
     private TextButton tutorial;
+    private TextButton credits;
 
 
     public Menu(GameStateManager gameStateManager, NetworkManager networkManager){
@@ -43,7 +44,7 @@ public class Menu extends GameState {
 
         singleplayer = new TextButton("Single Player",skin);
         singleplayer.setSize(200, 60);
-        singleplayer.setPosition(game.V_WIDTH/2- singleplayer.getWidth()/2, game.V_HEIGHT*3/5);
+        singleplayer.setPosition(game.V_WIDTH/2- singleplayer.getWidth()/2, game.V_HEIGHT*5/8);
         singleplayer.addListener(new ClickListener());
         stage.addActor(singleplayer);
 
@@ -59,7 +60,11 @@ public class Menu extends GameState {
         tutorial.addListener(new ClickListener());
         stage.addActor(tutorial);
 
-
+        credits = new TextButton("Credits",skin);
+        credits.setSize(200, 60);
+        credits.setPosition(game.V_WIDTH / 2 - singleplayer.getWidth() / 2, tutorial.getY() - 65);
+        credits.addListener(new ClickListener());
+        stage.addActor(credits);
 
    }
     @Override
@@ -78,7 +83,10 @@ public class Menu extends GameState {
             gameStateManager.setState(GameStateManager.NET, 0);
         }
         if(tutorial.isChecked()){
-            gameStateManager.setState(gameStateManager.TUTORIAL, 0);
+            gameStateManager.setState(GameStateManager.TUTORIAL, 0);
+        }
+        if(credits.isChecked()){
+            gameStateManager.setState(GameStateManager.CREDITS, 0);
         }
     }
 
