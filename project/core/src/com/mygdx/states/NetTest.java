@@ -29,6 +29,7 @@ public class NetTest extends GameState
     private MyStage stage;
     private TextButton serverButton;
     private TextButton clientButton;
+    private TextButton toMenu;
     private OrthographicCamera cam;
     private Texture Map = new Texture("Maps/SubMenuMap.png");
     private WayPointManager wayPointManager;
@@ -54,7 +55,7 @@ public class NetTest extends GameState
 
         serverButton = new TextButton("Server", skin);
         serverButton.setSize(200, 60);
-        serverButton.setPosition(game.V_WIDTH/2-serverButton.getWidth()/2, MyGame.V_HEIGHT * 6/11);
+        serverButton.setPosition(game.V_WIDTH/2-serverButton.getWidth()/2, MyGame.V_HEIGHT * 7/12);
         serverButton.addListener( new ClickListener());
 
         stage.addActor(serverButton);
@@ -64,6 +65,12 @@ public class NetTest extends GameState
         clientButton.setPosition(game.V_WIDTH/2-serverButton.getWidth()/2, serverButton.getY() - 65);
         clientButton.addListener( new ClickListener());
         stage.addActor(clientButton);
+
+        toMenu = new TextButton("Menu", skin);
+        toMenu.setSize(200, 60);
+        toMenu.setPosition(game.V_WIDTH/2-toMenu.getWidth()/2, clientButton.getY() - 65);
+        toMenu.addListener(new ClickListener());
+        stage.addActor(toMenu);
     }
 
     @Override
@@ -86,6 +93,10 @@ public class NetTest extends GameState
                     true);
             clientButton.setDisabled(true);
             //gameStateManager.setState(GameStateManager.PLAY,2);
+        }
+
+        if(toMenu.isChecked()){
+            gameStateManager.setState(GameStateManager.MENU, 0);
         }
        /*
         for(Action a : networkManager.fetchChanges()){

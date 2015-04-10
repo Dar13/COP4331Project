@@ -24,6 +24,7 @@ public class LevelSelect extends GameState {
     private TextButton medium;
     private TextButton hard;
     private TextButton insane;
+    private TextButton toMenu;
     private Texture Map = new Texture("Maps/SubMenuMap.png");
     private WayPointManager wayPointManager;
     private EnemyManager enemyManager;
@@ -42,7 +43,7 @@ public class LevelSelect extends GameState {
 
         easy = new TextButton("Easy",skin);
         easy.setSize(200, 60);
-        easy.setPosition(game.V_WIDTH/2-easy.getWidth()/2, game.V_HEIGHT * 2/3);
+        easy.setPosition(game.V_WIDTH/2-easy.getWidth()/2, game.V_HEIGHT * 5/7);
         easy.addListener(new ClickListener());
         stage.addActor(easy);
 
@@ -63,6 +64,14 @@ public class LevelSelect extends GameState {
         insane.setPosition(game.V_WIDTH/2-insane.getWidth()/2, hard.getY() - 65);
         insane.addListener(new ClickListener());
         stage.addActor(insane);
+
+        toMenu = new TextButton("Menu", skin);
+        toMenu.setSize(200, 60);
+        toMenu.setPosition(game.V_WIDTH/2-toMenu.getWidth()/2, insane.getY() - 65);
+        toMenu.addListener(new ClickListener());
+        stage.addActor(toMenu);
+
+
     }
     @Override
     public void update(float delta) {
@@ -77,6 +86,9 @@ public class LevelSelect extends GameState {
         }
         if(insane.isChecked()) {
             gameStateManager.setState(GameStateManager.PLAY, 4);
+        }
+        if(toMenu.isChecked()){
+            gameStateManager.setState(GameStateManager.MENU, 0);
         }
     }
 
