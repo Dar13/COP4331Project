@@ -39,6 +39,7 @@ public class Tutorial extends GameState {
                                      " This is the Sniper Bunker, it costs 350 gold.\n It has a higher attack compared to the rifle and\n a faster attack speed when compared to the bazooka.\n It is ideal for dealing with the Fast enemies.",
                                      " This is the Mortar Team Bunker, it costs 350 gold.\n It has an attack speed between the Sniper and the\n bazooka. It's damage is slightly higher than the rifle.\n It can slow the enemies greatly. Ideal for all enemies.",
                                      " Between every wave you will have a chance to place\n your bunkers. When you are finished press the Ready\n button in the lower left to begin a new wave.",
+                                     " To upgrade any tower, simply click or press the\n tower you wish to upgrade and these buttons\n will appear. Each upgrade will cost the base\n cost of the tower times its next level.",
                                      " Now to the enemies.\n This is Klaus, your average Wehrmacht solder.\n He has hopes and dreams.\n But he is a Nazi and must be stopped. Poor Klaus.",
                                      " Like all enemies of his type, Klaus is slow and only\n lightly armoured. A couple of Rifle Bunker Squads\n could deal with Klaus and his friends.",
                                      " This is Hans. Say hello Hans. \n 'hallo' -Hans\n Unlike his brother Klaus, Hans was selected for the\n Waffen SS. That means he is basically a Super Nazi.",
@@ -58,10 +59,12 @@ public class Tutorial extends GameState {
     private Texture Tutorial7 = new Texture("TutorialScreens/Tutorial7.png");
     private Texture Tutorial8 = new Texture("TutorialScreens/Tutorial8.png");
     private Texture Tutorial9 = new Texture("TutorialScreens/Tutorial9.png");
+    private Texture Tutorial10 = new Texture("TutorialScreens/Tutorial10.png");
     private Texture[] texturearray = {Tutorial1, Tutorial2, Tutorial3, Tutorial3,
                                       Tutorial4, Tutorial5, Tutorial6, Tutorial1,
-                                      Tutorial7, Tutorial7, Tutorial8, Tutorial8,
-                                      Tutorial9, Tutorial9, Tutorial1, Tutorial1};
+                                      Tutorial10,Tutorial7, Tutorial7, Tutorial8,
+                                      Tutorial8, Tutorial9, Tutorial9, Tutorial1,
+                                      Tutorial1};
 
 
     public Tutorial(final GameStateManager gameStateManager, NetworkManager networkManager){
