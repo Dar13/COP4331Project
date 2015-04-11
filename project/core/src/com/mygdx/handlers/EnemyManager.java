@@ -133,14 +133,21 @@ public class EnemyManager extends Actor{
     //Calculates the number of enemies to spawn in the next wave based on the multiplier.
     public void NextWave(float multiplier)
     {
-        if(currentWave == 2)
+        if(currentWave < 5)
         {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
+            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int) multiplier);
+            this.totalWavesToBeSpawned = waveToBeSpawnedNorm;
+            System.out.println(totalWavesToBeSpawned);
+        }
+
+        else if(currentWave > 5 && currentWave < 10)
+        {
+            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int) multiplier);
             this.waveToBeSpawnedFast = waveInfoFast;
             this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast;
         }
 
-        else if(currentWave == 3)
+        else if(currentWave == 10)
         {
             this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
             this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
@@ -217,6 +224,9 @@ public class EnemyManager extends Actor{
 
     public void Update(float fps)
     {
+
+        System.out.println(totalWavesToBeSpawned);
+        System.out.println(enemyList.size());
         //accumulator +=deltaTime;
         if (totalWavesToBeSpawned == 0 && enemyList.size() == 0)
         {
@@ -245,6 +255,7 @@ public class EnemyManager extends Actor{
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
                 totalWavesToBeSpawned--;
+                System.out.println(totalWavesToBeSpawned);
             }
 
         }
