@@ -448,6 +448,11 @@ public class NetworkManager extends Listener implements Runnable
                 currentWave++;
 
                 addToSendQueue(createWave);
+
+                for(GameConnection connection : connections)
+                {
+                    connection.waveReady = false;
+                }
             }
         }
         finally
