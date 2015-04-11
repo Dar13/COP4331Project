@@ -25,7 +25,7 @@ public class Credits extends GameState {
     private Texture Map = new Texture("Maps/SubMenuMap.png");
     private WayPointManager wayPointManager;
     private EnemyManager enemyManager;
-    private String credittext = "Thank you for playing Over The Rhine.\n From all the Dev Team. \n  " +
+    private String credittext = "Thank you for playing Over The Rhine.\n From all of us at Anti-Pattern Studios.\n\n\n" +
                                 "Kevin Castillo - Gameplay, Balancing, BetaTesting\nTanner Foster - Art, Gameplay, UI\n" +
                                 "Kevin Lang - Network, Gameplay\nRobert Lee - Network\nNeil Moore - Network, Gameplay, Optimization\n" +
                                 "Miguel Vargas - Gameplay, Sound\nJames Vinson - Gameplay, Art, UI";

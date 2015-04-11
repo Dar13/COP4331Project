@@ -24,11 +24,11 @@ public abstract class Enemy extends Entity
     protected WayPoint.Direction heading;
     protected List<WayPoint> wayPoints;
     protected int currentWayPoint;
+    protected int currenttick;
     protected boolean navigationFinished;
     protected float distanceTraveled;
 
-    // These might need to be the other way around.
-    // base = sprite, other = sprite2
+
     protected Sprite south;
     protected Sprite north;
     protected Sprite east;
