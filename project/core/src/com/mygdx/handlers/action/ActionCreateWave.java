@@ -20,6 +20,8 @@ public class ActionCreateWave extends Action
     {
         super();
 
+        actionClass = ActionClass.ACTION_CREATE_WAVE;
+
         this.waveNumber = waveNumber;
 
         WaveCalculator.setWaveNumber(waveNumber);

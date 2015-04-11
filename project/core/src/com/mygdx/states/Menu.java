@@ -71,6 +71,7 @@ public class Menu extends GameState {
     public void update(float delta) {
         if(singleplayer.isChecked()){
             if(!networkManager.isInitialized()) {
+                networkManager.setSingleplayer(true);
                 networkManager.prepInitialize(true,
                         ConnectionMode.WIFI_LAN,
                         ConnectionMode.NONE,
@@ -79,7 +80,8 @@ public class Menu extends GameState {
             gameStateManager.setState(GameStateManager.LEVELSELECT, 0);
             AssetManager.sound.play();
         }
-        if(multiplayer.isChecked()) {
+        if(multiplayer.isChecked())
+        {
             gameStateManager.setState(GameStateManager.NET, 0);
         }
         if(tutorial.isChecked()){

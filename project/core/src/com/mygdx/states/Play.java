@@ -35,7 +35,9 @@ import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.handlers.WayPointManager;
 import com.mygdx.handlers.action.Action;
+import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionHealthChanged;
+import com.mygdx.handlers.action.ActionTowerPlaced;
 
 
 import java.util.LinkedList;
@@ -200,24 +202,7 @@ public class Play extends GameState {
     @Override
     public void update(float delta)
     {
-
-        List<Action> changes = networkManager.fetchChanges();
-        if(changes != null && changes.isEmpty() != true)
-        {
-            for (ListIterator<Action> iter = changes.listIterator(); iter.hasNext();)
-            {
-                Action a = iter.next();
-
-                switch (a.actionClass)
-                {
-                    case ACTION_HEALTH_CHANGED:
-                        health = ((ActionHealthChanged) a).newHealth;
-                        break;
-                }
-                iter.remove();
-            }
-        }
-
+        handleChanges();
 
         /**
          * TODO
@@ -507,6 +492,58 @@ public class Play extends GameState {
     public void decrimentGold(int sub)
     {
         gold = gold - sub;
+    }
+
+    public void handleChanges()
+    {
+        List<Action> changes = networkManager.fetchChanges();
+        if(changes != null && !changes.isEmpty())
+        {
+            for(Action action : changes)
+            {
+                switch(action.actionClass)
+                {
+                case ACTION_ENEMY_CREATE:
+                    ActionEnemyCreate enemyCreate = (ActionEnemyCreate)action;
+
+                    if(enemyManager == null || enemyManager.enemyList == null)
+                    {
+                        break;
+                    }
+
+                    for(Enemy enemy : enemyManager.enemyList)
+                    {
+                        if(enemy.tempID == enemyCreate.tempID)
+                        {
+                            enemy.entityID = enemyCreate.entityID;
+                        }
+                    }
+                    break;
+                case ACTION_HEALTH_CHANGED:
+                    ActionHealthChanged healthChanged = (ActionHealthChanged)action;
+
+                    health = healthChanged.newHealth;
+                    break;
+                case ACTION_HOST_PAUSE:
+
+                    break;
+                case ACTION_TOWER_PLACED:
+                    ActionTowerPlaced towerPlaced = (ActionTowerPlaced)action;
+
+                    for(Tower tower : towerManager.towerList)
+                    {
+                        if(tower.tempID == towerPlaced.tempID)
+                        {
+                            tower.entityID = towerPlaced.entityID;
+                        }
+                    }
+                    break;
+                case ACTION_TRANSFER_RESOURCES:
+
+                    break;
+                }
+            }
+        }
     }
 
 

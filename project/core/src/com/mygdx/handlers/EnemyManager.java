@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
 import com.mygdx.triggers.WayPoint;
@@ -100,7 +101,14 @@ public class EnemyManager extends Actor{
     {
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
         enemy.tempID = idCounter;
-        idCounter++; // TODO: This will have to be changed to reflect getting the true entity ID from the host.
+        idCounter++;
+
+        System.out.format("Entity created tempID=%d\n", idCounter);
+
+        ActionEnemyCreate actionEnemyCreate = new ActionEnemyCreate(enemy);
+        networkManager.addToSendQueue(actionEnemyCreate);
+
+        System.out.format("ActionEnemyCreate sent to networkmanager queue.\n");
 
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()
@@ -445,7 +453,7 @@ public class EnemyManager extends Actor{
             }
         }
 
-        System.out.println(numEnemies);
+        //System.out.println(numEnemies);
 
         for(Enemy enemy : enemyList)
         {
