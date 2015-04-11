@@ -147,7 +147,7 @@ public class NetworkManager extends Listener implements Runnable
         mutex.writeLock().lock();
         try
         {
-            // make sure primary mode isn't null, secondary mode is nullable.
+            // make sure primary mode isn't nu ll, secondary mode is nullable.
             if (isServer == null || this.preferredMode == null)
             {
                 initialized.set(false);
