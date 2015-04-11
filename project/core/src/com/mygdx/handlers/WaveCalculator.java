@@ -56,6 +56,8 @@ public class WaveCalculator
 
     public static int getAmountNormalEnemies()
     {
-        return (int)Math.round(10 * Math.log((double)waveNumber * waveNumber)) + 5;
+        int i = (int)Math.round(10 * Math.log((double)waveNumber * waveNumber)) + 5;
+        //System.out.println("hi");
+        return i;
     }
 }

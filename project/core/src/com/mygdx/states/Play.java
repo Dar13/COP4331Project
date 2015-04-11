@@ -35,7 +35,9 @@ import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.handlers.WayPointManager;
 import com.mygdx.handlers.action.Action;
+import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionHealthChanged;
+import com.mygdx.handlers.action.ActionTowerPlaced;
 
 
 import java.util.LinkedList;
@@ -98,6 +100,7 @@ public class Play extends GameState {
     {
         SETUP,
         PLAY,
+        PAUSED,
     }
     private SubState state;
 
@@ -200,24 +203,7 @@ public class Play extends GameState {
     @Override
     public void update(float delta)
     {
-
-        List<Action> changes = networkManager.fetchChanges();
-        if(changes != null && changes.isEmpty() != true)
-        {
-            for (ListIterator<Action> iter = changes.listIterator(); iter.hasNext();)
-            {
-                Action a = iter.next();
-
-                switch (a.actionClass)
-                {
-                    case ACTION_HEALTH_CHANGED:
-                        health = ((ActionHealthChanged) a).newHealth;
-                        break;
-                }
-                iter.remove();
-            }
-        }
-
+        handleChanges();
 
         /**
          * TODO
@@ -230,7 +216,12 @@ public class Play extends GameState {
         placeATower();
         if(readyButton.isPressed()){
             state = SubState.PLAY;
-            readyButton.remove();
+            readyButton.setVisible(false);
+            readyButton.setDisabled(true);
+            if(enemyManager != null)
+            {
+                enemyManager.setPaused();
+            }
         }
 
         switch (state) {
@@ -239,10 +230,21 @@ public class Play extends GameState {
                 stage.act(delta);
                 gold -= towerManager.towerAct(delta, gold);
                 break;
+            case PAUSED:
+                hub.act(delta);
+                stage.act(delta);
+                break;
             case PLAY:
-                if(enemyManager == null) {
+                if(enemyManager == null)
+                {
                     enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
                     stage.addActor(enemyManager);
+                }
+                if(enemyManager.isPaused())
+                {
+                    state = SubState.PAUSED;
+                    readyButton.setVisible(true);
+                    readyButton.setDisabled(false);
                 }
                 stage.act(delta);
                 hub.act(delta);
@@ -314,6 +316,45 @@ public class Play extends GameState {
                 font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
                 font.draw(batch, "Wave: 0", 192, MyGame.V_HEIGHT - 10);
+                debugger.setBatch(batch);
+                //towerManager.draw(batch, 1);
+                batch.end();
+                break;
+            case PAUSED:
+                hub.draw();
+                stage.draw();
+                batch = stage.getBatch();
+                if(towerPlacement == 1)
+                {
+                    // Shape renderer is so heavy it will prevent anything else being drawn
+                    // if it is in the same batch as it.
+                    batch.begin();
+                    shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.rect(towerToBePlaced.getX(), towerToBePlaced.getY(), 32, 32);
+                    if (Rifle == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, RifleTower.BASE_RANGE * 32);
+                    }
+                    else if (Zooka == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, BazookaTower.BASE_RANGE * 32);
+                    }
+                    else if (sniper == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, SniperTower.BASE_RANGE * 32);
+                    }
+                    else if (mortar == 1){
+                        shapeRenderer.circle(towerToBePlaced.getX() + 16, towerToBePlaced.getY() + 16, MortarTower.BASE_RANGE * 32);
+                    }
+                    shapeRenderer.end();
+                    batch.end();
+                    batch.begin();
+                    towerToBePlaced.draw(batch);
+                    batch.end();
+                }
+                batch.begin();
+                font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
+                font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
+                font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
                 debugger.setBatch(batch);
                 //towerManager.draw(batch, 1);
                 batch.end();
@@ -507,6 +548,58 @@ public class Play extends GameState {
     public void decrimentGold(int sub)
     {
         gold = gold - sub;
+    }
+
+    public void handleChanges()
+    {
+        List<Action> changes = networkManager.fetchChanges();
+        if(changes != null && !changes.isEmpty())
+        {
+            for(Action action : changes)
+            {
+                switch(action.actionClass)
+                {
+                case ACTION_ENEMY_CREATE:
+                    ActionEnemyCreate enemyCreate = (ActionEnemyCreate)action;
+
+                    if(enemyManager == null || enemyManager.enemyList == null)
+                    {
+                        break;
+                    }
+
+                    for(Enemy enemy : enemyManager.enemyList)
+                    {
+                        if(enemy.tempID == enemyCreate.tempID)
+                        {
+                            enemy.entityID = enemyCreate.entityID;
+                        }
+                    }
+                    break;
+                case ACTION_HEALTH_CHANGED:
+                    ActionHealthChanged healthChanged = (ActionHealthChanged)action;
+
+                    health = healthChanged.newHealth;
+                    break;
+                case ACTION_HOST_PAUSE:
+
+                    break;
+                case ACTION_TOWER_PLACED:
+                    ActionTowerPlaced towerPlaced = (ActionTowerPlaced)action;
+
+                    for(Tower tower : towerManager.towerList)
+                    {
+                        if(tower.tempID == towerPlaced.tempID)
+                        {
+                            tower.entityID = towerPlaced.entityID;
+                        }
+                    }
+                    break;
+                case ACTION_TRANSFER_RESOURCES:
+
+                    break;
+                }
+            }
+        }
     }
 
 

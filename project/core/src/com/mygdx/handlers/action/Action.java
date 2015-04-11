@@ -26,7 +26,8 @@ public abstract class Action
         ACTION_HEALTH_CHANGED,
         ACTION_PLAYER_READY,
         ACTION_CREATE_WAVE,
-        ACTION_PLAYER_WAVE_READY
+        ACTION_PLAYER_WAVE_READY,
+        ACTION_WAVE_END
     }
 
     public Action()

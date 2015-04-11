@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
 import com.mygdx.triggers.WayPoint;
@@ -64,6 +65,7 @@ public class EnemyManager extends Actor{
     public List<Enemy> enemiesToBeRemoved;
     public List<Tower> towerList;
     protected int idCounter = 0;
+    protected boolean paused = false;
 
     private LinkedList<WayPoint> path;
     private float multiplierS = 0;
@@ -100,7 +102,14 @@ public class EnemyManager extends Actor{
     {
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
         enemy.tempID = idCounter;
-        idCounter++; // TODO: This will have to be changed to reflect getting the true entity ID from the host.
+        idCounter++;
+
+        System.out.format("Entity created tempID=%d\n", idCounter);
+
+        ActionEnemyCreate actionEnemyCreate = new ActionEnemyCreate(enemy);
+        networkManager.addToSendQueue(actionEnemyCreate);
+
+        System.out.format("ActionEnemyCreate sent to networkmanager queue.\n");
 
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()
@@ -125,14 +134,21 @@ public class EnemyManager extends Actor{
     //Calculates the number of enemies to spawn in the next wave based on the multiplier.
     public void NextWave(float multiplier)
     {
-        if(currentWave == 2)
+        if(currentWave < 5)
         {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
+            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int) multiplier);
+            this.totalWavesToBeSpawned = waveToBeSpawnedNorm;
+            System.out.println(totalWavesToBeSpawned);
+        }
+
+        else if(currentWave > 5 && currentWave < 10)
+        {
+            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int) multiplier);
             this.waveToBeSpawnedFast = waveInfoFast;
             this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast;
         }
 
-        else if(currentWave == 3)
+        else if(currentWave == 10)
         {
             this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
             this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
@@ -209,192 +225,185 @@ public class EnemyManager extends Actor{
 
     public void Update(float fps)
     {
-        //accumulator +=deltaTime;
-        if (totalWavesToBeSpawned == 0 && enemyList.size() == 0)
-        {
-            /**
-             * TODO: would we need to capture a signal from the network manager here instead?
-             * A server would 'command?' that a new wave would start. Would it send all the info
-             * about the wave, or leave that logic on the client?
-             *
-             * Tanner: Yes so far as I know, these three current wave statements would be called
-             * if the client was the spawner client, and then we would need another separate loop
-             * if they were an acceptor client.
-             */
-            currentWave++;
-            float multiplier = NextWaveCalculator();
-            NextWave(multiplier);
-        }
+        if(!paused) {
+            //accumulator +=deltaTime;
 
-        if (currentWave > 0 && currentWave < 5)
-        {
-            timeSinceLastNorm++;
 
-            if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0) {
-                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
-
-                timeSinceLastNorm = 0;
-                waveToBeSpawnedNorm--;
-                totalWavesToBeSpawned--;
-            }
-
-        }
-
-        else if (currentWave > 4 && currentWave < 10)
-        {
-            timeSinceLastNorm++;
-            timeSinceLastFast++;
-
-            if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
+            if (currentWave > 0 && currentWave < 5)
             {
-                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
+                timeSinceLastNorm++;
 
-                timeSinceLastNorm = 0;
-                waveToBeSpawnedNorm--;
-                totalWavesToBeSpawned--;
-            }
-
-            if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
-            {
-                //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
-                addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
-
-                timeSinceLastFast = 0;
-                waveToBeSpawnedFast--;
-                totalWavesToBeSpawned--;
-            }
-        }
-
-        else if (currentWave > 9)
-        {
-            timeSinceLastNorm++;
-            timeSinceLastFast++;
-            timeSinceLastHeavy++;
-
-            if (timeSinceLastNorm > ((MyGame.fpsretrieve/2) - multiplierSp) && waveToBeSpawnedNorm > 0)
-            {
-                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
-
-                timeSinceLastNorm = 0;
-                waveToBeSpawnedNorm--;
-                totalWavesToBeSpawned--;
-            }
-
-            if (timeSinceLastFast > ((MyGame.fpsretrieve/3) - multiplierSp) && waveToBeSpawnedFast > 0)
-            {
-                //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
-                addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
-
-                timeSinceLastFast = 0;
-                waveToBeSpawnedFast--;
-                totalWavesToBeSpawned--;
-            }
-
-            if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
-            {
-                //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
-                addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
-
-                timeSinceLastHeavy = 0;
-                waveToBeSpawnedHeavy--;
-                totalWavesToBeSpawned--;
-            }
-        }
-
-        for(Tower tower: towerList)
-        {
-            if(tower != null)
-            {
-                for(Enemy enemy : enemyList){
-                    if(!(enemy.entityID == tower.getTarget()) && enemy.getDistanceTraveled() > tower.getTargetDistanceTraveled() && tower.inRange(enemy.getPosition(), centerOffset, rangeOffset)){
-                        tower.setTarget(enemy.entityID);
-                        tower.setTargetDistanceTraveled(enemy.getDistanceTraveled());
-                    }
-                }
-            }
-        }
-
-        for(Tower tower: towerList)
-        {
-            boolean targetNotdead = false;
-            if(tower != null)
-            {
-                for(Enemy enemy : enemyList){
-                    if(enemy.entityID == tower.getTarget()){
-                        targetNotdead = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!targetNotdead) {
-                tower.setTargetDistanceTraveled(0);
-            }
-        }
-
-        for(Tower tower: towerList)
-        {
-            if(tower != null)
-            {
-                for(Enemy enemy : enemyList){
-                    if(enemy.entityID == tower.getTarget() && !tower.inRange(enemy.getPosition(), centerOffset, rangeOffset)){
-                        tower.setTarget(-1);
-                        tower.setTargetDistanceTraveled(0);
-                    }
-                }
-            }
-        }
-
-
-        for(Enemy enemy : enemyList)
-        {
-            if(enemy != null)
-            {
-                for(Tower tower : towerList)
+                if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
                 {
-                    if(tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.entityID == tower.getTarget())
+                    //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                    addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
+
+                    timeSinceLastNorm = 0;
+                    waveToBeSpawnedNorm--;
+                    totalWavesToBeSpawned--;
+                    System.out.println(totalWavesToBeSpawned);
+                }
+
+            }
+            else if (currentWave > 4 && currentWave < 10)
+            {
+                timeSinceLastNorm++;
+                timeSinceLastFast++;
+
+                if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
+                {
+                    //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                    addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
+
+                    timeSinceLastNorm = 0;
+                    waveToBeSpawnedNorm--;
+                    totalWavesToBeSpawned--;
+                }
+
+                if (timeSinceLastFast > ((MyGame.fpsretrieve / 3) - multiplierSp) && waveToBeSpawnedFast > 0)
+                {
+                    //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
+                    addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
+
+                    timeSinceLastFast = 0;
+                    waveToBeSpawnedFast--;
+                    totalWavesToBeSpawned--;
+                }
+            }
+            else if (currentWave > 9)
+            {
+                timeSinceLastNorm++;
+                timeSinceLastFast++;
+                timeSinceLastHeavy++;
+
+                if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
+                {
+                    //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                    addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
+
+                    timeSinceLastNorm = 0;
+                    waveToBeSpawnedNorm--;
+                    totalWavesToBeSpawned--;
+                }
+
+                if (timeSinceLastFast > ((MyGame.fpsretrieve / 3) - multiplierSp) && waveToBeSpawnedFast > 0)
+                {
+                    //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
+                    addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
+
+                    timeSinceLastFast = 0;
+                    waveToBeSpawnedFast--;
+                    totalWavesToBeSpawned--;
+                }
+
+                if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
+                {
+                    //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
+                    addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
+
+                    timeSinceLastHeavy = 0;
+                    waveToBeSpawnedHeavy--;
+                    totalWavesToBeSpawned--;
+                }
+            }
+
+            for (Tower tower : towerList)
+            {
+                if (tower != null)
+                {
+                    for (Enemy enemy : enemyList)
                     {
-                        /**
-                         * TODO: Call ActionEnemyDamage
-                         * Here be where thar enemies be taking damage me captain.
-                         * TODO:Need an action to change the velocity on the server as mortars do that.
-                         */
-                        enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
-                        switch (tower.type)
+                        if (!(enemy.entityID == tower.getTarget()) && enemy.getDistanceTraveled() > tower.getTargetDistanceTraveled() && tower.inRange(enemy.getPosition(), centerOffset, rangeOffset))
                         {
-                        case TOWER_MORTAR:
-                            switch (enemy.type)
-                            {
-                            case ENEMY_NORMAL:
-                                enemy.decrementVelocity(NormalEnemy.BASE_VELOCITY / 2);
-                                break;
-                            case ENEMY_FAST:
-                                enemy.decrementVelocity(FastEnemy.BASE_VELOCITY / 2);
-                                break;
-                            case ENEMY_HEAVY:
-                                enemy.decrementVelocity(HeavyEnemy.BASE_VELOCITY / 2);
-                                break;
-                            }
+                            tower.setTarget(enemy.entityID);
+                            tower.setTargetDistanceTraveled(enemy.getDistanceTraveled());
                         }
-
-                        //System.out.println("Attacking: " + enemy.type + "   Enemy ID: " + enemy.entityID + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
-                        tower.resetTimeSinceLastShot();
-
                     }
                 }
             }
-        }
+
+            for (Tower tower : towerList)
+            {
+                boolean targetNotdead = false;
+                if (tower != null)
+                {
+                    for (Enemy enemy : enemyList)
+                    {
+                        if (enemy.entityID == tower.getTarget())
+                        {
+                            targetNotdead = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!targetNotdead)
+                {
+                    tower.setTargetDistanceTraveled(0);
+                }
+            }
+
+            for (Tower tower : towerList)
+            {
+                if (tower != null)
+                {
+                    for (Enemy enemy : enemyList)
+                    {
+                        if (enemy.entityID == tower.getTarget() && !tower.inRange(enemy.getPosition(), centerOffset, rangeOffset))
+                        {
+                            tower.setTarget(-1);
+                            tower.setTargetDistanceTraveled(0);
+                        }
+                    }
+                }
+            }
 
 
-        for(Tower tower : towerList)
-        {
-            tower.updateTimeSinceLastShot();
-        }
+            for (Enemy enemy : enemyList)
+            {
+                if (enemy != null)
+                {
+                    for (Tower tower : towerList)
+                    {
+                        if (tower.inRange(enemy.getPosition(), centerOffset, rangeOffset) && tower.readyToFire() && enemy.entityID == tower.getTarget()) {
+                            /**
+                             * TODO: Call ActionEnemyDamage
+                             * Here be where thar enemies be taking damage me captain.
+                             * TODO:Need an action to change the velocity on the server as mortars do that.
+                             */
+                            enemy.takeDamage(tower.getDamage(enemy.type) / enemy.getArmor());
+                            switch (tower.type)
+                            {
+                                case TOWER_MORTAR:
+                                    switch (enemy.type)
+                                    {
+                                        case ENEMY_NORMAL:
+                                            enemy.decrementVelocity(NormalEnemy.BASE_VELOCITY / 2);
+                                            break;
+                                        case ENEMY_FAST:
+                                            enemy.decrementVelocity(FastEnemy.BASE_VELOCITY / 2);
+                                            break;
+                                        case ENEMY_HEAVY:
+                                            enemy.decrementVelocity(HeavyEnemy.BASE_VELOCITY / 2);
+                                            break;
+                                    }
+                            }
 
-        //Enemy health decrementer, very crude atm.
+                            //System.out.println("Attacking: " + enemy.type + "   Enemy ID: " + enemy.entityID + "   Damage Done: " + (tower.getDamage(enemy.type) / enemy.getArmor()));
+                            tower.resetTimeSinceLastShot();
+
+                        }
+                    }
+                }
+            }
+
+
+            for (Tower tower : towerList)
+            {
+                tower.updateTimeSinceLastShot();
+            }
+
+            //Enemy health decrementer, very crude atm.
         /*
         for (int i = 0; i < enemies.size(); i++)
         {
@@ -436,38 +445,57 @@ public class EnemyManager extends Actor{
         }
         */
 
-        // Really need to rethink this. Maybe combine previous loops together into one big one?
-        for(Enemy enemy : enemyList)
-        {
-            if(!enemy.check())
+            // Really need to rethink this. Maybe combine previous loops together into one big one?
+            for (Enemy enemy : enemyList)
             {
-                enemy.move();
+                if (!enemy.check())
+                {
+                    enemy.move();
+                }
+            }
+
+            //System.out.println(numEnemies);
+
+            for (Enemy enemy : enemyList)
+            {
+                if (!enemy.isAlive())
+                {
+                    //numDeadEnemies++;
+                    if (enemy.type == enemy.type.ENEMY_NORMAL)
+                        numDeadNormals++;
+                    else if (enemy.type == enemy.type.ENEMY_FAST)
+                        numDeadFast++;
+                    else if (enemy.type == enemy.type.ENEMY_HEAVY)
+                        numDeadHeavy++;
+                    removeEnemy(enemy.entityID);
+                    numEnemies--;
+                }
+            }
+
+            enemyList.removeAll(enemiesToBeRemoved);
+            enemiesToBeRemoved.clear();
+
+            // netcode
+            CheckEnemiesAtEnd();
+
+
+            if (totalWavesToBeSpawned == 0 && enemyList.size() == 0)
+            {
+                /**
+                 * TODO: would we need to capture a signal from the network manager here instead?
+                 * A server would 'command?' that a new wave would start. Would it send all the info
+                 * about the wave, or leave that logic on the client?
+                 *
+                 * Tanner: Yes so far as I know, these three current wave statements would be called
+                 * if the client was the spawner client, and then we would need another separate loop
+                 * if they were an acceptor client.
+                 */
+                currentWave++;
+                paused = true;
+                float multiplier = NextWaveCalculator();
+                NextWave(multiplier);
             }
         }
-
-        System.out.println(numEnemies);
-
-        for(Enemy enemy : enemyList)
-        {
-            if(!enemy.isAlive())
-            {
-                //numDeadEnemies++;
-                if(enemy.type == enemy.type.ENEMY_NORMAL)
-                    numDeadNormals++;
-                else if(enemy.type == enemy.type.ENEMY_FAST)
-                    numDeadFast++;
-                else if(enemy.type == enemy.type.ENEMY_HEAVY)
-                    numDeadHeavy++;
-                removeEnemy(enemy.entityID);
-                numEnemies--;
-            }
-        }
-
-        enemyList.removeAll(enemiesToBeRemoved);
-        enemiesToBeRemoved.clear();
-
-        // netcode
-        CheckEnemiesAtEnd();
     }
 
 
@@ -519,6 +547,15 @@ public class EnemyManager extends Actor{
         {
             enemyList.get(i).draw(batch, parentAlpha);
         }
+    }
+
+    public boolean isPaused()
+    {
+        return paused;
+    }
+
+    public void setPaused(){
+        paused = false;
     }
 
     public void LevelSelectWave(){

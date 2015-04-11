@@ -50,6 +50,7 @@ public class NetworkManager extends Listener implements Runnable
     protected AtomicBoolean initialized;
     protected Boolean ready;
     protected boolean initializeManager;
+    protected boolean singleplayer = false;
 
     // server
     protected Boolean isServer;
@@ -107,6 +108,16 @@ public class NetworkManager extends Listener implements Runnable
         {
             mutex.readLock().unlock();
         }
+    }
+
+    public synchronized void setSingleplayer(boolean value)
+    {
+        singleplayer = value;
+    }
+
+    public boolean getSingleplayer()
+    {
+        return singleplayer;
     }
 
     public void prepInitialize(boolean isServer,
@@ -419,7 +430,7 @@ public class NetworkManager extends Listener implements Runnable
      */
     private void runServer()
     {
-        mutex.readLock().lock();
+        mutex.writeLock().lock();
         try
         {
             boolean isAllReady = true;
@@ -437,11 +448,16 @@ public class NetworkManager extends Listener implements Runnable
                 currentWave++;
 
                 addToSendQueue(createWave);
+
+                for(GameConnection connection : connections)
+                {
+                    connection.waveReady = false;
+                }
             }
         }
         finally
         {
-            mutex.readLock().unlock();
+            mutex.writeLock().unlock();
         }
     }
 
@@ -670,9 +686,7 @@ public class NetworkManager extends Listener implements Runnable
         }
         else
         {
-            // just pass through to receiveChanges, no processing needed
             List<Action> tmp;
-
             mutex.writeLock().lock();
             try
             {
@@ -726,6 +740,11 @@ public class NetworkManager extends Listener implements Runnable
 
     private void receiveChange(Action change)
     {
+        if(change == null)
+        {
+            return;
+        }
+
         switch(change.actionClass)
         {
         case ACTION_PLAYER_WAVE_READY:
@@ -742,6 +761,15 @@ public class NetworkManager extends Listener implements Runnable
             try
             {
                 entityStatus.put(actionCreate.entityID, new EnemyStatus(actionCreate));
+
+                if(singleplayer)
+                {
+                    queuedRemoteChanges.add(actionCreate);
+                }
+                else
+                {
+                    addToSendQueue(actionCreate);
+                }
             }
             finally
             {
@@ -764,7 +792,14 @@ public class NetworkManager extends Listener implements Runnable
                     {
                         health--;
                         ActionHealthChanged actionHealth = new ActionHealthChanged(health);
-                        addToSendQueue(actionHealth);
+                        if(singleplayer)
+                        {
+                            queuedRemoteChanges.add(actionHealth);
+                        }
+                        else
+                        {
+                            addToSendQueue(actionHealth);
+                        }
                     }
 
                     ActionEnemyCreate actionEndCreate = new ActionEnemyCreate((EnemyStatus) entityStatus.get(actionEnd.entityID));
@@ -807,6 +842,14 @@ public class NetworkManager extends Listener implements Runnable
             try
             {
                 entityStatus.put(actionTowerPlaced.entityID, new TowerStatus(actionTowerPlaced));
+                if(singleplayer)
+                {
+                    queuedRemoteChanges.add(actionTowerPlaced);
+                }
+                else
+                {
+                    addToSendQueue(actionTowerPlaced);
+                }
             }
             finally
             {
@@ -830,7 +873,14 @@ public class NetworkManager extends Listener implements Runnable
                         entityStatus.put(actionTowerUpgraded.level, towerStatus);
 
                         actionTowerUpgraded.level = towerStatus.level;
-                        addToSendQueue(actionTowerUpgraded);
+                        if(singleplayer)
+                        {
+                            queuedRemoteChanges.add(actionTowerUpgraded);
+                        }
+                        else
+                        {
+                            addToSendQueue(actionTowerUpgraded);
+                        }
                     }
                 }
             }

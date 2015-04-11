@@ -45,7 +45,7 @@ public class Tutorial extends GameState {
                                      " This is Hans. Say hello Hans. \n 'hallo' -Hans\n Unlike his brother Klaus, Hans was selected for the\n Waffen SS. That means he is basically a Super Nazi.",
                                      " Hans worked hard to get where he is, which\n means he is faster in the field. However he has the\n same armour as Klaus due to supply shortages.\n A mortar team could slow him down for your Rifles.",
                                      " This is the mighty Tiger I Tank.\n It is commanded by 1st Lt. Bruno.\n Lt. Bruno doesn't say much to the other\n Wehrmacht soldiers, they just wouldn't understand.",
-                                     " Lt. Bruno's tank is slow, but heavily armoured.\n It will give our boys a tough time in the field\n so make sure to have some Bazooka bunkers\n ready to go.",
+                                     " Lt. Bruno's tank is slow, but heavily armoured.\n It will give our boys a tough time in the field,\n so make sure to have some Bazooka bunkers\n ready to go.",
                                      " Enemy waves in this game are calculated based on\n how many bunkers you have placed, what wave\n you are on, and how much gold you have stored.\n You will need to play smart to survive.",
                                      "-_-_-_-_-_-_-_-_-_-_-_-_-End of Tutorial-_-_-_-_-_-_-_-_-_-_-_-_-_-"
                                     };
