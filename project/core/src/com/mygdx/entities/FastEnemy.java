@@ -16,9 +16,9 @@ public class FastEnemy extends Enemy
     public static final float BASE_VELOCITY = 6.0f;
     public static final float BASE_ARMOR = 1.0f;
     TextureRegion[][] South;
-    private TextureRegion[] north = new TextureRegion[9];
-    private TextureRegion[] east = new TextureRegion[9];
-    private TextureRegion[] west = new TextureRegion[9];
+    TextureRegion[][] North;
+    TextureRegion[][] East;
+    TextureRegion[][] West;
     private int ticker;
     private int ticker1;
     private int ticker2;
@@ -31,6 +31,9 @@ public class FastEnemy extends Enemy
         ticker2 = 0;
 
         South = TextureRegion.split(south, 32, 32);
+        North = TextureRegion.split(north, 32, 32);
+        East = TextureRegion.split(east, 32, 32);
+        West = TextureRegion.split(west, 32, 32);
 
         this.current = new Sprite(east);
 
@@ -65,7 +68,7 @@ public class FastEnemy extends Enemy
         if(ticker2 == 10) {
             switch (wayPoints.get(currentWayPoint - 1).direction) {
                 case NORTH:
-                    current = new Sprite(South[ticker1][ticker]);
+                    current = new Sprite(North[ticker1][ticker]);
                     if(ticker == 3){
                         ticker1++;
                         ticker = 0;
@@ -85,7 +88,7 @@ public class FastEnemy extends Enemy
                     }
                     break;
                 case EAST:
-                    current = new Sprite(South[ticker1][ticker]);
+                    current = new Sprite(East[ticker1][ticker]);
                     if(ticker == 3){
                         ticker1++;
                         ticker = 0;
@@ -95,7 +98,7 @@ public class FastEnemy extends Enemy
                     }
                     break;
                 case WEST:
-                    current = new Sprite(South[ticker1][ticker]);
+                    current = new Sprite(West[ticker1][ticker]);
                     if(ticker == 3){
                         ticker1++;
                         ticker = 0;
@@ -125,7 +128,7 @@ public class FastEnemy extends Enemy
         Sprite temp = current;
         switch (direction){
             case NORTH:
-                current = new Sprite(South[ticker1][ticker]);
+                current = new Sprite(North[ticker1][ticker]);
                 current.setPosition(temp.getX(), temp.getY());
                 break;
             case SOUTH:
@@ -133,11 +136,11 @@ public class FastEnemy extends Enemy
                 current.setPosition(temp.getX(), temp.getY());
                 break;
             case EAST:
-                current = new Sprite(South[ticker1][ticker]);
+                current = new Sprite(East[ticker1][ticker]);
                 current.setPosition(temp.getX(), temp.getY());
                 break;
             case WEST:
-                current = new Sprite(South[ticker1][ticker]);
+                current = new Sprite(West[ticker1][ticker]);
                 current.setPosition(temp.getX(), temp.getY());
                 break;
         }
