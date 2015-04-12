@@ -2,6 +2,7 @@ package com.mygdx.entities;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.triggers.WayPoint;
 
@@ -29,16 +30,23 @@ public abstract class Enemy extends Entity
     protected float distanceTraveled;
 
 
-    protected Sprite south;
-    protected Sprite north;
-    protected Sprite east;
-    protected Sprite west;
+    TextureRegion[][] South;
+    TextureRegion[][] North;
+    TextureRegion[][] East;
+    TextureRegion[][] West;
     protected Sprite current;
+
+    private int ticker;
+    private int ticker1;
+    private int ticker2;
 
     public Enemy(Type type, float x, float y)
     {
         super(x, y);
 
+        ticker = 0;
+        ticker1 = 0;
+        ticker2 = 0;
         health = BASE_HEALTH;
 
         this.type = type;
@@ -76,32 +84,86 @@ public abstract class Enemy extends Entity
 
     public void move()
     {
+        ticker2++;
         position.x += (velocity * heading.x);
         position.y += (velocity * heading.y);
 
+        if(ticker2 == 10) {
+            switch (wayPoints.get(currentWayPoint - 1).direction) {
+                case NORTH:
+                    current = new Sprite(North[ticker1][ticker]);
+                    if(ticker == 3){
+                        ticker1++;
+                        ticker = 0;
+                    }
+                    else{
+                        ticker++;
+                    }
+                    break;
+                case SOUTH:
+                    current = new Sprite(South[ticker1][ticker]);
+                    if(ticker == 3){
+                        ticker1++;
+                        ticker = 0;
+                    }
+                    else{
+                        ticker++;
+                    }
+                    break;
+                case EAST:
+                    current = new Sprite(East[ticker1][ticker]);
+                    if(ticker == 3){
+                        ticker1++;
+                        ticker = 0;
+                    }
+                    else{
+                        ticker++;
+                    }
+                    break;
+                case WEST:
+                    current = new Sprite(West[ticker1][ticker]);
+                    if(ticker == 3){
+                        ticker1++;
+                        ticker = 0;
+                    }
+                    else{
+                        ticker++;
+                    }
+                    break;
+            }
+
+            ticker2 = 0;
+        }
+
+        if(ticker1 == 3 && ticker == 3){
+            ticker = 0;
+            ticker1 = 0;
+        }
+
         current.setPosition(position.x, position.y);
-        
+
         distanceTraveled += Math.abs(velocity);
     }
 
     public void rotateToDirection(WayPoint.Direction direction)
     {
+        Sprite temp = current;
         switch (direction){
             case NORTH:
-                north.setPosition(current.getX(), current.getY());
-                current = north;
+                current = new Sprite(North[ticker1][ticker]);
+                current.setPosition(temp.getX(), temp.getY());
                 break;
             case SOUTH:
-                south.setPosition(current.getX(), current.getY());
-                current = south;
+                current = new Sprite(South[ticker1][ticker]);
+                current.setPosition(temp.getX(), temp.getY());
                 break;
             case EAST:
-                east.setPosition(current.getX(), current.getY());
-                current = east;
+                current = new Sprite(East[ticker1][ticker]);
+                current.setPosition(temp.getX(), temp.getY());
                 break;
             case WEST:
-                west.setPosition(current.getX(), current.getY());
-                current = west;
+                current = new Sprite(West[ticker1][ticker]);
+                current.setPosition(temp.getX(), temp.getY());
                 break;
         }
     }
