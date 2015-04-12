@@ -56,10 +56,10 @@ public class EnemyManager extends Actor{
     private Texture FastEnemyS = new Texture("Enemydirectionassets/FastEnemySouthSheet.png");
     private Texture FastEnemyE = new Texture("Enemydirectionassets/FastEnemyEastSheet.png");
     private Texture FastEnemyW = new Texture("Enemydirectionassets/FastEnemyWestSheet.png");
-    private Texture TigerBaseN = new Texture("Enemydirectionassets/TigerNorth.png");
-    private Texture TigerBaseS = new Texture("Enemydirectionassets/TigerSouth.png");
-    private Texture TigerBaseE = new Texture("Enemydirectionassets/TigerEast.png");
-    private Texture TigerBaseW = new Texture("Enemydirectionassets/TigerWest.png");
+    private Texture TigerBaseN = new Texture("Enemydirectionassets/TigerNorthSheet.png");
+    private Texture TigerBaseS = new Texture("Enemydirectionassets/TigerSouthSheet.png");
+    private Texture TigerBaseE = new Texture("Enemydirectionassets/TigerEastSheet.png");
+    private Texture TigerBaseW = new Texture("Enemydirectionassets/TigerWestSheet.png");
 
     public List<Enemy> enemyList;
     public List<Enemy> enemiesToBeRemoved;
@@ -148,15 +148,7 @@ public class EnemyManager extends Actor{
             this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast;
         }
 
-        else if(currentWave == 10)
-        {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
-            this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
-            this.waveToBeSpawnedHeavy = waveInfoHeavy;
-            this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
-        }
-
-        else
+        else if(currentWave > 9)
         {
             this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
             this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
@@ -249,6 +241,9 @@ public class EnemyManager extends Actor{
             {
                 timeSinceLastNorm++;
                 timeSinceLastFast++;
+                System.out.println(waveToBeSpawnedNorm);
+                System.out.println(waveToBeSpawnedFast);
+                System.out.println(totalWavesToBeSpawned);
 
                 if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
                 {
@@ -299,7 +294,7 @@ public class EnemyManager extends Actor{
                 if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
                 {
                     //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
-                    //addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
+                    addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
 
                     timeSinceLastHeavy = 0;
                     waveToBeSpawnedHeavy--;
