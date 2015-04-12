@@ -148,15 +148,7 @@ public class EnemyManager extends Actor{
             this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast;
         }
 
-        else if(currentWave == 10)
-        {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
-            this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
-            this.waveToBeSpawnedHeavy = waveInfoHeavy;
-            this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
-        }
-
-        else
+        else if(currentWave > 9)
         {
             this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
             this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
@@ -249,6 +241,9 @@ public class EnemyManager extends Actor{
             {
                 timeSinceLastNorm++;
                 timeSinceLastFast++;
+                System.out.println(waveToBeSpawnedNorm);
+                System.out.println(waveToBeSpawnedFast);
+                System.out.println(totalWavesToBeSpawned);
 
                 if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
                 {
