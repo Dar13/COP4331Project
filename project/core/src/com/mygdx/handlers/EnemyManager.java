@@ -48,14 +48,14 @@ public class EnemyManager extends Actor{
     public float timeSinceLastNorm;
     public float timeSinceLastFast;
     public float timeSinceLastHeavy;
-    private Texture NormEnemyN = new Texture("Enemydirectionassets/EnemyRifleNorth.png");
-    private Texture NormEnemyS = new Texture("Enemydirectionassets/EnemyRifleSouth.png");
-    private Texture NormEnemyE = new Texture("Enemydirectionassets/EnemyRifleEast.png");
-    private Texture NormEnemyW = new Texture("Enemydirectionassets/EnemyRifleWest.png");
-    private Texture FastEnemyN = new Texture("Enemydirectionassets/EnemyFastNorth.png");
-    private Texture FastEnemyS = new Texture("Enemydirectionassets/EnemyFastSouth.png");
-    private Texture FastEnemyE = new Texture("Enemydirectionassets/EnemyFastEast.png");
-    private Texture FastEnemyW = new Texture("Enemydirectionassets/EnemyFastWest.png");
+    private Texture NormEnemyN = new Texture("Enemydirectionassets/RifleEnemyNorthSheet.png");
+    private Texture NormEnemyS = new Texture("Enemydirectionassets/RifleEnemySouthSheet.png");
+    private Texture NormEnemyE = new Texture("Enemydirectionassets/RifleEnemyEastSheet.png");
+    private Texture NormEnemyW = new Texture("Enemydirectionassets/RifleEnemyWestSheet.png");
+    private Texture FastEnemyN = new Texture("Enemydirectionassets/FastEnemyNorthSheet.png");
+    private Texture FastEnemyS = new Texture("Enemydirectionassets/FastEnemySouthSheet.png");
+    private Texture FastEnemyE = new Texture("Enemydirectionassets/FastEnemyEastSheet.png");
+    private Texture FastEnemyW = new Texture("Enemydirectionassets/FastEnemyWestSheet.png");
     private Texture TigerBaseN = new Texture("Enemydirectionassets/TigerNorth.png");
     private Texture TigerBaseS = new Texture("Enemydirectionassets/TigerSouth.png");
     private Texture TigerBaseE = new Texture("Enemydirectionassets/TigerEast.png");
@@ -299,7 +299,7 @@ public class EnemyManager extends Actor{
                 if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
                 {
                     //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
-                    addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
+                    //addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
 
                     timeSinceLastHeavy = 0;
                     waveToBeSpawnedHeavy--;

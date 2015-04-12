@@ -3,6 +3,7 @@ package com.mygdx.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by NeilMoore on 3/25/2015.
@@ -16,10 +17,10 @@ public class HeavyEnemy extends Enemy
     {
         super(Type.ENEMY_HEAVY, x, y);
 
-        this.north = new Sprite(north);
-        this.south = new Sprite(south);
-        this.east = new Sprite(east);
-        this.west = new Sprite(west);
+        South = TextureRegion.split(south, 32, 32);
+        North = TextureRegion.split(north, 32, 32);
+        East = TextureRegion.split(east, 32, 32);
+        West = TextureRegion.split(west, 32, 32);
         this.current = new Sprite(east);
 
         velocity = BASE_VELOCITY;
