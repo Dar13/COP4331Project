@@ -56,10 +56,10 @@ public class EnemyManager extends Actor{
     private Texture FastEnemyS = new Texture("Enemydirectionassets/FastEnemySouthSheet.png");
     private Texture FastEnemyE = new Texture("Enemydirectionassets/FastEnemyEastSheet.png");
     private Texture FastEnemyW = new Texture("Enemydirectionassets/FastEnemyWestSheet.png");
-    private Texture TigerBaseN = new Texture("Enemydirectionassets/TigerNorth.png");
-    private Texture TigerBaseS = new Texture("Enemydirectionassets/TigerSouth.png");
-    private Texture TigerBaseE = new Texture("Enemydirectionassets/TigerEast.png");
-    private Texture TigerBaseW = new Texture("Enemydirectionassets/TigerWest.png");
+    private Texture TigerBaseN = new Texture("Enemydirectionassets/TigerNorthSheet.png");
+    private Texture TigerBaseS = new Texture("Enemydirectionassets/TigerSouthSheet.png");
+    private Texture TigerBaseE = new Texture("Enemydirectionassets/TigerEastSheet.png");
+    private Texture TigerBaseW = new Texture("Enemydirectionassets/TigerWestSheet.png");
 
     public List<Enemy> enemyList;
     public List<Enemy> enemiesToBeRemoved;
@@ -299,7 +299,7 @@ public class EnemyManager extends Actor{
                 if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
                 {
                     //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
-                    //addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
+                    addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
 
                     timeSinceLastHeavy = 0;
                     waveToBeSpawnedHeavy--;
