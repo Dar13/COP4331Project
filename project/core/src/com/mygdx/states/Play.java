@@ -233,6 +233,7 @@ public class Play extends GameState {
             case PAUSED:
                 hub.act(delta);
                 stage.act(delta);
+                gold -= towerManager.towerAct(delta, gold);
                 break;
             case PLAY:
                 if(enemyManager == null)

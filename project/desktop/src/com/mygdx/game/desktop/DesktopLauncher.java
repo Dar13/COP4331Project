@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.title = " Over The Rhine";
         config.width = MyGame.V_WIDTH;
         config.height = MyGame.V_HEIGHT;
         HashMap<ConnectionMode,
@@ -22,6 +23,7 @@ public class DesktopLauncher {
         networkImpls.put(ConnectionMode.WIFI_P2P, null);
         networkImpls.put(ConnectionMode.DATA_4G, null);
         networkImpls.put(ConnectionMode.NONE, null);
+
 		new LwjglApplication(new MyGame(networkImpls, false), config);
 	}
 }
