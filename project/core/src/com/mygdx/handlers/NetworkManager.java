@@ -53,6 +53,8 @@ public class NetworkManager extends Listener implements Runnable
     protected boolean initializeManager;
     protected boolean singleplayer = false;
 
+    protected int hashmapCall = 0;
+
     // server
     protected Boolean isServer;
     protected Server server;
@@ -395,6 +397,19 @@ public class NetworkManager extends Listener implements Runnable
         }
     }
 
+    public int getFirstClientID()
+    {
+        for(Integer player : playerStatus.keySet())
+        {
+            if(playerStatus.get(player) == PlayerStatus.PLAYER)
+            {
+                return player;
+            }
+        }
+
+        return 0;
+    }
+
     public void registerPackets()
     {
         if(isServer)
@@ -465,6 +480,7 @@ public class NetworkManager extends Listener implements Runnable
             if(isAllReady)
             {
                 ActionCreateWave createWave = new ActionCreateWave(currentWave);
+                createWave.region = getFirstClientID();
                 currentWave++;
 
                 addToSendQueue(createWave);
@@ -474,6 +490,8 @@ public class NetworkManager extends Listener implements Runnable
                     connection.waveReady = false;
                 }
             }
+
+            //System.out.format("Hashmap calls: %d\n", hashmapCall);
         }
         finally
         {
@@ -582,7 +600,7 @@ public class NetworkManager extends Listener implements Runnable
     @Override
     public void received(Connection connection, Object object)
     {
-        System.out.println("NET: Packet received!");
+        //System.out.println("NET: Packet received!");
         boolean handled = false;
 
         if(isServer)
@@ -609,7 +627,7 @@ public class NetworkManager extends Listener implements Runnable
                         if(object instanceof Action)
                         {
                             Action action = (Action)object;
-                            action.region = gameConnection.getUID();
+                            action.region = gameConnection.playerID;
                             receiveChange(action);
                         }
                     }
@@ -715,15 +733,21 @@ public class NetworkManager extends Listener implements Runnable
             mutex.writeLock().lock();
             try
             {
-                tmp = queuedLocalChanges;
-                queuedLocalChanges = new ArrayList<Action>();
+                for(Action action : queuedLocalChanges)
+                {
+                    for(GameConnection connection : connections)
+                    {
+                        if(connection.playerID == action.region)
+                        {
+                            server.sendToTCP(connection.connection.getID(), action);
+                        }
+                    }
+                }
             }
             finally
             {
                 mutex.writeLock().unlock();
             }
-
-            receiveChanges(tmp);
         }
         /**
          * TODO: implement this method with Kryonet, Pseudocode follows:
@@ -757,6 +781,8 @@ public class NetworkManager extends Listener implements Runnable
             return;
         }
 
+        //System.out.format("Changes size: %d\n", changes.size());
+
         for(Action change : changes)
         {
             receiveChange(change);
@@ -769,8 +795,6 @@ public class NetworkManager extends Listener implements Runnable
         {
             return;
         }
-
-        System.out.println(change.getClass());
 
         switch(change.actionClass)
         {
@@ -788,6 +812,7 @@ public class NetworkManager extends Listener implements Runnable
             try
             {
                 entityStatus.put(actionCreate.entityID, new EnemyStatus(actionCreate));
+                hashmapCall++;
 
                 if(singleplayer)
                 {

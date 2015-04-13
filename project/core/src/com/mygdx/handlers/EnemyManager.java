@@ -75,6 +75,7 @@ public class EnemyManager extends Actor{
     private float multiplierSp = 0;
     Batch batch;
 
+    public int hashmapCalls = 0;
 
     public enum NetType
     {
@@ -111,12 +112,8 @@ public class EnemyManager extends Actor{
         Enemy enemy = createEnemy(type, -1, idCounter, north, south, east, west);
         idCounter++;
 
-        System.out.format("Entity created tempID=%d\n", idCounter);
-
         ActionEnemyCreate actionEnemyCreate = new ActionEnemyCreate(enemy);
         networkManager.addToSendQueue(actionEnemyCreate);
-
-        System.out.format("ActionEnemyCreate sent to networkmanager queue.\n");
 
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()

@@ -37,9 +37,9 @@ public class LevelSelect extends GameState {
         Actor map = new Actor(Map, 0, 0);
         stage.addActor(map);
         wayPointManager = new WayPointManager(5);
-       /* enemyManager = new EnemyManager(networkManager,wayPointManager.wayPoints, stage.getBatch());
+        enemyManager = new EnemyManager(networkManager,wayPointManager.wayPoints, stage.getBatch());
         enemyManager.LevelSelectWave();
-        stage.addActor(enemyManager);*/
+        stage.addActor(enemyManager);
 
         easy = new TextButton("Easy",skin);
         easy.setSize(200, 60);
