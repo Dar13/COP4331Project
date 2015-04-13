@@ -44,12 +44,6 @@ public class NetTest extends GameState
         cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
-        com.mygdx.entities.Actor map = new com.mygdx.entities.Actor(Map, 0, 0);
-        stage.addActor(map);
-        wayPointManager = new WayPointManager(5);
-        enemyManager = new EnemyManager(networkManager,wayPointManager.wayPoints, stage.getBatch());
-        enemyManager.LevelSelectWave();
-        stage.addActor(enemyManager);
 
 
 
@@ -83,6 +77,7 @@ public class NetTest extends GameState
                     ConnectionMode.NONE,
                     true);
             serverButton.setDisabled(true);
+            gameStateManager.setState(GameStateManager.LEVELSELECT,0);
           //  gameStateManager.setState(GameStateManager.PLAY,1);
         }
 
@@ -92,6 +87,7 @@ public class NetTest extends GameState
                     ConnectionMode.NONE,
                     true);
             clientButton.setDisabled(true);
+            gameStateManager.setState(GameStateManager.LEVELSELECT,0);
             //gameStateManager.setState(GameStateManager.PLAY,2);
         }
 
