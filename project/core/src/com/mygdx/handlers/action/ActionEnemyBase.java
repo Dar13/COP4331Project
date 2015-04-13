@@ -1,6 +1,7 @@
 package com.mygdx.handlers.action;
 
 import com.mygdx.entities.Enemy;
+import com.mygdx.entities.Entity;
 import com.mygdx.net.EnemyStatus;
 
 /**
@@ -8,13 +9,13 @@ import com.mygdx.net.EnemyStatus;
  */
 public class ActionEnemyBase extends ActionEntityBase
 {
-    public Class<?> enemyType;
+    public Enemy.Type enemyType;
 
     public ActionEnemyBase(Enemy enemy)
     {
         super(enemy);
 
-        enemyType = enemy.getClass();
+        enemyType = enemy.type;
     }
 
     public ActionEnemyBase(EnemyStatus enemyStatus)

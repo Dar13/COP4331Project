@@ -568,6 +568,11 @@ public class Play extends GameState {
                         break;
                     }
 
+                    if(!enemyCreate.needsID)
+                    {
+                        enemyManager.addEnemy(enemyCreate.enemyType, enemyCreate.entityID);
+                    }
+
                     for(Enemy enemy : enemyManager.enemyList)
                     {
                         if(enemy.tempID == enemyCreate.tempID)

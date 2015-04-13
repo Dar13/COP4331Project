@@ -101,8 +101,7 @@ public class EnemyManager extends Actor{
      */
     public void addEnemy(Entity.Type type, Texture north, Texture south, Texture east, Texture west, List<WayPoint> path)
     {
-        Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
-        enemy.tempID = idCounter;
+        Enemy enemy = createEnemy(type, -1, idCounter, north, south, east, west);
         idCounter++;
 
         System.out.format("Entity created tempID=%d\n", idCounter);
@@ -115,6 +114,39 @@ public class EnemyManager extends Actor{
         enemy.setWayPoints(path);
         enemyList.add(enemy); // this is an append operation, same as addLast()
         numEnemies++;
+    }
+
+    public void addEnemy(Entity.Type type, int entityID)
+    {
+        Enemy enemy = null;
+        switch(type)
+        {
+        case ENEMY_NORMAL:
+            enemy = createEnemy(type, entityID, -1, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW);
+            break;
+        case ENEMY_FAST:
+            enemy = createEnemy(type, entityID, -1, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW);
+            break;
+        case ENEMY_HEAVY:
+            enemy = createEnemy(type, entityID, -1, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW);
+            break;
+        default:
+            enemy = null;
+            break;
+        }
+
+        enemy.setWayPoints(path);
+        enemyList.add(enemy);
+        numEnemies++;
+    }
+
+    protected Enemy createEnemy(Entity.Type type, int entityID, int tempID, Texture north, Texture south, Texture east, Texture west)
+    {
+        Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
+        enemy.entityID = entityID;
+        enemy.tempID = tempID;
+
+        return enemy;
     }
 
     //Removes targeted enemy from Enemy Linked list

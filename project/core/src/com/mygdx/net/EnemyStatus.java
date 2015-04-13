@@ -1,5 +1,7 @@
 package com.mygdx.net;
 
+import com.mygdx.entities.Enemy;
+import com.mygdx.entities.Entity;
 import com.mygdx.handlers.action.ActionEnemyBase;
 import com.mygdx.handlers.action.ActionEnemyCreate;
 
@@ -8,7 +10,7 @@ import com.mygdx.handlers.action.ActionEnemyCreate;
  */
 public class EnemyStatus extends EntityStatus
 {
-    public Class<?> enemyType;
+    public Enemy.Type enemyType;
     public float health;
     public float armor;
 
