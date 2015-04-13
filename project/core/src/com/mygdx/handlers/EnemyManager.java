@@ -30,6 +30,7 @@ public class EnemyManager extends Actor{
     protected static final int waveInfoNorm = 20;
     protected static final int waveInfoFast = 7;
     protected static final int waveInfoHeavy = 1;
+    private int tick = 0;
 
     public int currentWave = 1;
     private int gold = 0;
@@ -161,6 +162,7 @@ public class EnemyManager extends Actor{
     //Calculates the multiplier to be used in the next round based on player towers.
     public float NextWaveCalculator()
     {
+        currentWave++;
         float multiplier = 0 + (gold * .001f);
         multiplierS = (currentWave * .05f) + (gold * .001f);
         multiplierA = currentWave * .05f + (gold * .001f);
@@ -219,6 +221,12 @@ public class EnemyManager extends Actor{
     {
         if(!paused) {
             //accumulator +=deltaTime;
+            if(tick == 1)
+            {
+                float multiplier = NextWaveCalculator();
+                NextWave(multiplier);
+                tick = 0;
+            }
 
 
             if (currentWave > 0 && currentWave < 5)
@@ -485,10 +493,8 @@ public class EnemyManager extends Actor{
                  * if the client was the spawner client, and then we would need another separate loop
                  * if they were an acceptor client.
                  */
-                currentWave++;
                 paused = true;
-                float multiplier = NextWaveCalculator();
-                NextWave(multiplier);
+                tick = 1;
             }
         }
     }

@@ -242,6 +242,13 @@ public class Play extends GameState {
                 }
                 if(enemyManager.isPaused())
                 {
+                    if(enemyManager.currentWave == totalWaves)
+                    {
+                        // TODO: send this info to the Server so all clients end. Also move alot of the if-statement logic to the server?
+                        // Maybe server indeed needs to count how many enemy killed in order to send this action
+                        gameStateManager.pushState(GameStateManager.GOODEND, 0);
+                    }
+
                     state = SubState.PAUSED;
                     readyButton.setVisible(true);
                     readyButton.setDisabled(false);
@@ -255,13 +262,7 @@ public class Play extends GameState {
                 {
                     gameStateManager.setState(GameStateManager.BADEND, 0);
                 }
-
-                else if (enemyManager.currentWave == totalWaves && (enemyManager.waveToBeSpawnedFast + enemyManager.waveToBeSpawnedNorm + enemyManager.waveToBeSpawnedHeavy) == 0 && enemyManager.enemyList.size() == 0)
-                {
-                    // TODO: send this info to the Server so all clients end. Also move alot of the if-statement logic to the server?
-                    // Maybe server indeed needs to count how many enemy killed in order to send this action
-                    gameStateManager.pushState(GameStateManager.GOODEND, 0);
-                }
+                
                 break;
 
         }
