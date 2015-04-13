@@ -27,6 +27,8 @@ public class ActionEnemyCreate extends ActionEnemyBase
     {
         super(enemyStatus);
 
+        actionClass = ActionClass.ACTION_ENEMY_CREATE;
+
         health = enemyStatus.health;
         armor = enemyStatus.armor;
     }

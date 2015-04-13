@@ -21,6 +21,7 @@ import com.mygdx.net.EnemyStatus;
 import com.mygdx.net.EntityStatus;
 import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
+import com.mygdx.net.PlayerStatus;
 import com.mygdx.net.TowerStatus;
 
 import java.io.IOException;
@@ -62,12 +63,15 @@ public class NetworkManager extends Listener implements Runnable
     protected int lastEntityID = ENTITY_ID_START;
     protected Map<Integer, EntityStatus> entityStatus;
     protected int currentWave = 1;
+    protected Map<Integer, PlayerStatus> playerStatus;
+    protected int lastPlayerID;
 
     // client
     protected Client client;
     protected ArrayList<InetAddress> serverAddresses;
     protected InetAddress hostAddress;
     protected boolean validated = false;
+    protected int playerID = -1;
 
     // techniques of connecting
     protected ConnectionMode preferredMode;
@@ -89,6 +93,9 @@ public class NetworkManager extends Listener implements Runnable
         ready = false;
         initializeManager = false;
         expectedAmountClients = MAX_CLIENTS;
+
+        playerStatus = new HashMap<>();
+        playerStatus.put(0, PlayerStatus.SELF);
 
         // this is the closest to a traditional mutex I could find.
         // allows multiple reads at one time while only allowing one write lock.
@@ -273,6 +280,11 @@ public class NetworkManager extends Listener implements Runnable
         }
     }
 
+    public synchronized int getPlayerID()
+    {
+        return playerID;
+    }
+
     public synchronized InetAddress getHostAddress()
     {
         mutex.readLock().lock();
@@ -390,6 +402,7 @@ public class NetworkManager extends Listener implements Runnable
             Kryo kryo = server.getKryo();
             kryo.register(GameConnection.ServerAuth.class);
             kryo.register(GameConnection.ClientAuth.class);
+            kryo.register(GameConnection.PlayerID.class);
         }
         else
         {
@@ -434,11 +447,18 @@ public class NetworkManager extends Listener implements Runnable
         try
         {
             boolean isAllReady = true;
-            for (GameConnection connection : connections)
+            if(connections.isEmpty())
             {
-                if(!connection.waveReady)
+                isAllReady = false;
+            }
+            else
+            {
+                for (GameConnection connection : connections)
                 {
-                    isAllReady = false;
+                    if (!connection.waveReady)
+                    {
+                        isAllReady = false;
+                    }
                 }
             }
 
@@ -604,6 +624,11 @@ public class NetworkManager extends Listener implements Runnable
                 validated = handleValidation(null, connection, object);
             }
 
+            if(object instanceof GameConnection.PlayerID)
+            {
+                playerID = ((GameConnection.PlayerID) object).playerID;
+            }
+
             // assume authenticated, handle packet normally
         }
 
@@ -745,6 +770,8 @@ public class NetworkManager extends Listener implements Runnable
             return;
         }
 
+        System.out.println(change.getClass());
+
         switch(change.actionClass)
         {
         case ACTION_PLAYER_WAVE_READY:
@@ -802,10 +829,13 @@ public class NetworkManager extends Listener implements Runnable
                         }
                     }
 
-                    ActionEnemyCreate actionEndCreate = new ActionEnemyCreate((EnemyStatus) entityStatus.get(actionEnd.entityID));
+                    if(!connections.isEmpty())
+                    {
+                        ActionEnemyCreate actionEndCreate = new ActionEnemyCreate((EnemyStatus) entityStatus.get(actionEnd.entityID));
 
-                    //add actionEndCreate to the queue that's going back out to the clients.
-                    addToSendQueue(actionEndCreate);
+                        //add actionEndCreate to the queue that's going back out to the clients.
+                        addToSendQueue(actionEndCreate);
+                    }
                 }
             }
             finally
@@ -906,6 +936,17 @@ public class NetworkManager extends Listener implements Runnable
                 gameConnection.connection.sendTCP(new GameConnection.ServerAuth());
                 gameConnection.assignUID(uidCounter);
                 uidCounter++;
+
+                gameConnection.playerID = lastPlayerID;
+                GameConnection.PlayerID idPacket = new GameConnection.PlayerID();
+                gameConnection.connection.sendTCP(idPacket);
+
+                idPacket.playerID = gameConnection.playerID;
+
+                lastPlayerID++;
+
+                playerStatus.put(gameConnection.playerID, PlayerStatus.PLAYER);
+
                 System.out.println("NET: Client auth key = " + authPacket.key);
                 return true;
             }
@@ -916,6 +957,7 @@ public class NetworkManager extends Listener implements Runnable
             }
         }
 
+        // client attempting to validate.
         if(object instanceof GameConnection.ServerAuth)
         {
             GameConnection.ServerAuth authPacket = (GameConnection.ServerAuth)object;

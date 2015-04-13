@@ -10,5 +10,7 @@ public class ActionTowerPlaced extends ActionTowerBase
     public ActionTowerPlaced(Tower tower)
     {
         super(tower);
+
+        actionClass = ActionClass.ACTION_TOWER_PLACED;
     }
 }

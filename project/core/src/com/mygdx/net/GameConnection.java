@@ -10,7 +10,6 @@ public class GameConnection
 {
     public static class ServerAuth
     {
-
         public int key = MyGame.VERSION;
     }
 
@@ -19,11 +18,17 @@ public class GameConnection
         public int key = MyGame.VERSION;
     }
 
+    public static class PlayerID
+    {
+        public int playerID;
+    }
+
     public Connection connection;
     public boolean ready = false;
     public boolean waveReady = false;
 
     protected int uid;
+    public int playerID;
     protected boolean validated;
 
     public int getUID()
