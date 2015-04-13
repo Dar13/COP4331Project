@@ -538,9 +538,16 @@ public class EnemyManager extends Actor{
     @Override
     public void draw(Batch batch, float parentAlpha) {
         this.batch = batch;
+
+      //  Enemy[] e = enemyList.toArray(<Enemy> e);
         for (int i = 0; i < numEnemies; i++)
         {
-            enemyList.get(i).draw(batch, parentAlpha);
+         //   System.out.println(enemyList.size() + " " + i);
+            if(enemyList.size()>i){
+                enemyList.get(i).draw(batch, parentAlpha);
+            }
+
+
         }
     }
 
