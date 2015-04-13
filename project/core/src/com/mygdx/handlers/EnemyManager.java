@@ -75,6 +75,13 @@ public class EnemyManager extends Actor{
     private float multiplierSp = 0;
     Batch batch;
 
+
+    public enum NetType
+    {
+        SERVER,
+        CLIENT,
+    }
+
     public EnemyManager(NetworkManager netManager, LinkedList<WayPoint> path, Batch batch)
     {
         networkManager = netManager;

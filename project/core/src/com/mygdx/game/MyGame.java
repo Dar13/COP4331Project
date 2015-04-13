@@ -86,10 +86,7 @@ public class MyGame extends ApplicationAdapter
         }
         gameStateManager.update(fps);
         gameStateManager.render(fps);
-        //gameStateManager.update(fps);
-        //gameStateManager.render();
 
-        //MyInput.update();
     }
 
     public SpriteBatch getSpriteBatch()
