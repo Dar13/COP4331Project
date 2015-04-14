@@ -448,47 +448,6 @@ public class EnemyManager extends Actor{
                 tower.updateTimeSinceLastShot();
             }
 
-            //Enemy health decrementer, very crude atm.
-        /*
-        for (int i = 0; i < enemies.size(); i++)
-        {
-            if (enemies.get(i) == null)
-            {
-                continue;
-            }
-            for (int j = 0; j < towers.size(); j++)
-            {
-                if (InRange(enemies.get(i).sprite.getX(),
-                        enemies.get(i).sprite.getY(),
-                        towers.get(j).sprite.getX(),
-                        towers.get(j).sprite.getY(),
-                        towers.get(j).range))
-                {
-                    if (enemies.get(i).health > 0)
-                    {
-                        enemies.get(i).health = enemies.get(i).health - (towers.get(j).damages / enemies.get(i).armor);
-                    }
-
-
-                }
-            }
-        }
-        */
-
-
-
-
-        /*
-        for (int i = 0; i < enemies.size(); i++)
-        {
-            if (enemies.get(i).health <= 0)
-            {
-                numDeadEnemies++;
-                removeEnemy(i);
-                numEnemies--;
-            }
-        }
-        */
 
             // Really need to rethink this. Maybe combine previous loops together into one big one?
             for (Enemy enemy : enemyList)
@@ -540,17 +499,6 @@ public class EnemyManager extends Actor{
             }
         }
     }
-
-
-    /*
-    //Returns number of enemies killed in the update.
-    public int GetDeadEnemies()
-    {
-        int temp = numDeadEnemies;
-        numDeadEnemies = 0;
-        return temp;
-    }
-    */
 
     //Returns the amount of gold earned for enemies killed in the update.
     public int GetGoldEarned()
