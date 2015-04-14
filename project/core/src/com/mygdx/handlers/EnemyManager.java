@@ -37,7 +37,6 @@ public class EnemyManager extends Actor{
 
     protected NetworkManager networkManager;
 
-    private int enemyId_in_enemyManager = -1;
 
     public int numEnemies = 0;
     private int numDeadEnemies = 0;
