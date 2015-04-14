@@ -554,14 +554,21 @@ public class Play extends GameState {
 
     public void handleChanges()
     {
+
         List<Action> changes = networkManager.fetchChanges();
         if(changes != null && !changes.isEmpty())
         {
+            System.out.println();
+            System.out.println();
+            System.out.println("hi");
+            System.out.println();
+            System.out.println();
             for(Action action : changes)
             {
                 switch(action.actionClass)
                 {
                 case ACTION_ENEMY_CREATE:
+
                     ActionEnemyCreate enemyCreate = (ActionEnemyCreate)action;
 
                     if(enemyManager == null || enemyManager.enemyList == null)

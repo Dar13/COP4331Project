@@ -37,6 +37,8 @@ public class EnemyManager extends Actor{
 
     protected NetworkManager networkManager;
 
+    private int enemyId_in_enemyManager = -1;
+
     public int numEnemies = 0;
     private int numDeadEnemies = 0;
     private int numDeadNormals = 0;
@@ -109,7 +111,8 @@ public class EnemyManager extends Actor{
      */
     public void addEnemy(Entity.Type type, Texture north, Texture south, Texture east, Texture west, List<WayPoint> path)
     {
-        Enemy enemy = createEnemy(type, -1, idCounter, north, south, east, west);
+
+        Enemy enemy = createEnemy(type, idCounter, -1, north, south, east, west);
         idCounter++;
 
         ActionEnemyCreate actionEnemyCreate = new ActionEnemyCreate(enemy);
@@ -122,6 +125,7 @@ public class EnemyManager extends Actor{
 
     public void addEnemy(Entity.Type type, int entityID)
     {
+
         Enemy enemy = null;
         switch(type)
         {
@@ -146,6 +150,11 @@ public class EnemyManager extends Actor{
 
     protected Enemy createEnemy(Entity.Type type, int entityID, int tempID, Texture north, Texture south, Texture east, Texture west)
     {
+        System.out.println();
+        System.out.println("this is entityId " + entityID );
+        System.out.println("this is tempID " + tempID );
+        System.out.println();
+
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
         enemy.entityID = entityID;
         enemy.tempID = tempID;
