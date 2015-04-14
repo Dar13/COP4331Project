@@ -150,10 +150,6 @@ public class EnemyManager extends Actor{
 
     protected Enemy createEnemy(Entity.Type type, int entityID, int tempID, Texture north, Texture south, Texture east, Texture west)
     {
-        System.out.println();
-        System.out.println("this is entityId " + entityID );
-        System.out.println("this is tempID " + tempID );
-        System.out.println();
 
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
         enemy.entityID = entityID;

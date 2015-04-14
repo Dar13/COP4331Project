@@ -558,11 +558,6 @@ public class Play extends GameState {
         List<Action> changes = networkManager.fetchChanges();
         if(changes != null && !changes.isEmpty())
         {
-            System.out.println();
-            System.out.println();
-            System.out.println("hi");
-            System.out.println();
-            System.out.println();
             for(Action action : changes)
             {
                 switch(action.actionClass)
