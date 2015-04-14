@@ -106,13 +106,16 @@ public class EnemyManager extends Actor{
     /**
      * Creates and adds an enemy to the list of current enemies.
      *
+     * TempID is should be set by this class.
+     * EntityID should be -1 to signify it hasn't been set.
+     *
      * @param type
      * @param path
      */
     public void addEnemy(Entity.Type type, Texture north, Texture south, Texture east, Texture west, List<WayPoint> path)
     {
-
-        Enemy enemy = createEnemy(type, idCounter, -1, north, south, east, west);
+        // entityID = -1 here, tempID = idCounter.
+        Enemy enemy = createEnemy(type, -1, idCounter, north, south, east, west);
         idCounter++;
 
         ActionEnemyCreate actionEnemyCreate = new ActionEnemyCreate(enemy);
@@ -125,7 +128,6 @@ public class EnemyManager extends Actor{
 
     public void addEnemy(Entity.Type type, int entityID)
     {
-
         Enemy enemy = null;
         switch(type)
         {
@@ -139,8 +141,8 @@ public class EnemyManager extends Actor{
             enemy = createEnemy(type, entityID, -1, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW);
             break;
         default:
-            enemy = null;
-            break;
+            // Failed to add enemy, incorrect type.
+            return;
         }
 
         enemy.setWayPoints(path);

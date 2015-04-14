@@ -729,20 +729,27 @@ public class NetworkManager extends Listener implements Runnable
         }
         else
         {
-            List<Action> tmp;
             mutex.writeLock().lock();
             try
             {
-                for(Action action : queuedLocalChanges)
+                if(connections.isEmpty() || singleplayer)
                 {
-                    for(GameConnection connection : connections)
+                    receiveChanges(queuedLocalChanges);
+                }
+                else
+                {
+                    for (Action action : queuedLocalChanges)
                     {
-                        if(connection.playerID == action.region)
+                        for (GameConnection connection : connections)
                         {
-                            server.sendToTCP(connection.connection.getID(), action);
+                            if (connection.playerID == action.region)
+                            {
+                                server.sendToTCP(connection.connection.getID(), action);
+                            }
                         }
                     }
                 }
+                queuedLocalChanges.clear();
             }
             finally
             {
@@ -781,15 +788,13 @@ public class NetworkManager extends Listener implements Runnable
             return;
         }
 
-        //System.out.format("Changes size: %d\n", changes.size());
-
         for(Action change : changes)
         {
             receiveChange(change);
         }
     }
 
-    private void receiveChange(Action change)
+    private synchronized void receiveChange(Action change)
     {
         if(change == null)
         {

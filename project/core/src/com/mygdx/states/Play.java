@@ -554,7 +554,6 @@ public class Play extends GameState {
 
     public void handleChanges()
     {
-
         List<Action> changes = networkManager.fetchChanges();
         if(changes != null && !changes.isEmpty())
         {
