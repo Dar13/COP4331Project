@@ -432,6 +432,8 @@ public class NetworkManager extends Listener implements Runnable
         kryo.register(GameConnection.ServerAuth.class);
         kryo.register(GameConnection.ClientAuth.class);
         kryo.register(GameConnection.PlayerID.class);
+        
+        kryo.register(Action.ActionClass.class);
         kryo.register(ActionEnemyCreate.class);
         kryo.register(ActionEnemyDestroy.class);
         kryo.register(ActionEnemyEnd.class);
