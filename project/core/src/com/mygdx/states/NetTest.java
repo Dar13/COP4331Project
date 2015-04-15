@@ -94,12 +94,6 @@ public class NetTest extends GameState
         if(toMenu.isChecked()){
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
-       /*
-        for(Action a : networkManager.fetchChanges()){
-            if(a instanceof Action){
-                gameStateManager.setState(GameStateManager.MENU, 0);
-            }
-        }*/
     }
 
     @Override

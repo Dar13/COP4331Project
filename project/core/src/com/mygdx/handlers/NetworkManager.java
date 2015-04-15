@@ -424,6 +424,7 @@ public class NetworkManager extends Listener implements Runnable
             Kryo kryo = client.getKryo();
             kryo.register(GameConnection.ServerAuth.class);
             kryo.register(GameConnection.ClientAuth.class);
+            kryo.register(GameConnection.PlayerID.class);
         }
     }
 
