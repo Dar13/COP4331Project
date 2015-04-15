@@ -432,7 +432,7 @@ public class NetworkManager extends Listener implements Runnable
         kryo.register(GameConnection.ServerAuth.class);
         kryo.register(GameConnection.ClientAuth.class);
         kryo.register(GameConnection.PlayerID.class);
-        
+
         kryo.register(Action.ActionClass.class);
         kryo.register(ActionEnemyCreate.class);
         kryo.register(ActionEnemyDestroy.class);
@@ -657,6 +657,8 @@ public class NetworkManager extends Listener implements Runnable
         }
         else // client packet handling
         {
+            handled = true;
+
             System.out.println("NET: Packet received from server!");
             if(!validated)
             {
