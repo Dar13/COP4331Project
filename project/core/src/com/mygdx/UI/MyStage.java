@@ -19,13 +19,10 @@ import java.awt.Button;
  */
 public class MyStage extends Stage {
 
-    public OrthographicCamera hubCam;
 
     public MyStage(){
         super(new StretchViewport(MyGame.V_WIDTH,MyGame.V_HEIGHT));
-        hubCam = new OrthographicCamera(this.getCamera().viewportWidth,this.getCamera().viewportHeight);
-        hubCam.position.set(MyGame.V_WIDTH,MyGame.V_WIDTH/2,0);
-        hubCam.update();
+
     }
 
     @Override

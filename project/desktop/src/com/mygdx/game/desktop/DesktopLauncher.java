@@ -15,6 +15,7 @@ public class DesktopLauncher {
         config.title = " Over The Rhine";
         config.width = MyGame.V_WIDTH;
         config.height = MyGame.V_HEIGHT;
+        config.resizable = false;
         HashMap<ConnectionMode,
                 NetworkInterface> networkImpls = new HashMap<ConnectionMode,
                                                              NetworkInterface>();

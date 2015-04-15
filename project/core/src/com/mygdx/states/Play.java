@@ -3,6 +3,7 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.entities.Actor;
 import com.mygdx.entities.BazookaTower;
 
@@ -109,7 +110,7 @@ public class Play extends GameState {
         super(gameStateManager,networkManager);
         state = SubState.SETUP;
         stage = new MyStage();
-        hub = new Stage();
+        hub = new Stage(new StretchViewport(MyGame.V_WIDTH,MyGame.V_HEIGHT));
         InputMultiplexer im = new InputMultiplexer();
         im.addProcessor(stage);
         im.addProcessor(hub);

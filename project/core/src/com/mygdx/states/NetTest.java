@@ -77,7 +77,7 @@ public class NetTest extends GameState
                     ConnectionMode.NONE,
                     true);
             serverButton.setDisabled(true);
-            gameStateManager.setState(GameStateManager.LEVELSELECT,0);
+           // gameStateManager.setState(GameStateManager.LEVELSELECT,0);
           //  gameStateManager.setState(GameStateManager.PLAY,1);
         }
 
@@ -87,7 +87,7 @@ public class NetTest extends GameState
                     ConnectionMode.NONE,
                     true);
             clientButton.setDisabled(true);
-            gameStateManager.setState(GameStateManager.LEVELSELECT,0);
+           // gameStateManager.setState(GameStateManager.LEVELSELECT,0);
             //gameStateManager.setState(GameStateManager.PLAY,2);
         }
 
