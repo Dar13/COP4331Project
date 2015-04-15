@@ -25,15 +25,22 @@ import com.mygdx.net.ConnectionMode;
  */
 public class NetTest extends GameState
 {
+
+    boolean test = false;
+
     protected boolean connected = false;
     private MyStage stage;
     private TextButton serverButton;
     private TextButton clientButton;
     private TextButton toMenu;
+    private TextButton connecting;
+    private TextButton ready;
+
     private OrthographicCamera cam;
     private Texture Map = new Texture("Maps/SubMenuMap.png");
     private WayPointManager wayPointManager;
     private EnemyManager enemyManager;
+    private Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
     public NetTest(GameStateManager gameStateManager, final NetworkManager networkManager)
     {
@@ -43,7 +50,6 @@ public class NetTest extends GameState
         cam = (OrthographicCamera) stage.getCamera();
         cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
-        Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
 
 
@@ -65,11 +71,23 @@ public class NetTest extends GameState
         toMenu.setPosition(game.V_WIDTH/2-toMenu.getWidth()/2, clientButton.getY() - 65);
         toMenu.addListener(new ClickListener());
         stage.addActor(toMenu);
+
+
+        connecting = new TextButton("Connecting please wait...", skin);
+        connecting.setSize(200, 60);
+        connecting.setPosition(game.V_WIDTH/2-serverButton.getWidth()/2, MyGame.V_HEIGHT * 7/12);
+
+        ready = new TextButton("Ready!", skin);
+        ready.setSize(200, 60);
+        ready.setPosition(game.V_WIDTH/2-serverButton.getWidth()/2, MyGame.V_HEIGHT * 7/12);
+
     }
 
     @Override
     public void update(float delta)
     {
+
+
         stage.act(delta);
         if (serverButton.isPressed()){
             networkManager.prepInitialize(true,
@@ -77,6 +95,9 @@ public class NetTest extends GameState
                     ConnectionMode.NONE,
                     true);
             serverButton.setDisabled(true);
+            serverButton.remove();
+            clientButton.remove();
+            test = true;
            // gameStateManager.setState(GameStateManager.LEVELSELECT,0);
           //  gameStateManager.setState(GameStateManager.PLAY,1);
         }
@@ -87,12 +108,25 @@ public class NetTest extends GameState
                     ConnectionMode.NONE,
                     true);
             clientButton.setDisabled(true);
+            serverButton.remove();
+            clientButton.remove();
+            test = true;
            // gameStateManager.setState(GameStateManager.LEVELSELECT,0);
             //gameStateManager.setState(GameStateManager.PLAY,2);
         }
 
         if(toMenu.isChecked()){
             gameStateManager.setState(GameStateManager.MENU, 0);
+        }
+
+        if(test) {
+            stage.addActor(connecting);
+            test =false;
+        }
+
+        if(connecting.isPressed()){
+            connecting.remove();
+            stage.addActor(ready);
         }
     }
 
