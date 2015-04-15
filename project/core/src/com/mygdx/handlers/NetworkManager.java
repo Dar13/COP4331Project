@@ -59,8 +59,6 @@ public class NetworkManager extends Listener implements Runnable
     protected boolean initializeManager;
     protected boolean singleplayer = false;
 
-    protected int hashmapCall = 0;
-
     // server
     protected Boolean isServer;
     protected Server server;
@@ -485,8 +483,16 @@ public class NetworkManager extends Listener implements Runnable
         {
             if(connections.size() == 1 && !gameStarted)
             {
-                ActionPlayersReady actionPlayersReady = new ActionPlayersReady();
-                addToSendQueue(actionPlayersReady);
+                for(GameConnection conn : connections)
+                {
+                    if(!conn.waiting)
+                    {
+                        ActionWaitForReady waitForReady = new ActionWaitForReady();
+                        waitForReady.region = conn.playerID;
+                        addToSendQueue(waitForReady);
+                        conn.waiting = true;
+                    }
+                }
             }
 
             boolean isAllReady = true;
@@ -846,7 +852,6 @@ public class NetworkManager extends Listener implements Runnable
             try
             {
                 entityStatus.put(actionCreate.entityID, new EnemyStatus(actionCreate));
-                hashmapCall++;
 
                 if(singleplayer)
                 {

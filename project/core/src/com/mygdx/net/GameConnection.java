@@ -26,6 +26,7 @@ public class GameConnection
     public Connection connection;
     public boolean ready = false;
     public boolean waveReady = false;
+    public boolean waiting = false;
 
     protected int uid;
     public int playerID;
