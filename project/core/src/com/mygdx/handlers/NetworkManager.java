@@ -13,11 +13,13 @@ import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
 import com.mygdx.handlers.action.ActionHealthChanged;
+import com.mygdx.handlers.action.ActionHostPause;
 import com.mygdx.handlers.action.ActionPlayerWaveReady;
 import com.mygdx.handlers.action.ActionPlayersReady;
 import com.mygdx.handlers.action.ActionTowerPlaced;
 import com.mygdx.handlers.action.ActionTowerUpgraded;
 import com.mygdx.handlers.action.ActionWaitForReady;
+import com.mygdx.handlers.action.ActionWaveEnd;
 import com.mygdx.net.ConnectionMode;
 import com.mygdx.net.EnemyStatus;
 import com.mygdx.net.EntityStatus;
@@ -416,20 +418,30 @@ public class NetworkManager extends Listener implements Runnable
 
     public void registerPackets()
     {
+        Kryo kryo = null;
+
         if(isServer)
         {
-            Kryo kryo = server.getKryo();
-            kryo.register(GameConnection.ServerAuth.class);
-            kryo.register(GameConnection.ClientAuth.class);
-            kryo.register(GameConnection.PlayerID.class);
+            kryo = server.getKryo();
         }
         else
         {
-            Kryo kryo = client.getKryo();
-            kryo.register(GameConnection.ServerAuth.class);
-            kryo.register(GameConnection.ClientAuth.class);
-            kryo.register(GameConnection.PlayerID.class);
+            kryo = client.getKryo();
         }
+
+        kryo.register(GameConnection.ServerAuth.class);
+        kryo.register(GameConnection.ClientAuth.class);
+        kryo.register(GameConnection.PlayerID.class);
+        kryo.register(ActionEnemyCreate.class);
+        kryo.register(ActionEnemyDestroy.class);
+        kryo.register(ActionEnemyEnd.class);
+        kryo.register(ActionHealthChanged.class);
+        kryo.register(ActionHostPause.class);
+        kryo.register(ActionPlayersReady.class);
+        kryo.register(ActionTowerPlaced.class);
+        kryo.register(ActionTowerUpgraded.class);
+        kryo.register(ActionWaitForReady.class);
+        kryo.register(ActionWaveEnd.class);
     }
 
     public boolean syncReady()
