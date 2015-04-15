@@ -18,16 +18,17 @@ import com.mygdx.game.MyGame;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.handlers.WayPointManager;
 import com.mygdx.handlers.action.Action;
+import com.mygdx.handlers.action.ActionPlayersReady;
+import com.mygdx.handlers.action.ActionWaitForReady;
 import com.mygdx.net.ConnectionMode;
+
+import java.util.List;
 
 /**
  * Created by NeilMoore on 2/14/2015.
  */
 public class NetTest extends GameState
 {
-
-    boolean test = false;
-
     protected boolean connected = false;
     private MyStage stage;
     private TextButton serverButton;
@@ -35,6 +36,9 @@ public class NetTest extends GameState
     private TextButton toMenu;
     private TextButton connecting;
     private TextButton ready;
+
+    protected boolean waitForLobby = false;
+    protected boolean lobbyReady = false;
 
     private OrthographicCamera cam;
     private Texture Map = new Texture("Maps/SubMenuMap.png");
@@ -55,20 +59,20 @@ public class NetTest extends GameState
 
         serverButton = new TextButton("Server", skin);
         serverButton.setSize(200, 60);
-        serverButton.setPosition(game.V_WIDTH/2-serverButton.getWidth()/2, MyGame.V_HEIGHT * 7/12);
-        serverButton.addListener( new ClickListener());
+        serverButton.setPosition(game.V_WIDTH / 2 - serverButton.getWidth() / 2, MyGame.V_HEIGHT * 7 / 12);
+        serverButton.addListener(new ClickListener());
 
         stage.addActor(serverButton);
 
         clientButton = new TextButton("Client", skin);
         clientButton.setSize(200, 60);
-        clientButton.setPosition(game.V_WIDTH/2-serverButton.getWidth()/2, serverButton.getY() - 65);
-        clientButton.addListener( new ClickListener());
+        clientButton.setPosition(game.V_WIDTH / 2 - serverButton.getWidth() / 2, serverButton.getY() - 65);
+        clientButton.addListener(new ClickListener());
         stage.addActor(clientButton);
 
         toMenu = new TextButton("Menu", skin);
         toMenu.setSize(200, 60);
-        toMenu.setPosition(game.V_WIDTH/2-toMenu.getWidth()/2, clientButton.getY() - 65);
+        toMenu.setPosition(game.V_WIDTH / 2 - toMenu.getWidth() / 2, clientButton.getY() - 65);
         toMenu.addListener(new ClickListener());
         stage.addActor(toMenu);
 
@@ -86,48 +90,62 @@ public class NetTest extends GameState
     @Override
     public void update(float delta)
     {
-
-
         stage.act(delta);
         if (serverButton.isPressed()){
             networkManager.prepInitialize(true,
-                    ConnectionMode.WIFI_LAN,
-                    ConnectionMode.NONE,
-                    true);
+                                          ConnectionMode.WIFI_LAN,
+                                          ConnectionMode.NONE,
+                                          true);
             serverButton.setDisabled(true);
             serverButton.remove();
             clientButton.remove();
-            test = true;
            // gameStateManager.setState(GameStateManager.LEVELSELECT,0);
           //  gameStateManager.setState(GameStateManager.PLAY,1);
         }
 
         if(clientButton.isPressed()){
             networkManager.prepInitialize(false,
-                    ConnectionMode.WIFI_LAN,
-                    ConnectionMode.NONE,
-                    true);
+                                          ConnectionMode.WIFI_LAN,
+                                          ConnectionMode.NONE,
+                                          true);
             clientButton.setDisabled(true);
             serverButton.remove();
             clientButton.remove();
-            test = true;
            // gameStateManager.setState(GameStateManager.LEVELSELECT,0);
             //gameStateManager.setState(GameStateManager.PLAY,2);
         }
 
-        if(toMenu.isChecked()){
+        if(toMenu.isChecked())
+        {
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
 
-        if(test) {
-            stage.addActor(connecting);
-            test =false;
+        List<Action> actions = networkManager.fetchChanges();
+        for(Action action : actions)
+        {
+            if(action instanceof ActionWaitForReady)
+            {
+                waitForLobby = true;
+            }
+
+            if(action instanceof ActionPlayersReady)
+            {
+                lobbyReady = true;
+            }
         }
 
-        if(connecting.isPressed()){
+        if(waitForLobby)
+        {
+            stage.addActor(connecting);
+            waitForLobby = false;
+        }
+
+        if(lobbyReady)
+        {
             connecting.remove();
             stage.addActor(ready);
         }
+
     }
 
     @Override

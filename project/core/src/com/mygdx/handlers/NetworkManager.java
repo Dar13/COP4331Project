@@ -14,8 +14,10 @@ import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
 import com.mygdx.handlers.action.ActionHealthChanged;
 import com.mygdx.handlers.action.ActionPlayerWaveReady;
+import com.mygdx.handlers.action.ActionPlayersReady;
 import com.mygdx.handlers.action.ActionTowerPlaced;
 import com.mygdx.handlers.action.ActionTowerUpgraded;
+import com.mygdx.handlers.action.ActionWaitForReady;
 import com.mygdx.net.ConnectionMode;
 import com.mygdx.net.EnemyStatus;
 import com.mygdx.net.EntityStatus;
@@ -67,6 +69,7 @@ public class NetworkManager extends Listener implements Runnable
     protected int currentWave = 1;
     protected Map<Integer, PlayerStatus> playerStatus;
     protected int lastPlayerID;
+    protected boolean gameStarted;
 
     // client
     protected Client client;
@@ -98,6 +101,7 @@ public class NetworkManager extends Listener implements Runnable
 
         playerStatus = new HashMap<>();
         playerStatus.put(0, PlayerStatus.SELF);
+        gameStarted = false;
 
         // this is the closest to a traditional mutex I could find.
         // allows multiple reads at one time while only allowing one write lock.
@@ -462,6 +466,12 @@ public class NetworkManager extends Listener implements Runnable
         mutex.writeLock().lock();
         try
         {
+            if(connections.size() == 1 && !gameStarted)
+            {
+                ActionPlayersReady actionPlayersReady = new ActionPlayersReady();
+                addToSendQueue(actionPlayersReady);
+            }
+
             boolean isAllReady = true;
             if(connections.isEmpty())
             {
@@ -491,8 +501,6 @@ public class NetworkManager extends Listener implements Runnable
                     connection.waveReady = false;
                 }
             }
-
-            //System.out.format("Hashmap calls: %d\n", hashmapCall);
         }
         finally
         {
@@ -623,8 +631,6 @@ public class NetworkManager extends Listener implements Runnable
                     else
                     {
                         // handle normally.
-                        // decode to List<BaseChange> and then call receiveChanges()
-
                         if(object instanceof Action)
                         {
                             Action action = (Action)object;
@@ -665,10 +671,6 @@ public class NetworkManager extends Listener implements Runnable
      */
     public void addToSendQueue(Action action)
     {
-        /*
-        if(isServer && action.needsID)
-            action.entity.entityID = entityID.getAndIncrement();
-            */
         mutex.writeLock().lock();
         try
         {
@@ -739,6 +741,7 @@ public class NetworkManager extends Listener implements Runnable
                 }
                 else
                 {
+                    queuedRemoteChanges.clear();
                     for (Action action : queuedLocalChanges)
                     {
                         for (GameConnection connection : connections)
@@ -746,6 +749,12 @@ public class NetworkManager extends Listener implements Runnable
                             if (connection.playerID == action.region)
                             {
                                 server.sendToTCP(connection.connection.getID(), action);
+                            }
+
+                            // Server is always playerID = 0
+                            if(connection.playerID == 0)
+                            {
+                                queuedRemoteChanges.add(action);
                             }
                         }
                     }
@@ -977,6 +986,9 @@ public class NetworkManager extends Listener implements Runnable
                 lastPlayerID++;
 
                 playerStatus.put(gameConnection.playerID, PlayerStatus.PLAYER);
+
+                ActionWaitForReady actionWaitReady = new ActionWaitForReady();
+                addToSendQueue(actionWaitReady);
 
                 System.out.println("NET: Client auth key = " + authPacket.key);
                 return true;
