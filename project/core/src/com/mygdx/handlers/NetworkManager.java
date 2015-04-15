@@ -1,6 +1,7 @@
 package com.mygdx.handlers;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -31,6 +32,7 @@ import com.mygdx.net.TowerStatus;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -434,6 +436,7 @@ public class NetworkManager extends Listener implements Runnable
         kryo.register(GameConnection.PlayerID.class);
 
         kryo.register(Action.ActionClass.class);
+        kryo.register(ActionCreateWave.class);
         kryo.register(ActionEnemyCreate.class);
         kryo.register(ActionEnemyDestroy.class);
         kryo.register(ActionEnemyEnd.class);
@@ -703,7 +706,7 @@ public class NetworkManager extends Listener implements Runnable
      * This method is to be called from within the Game State to request the updates that were
      * received by the network manager
      */
-    public List<Action> fetchChanges()
+    public synchronized List<Action> fetchChanges()
     {
         if(syncReady())
         {
