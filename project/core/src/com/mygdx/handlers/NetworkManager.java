@@ -72,6 +72,7 @@ public class NetworkManager extends Listener implements Runnable
     protected Map<Integer, PlayerStatus> playerStatus;
     protected int lastPlayerID;
     protected boolean gameStarted;
+    protected boolean waitingForLobby;
 
     // client
     protected Client client;
@@ -483,6 +484,17 @@ public class NetworkManager extends Listener implements Runnable
         mutex.writeLock().lock();
         try
         {
+            if(!gameStarted)
+            {
+                if(!waitingForLobby)
+                {
+                    ActionWaitForReady waitForReady = new ActionWaitForReady();
+                    waitForReady.region = 0;
+                    addToSendQueue(waitForReady);
+                    waitingForLobby = true;
+                }
+            }
+
             if(connections.size() == 1 && !gameStarted)
             {
                 boolean allWaiting = true;
@@ -507,6 +519,10 @@ public class NetworkManager extends Listener implements Runnable
                         playersReady.region = conn.playerID;
                         addToSendQueue(playersReady);
                     }
+
+                    ActionPlayersReady playersReady = new ActionPlayersReady();
+                    playersReady.region = 0;
+                    addToSendQueue(playersReady);
 
                     gameStarted = true;
                 }
@@ -801,7 +817,6 @@ public class NetworkManager extends Listener implements Runnable
                 }
                 else
                 {
-                    queuedRemoteChanges.clear();
                     for (Action action : queuedLocalChanges)
                     {
                         for (GameConnection connection : connections)
@@ -812,7 +827,7 @@ public class NetworkManager extends Listener implements Runnable
                             }
 
                             // Server is always playerID = 0
-                            if(connection.playerID == 0)
+                            if(action.region == 0)
                             {
                                 queuedRemoteChanges.add(action);
                             }
@@ -1043,6 +1058,7 @@ public class NetworkManager extends Listener implements Runnable
                 gameConnection.connection.sendTCP(idPacket);
 
                 idPacket.playerID = gameConnection.playerID;
+                System.out.println("Player ID = " + idPacket.playerID);
 
                 lastPlayerID++;
 

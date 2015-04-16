@@ -134,7 +134,6 @@ public class NetTest extends GameState
 
         if(waitForLobby)
         {
-            System.out.println("Waiting for lobby to finalize");
             stage.addActor(connecting);
             waitForLobby = false;
         }
