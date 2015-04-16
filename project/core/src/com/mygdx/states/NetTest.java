@@ -144,6 +144,7 @@ public class NetTest extends GameState
         {
             connecting.remove();
             stage.addActor(ready);
+            lobbyReady = false;
         }
 
     }
