@@ -690,6 +690,19 @@ public class NetworkManager extends Listener implements Runnable
         }
     }
 
+    public synchronized void reset()
+    {
+        entityStatus.clear();
+
+        for(GameConnection connection : connections)
+        {
+            connection.connection.close();
+        }
+        connections.clear();
+
+        currentWave = 1;
+    }
+
     /**
      * This method is to be called whenever an action happens; changes are queued locally so we
      * can easily alter sending and receiving timings
@@ -802,7 +815,7 @@ public class NetworkManager extends Listener implements Runnable
      * This method should be called from whatever callback we use when changes come in from the
      * network
      */
-    private void receiveChanges(List<Action> changes)
+    private synchronized void receiveChanges(List<Action> changes)
     {
         /**
          * TODO: this method is implementation dependent, but should look roughly like the following:
@@ -816,14 +829,16 @@ public class NetworkManager extends Listener implements Runnable
             return;
         }
 
+        List<Action> actions = new ArrayList<>(changes);
+
         // if we are a client, we just take the new changes and leave
         if(!isServer)
         {
-            queuedRemoteChanges.addAll(changes);
+            queuedRemoteChanges.addAll(actions);
             return;
         }
 
-        for(Action change : changes)
+        for(Action change : actions)
         {
             receiveChange(change);
         }
