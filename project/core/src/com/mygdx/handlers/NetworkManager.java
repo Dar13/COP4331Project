@@ -483,15 +483,29 @@ public class NetworkManager extends Listener implements Runnable
         {
             if(connections.size() == 1 && !gameStarted)
             {
+                boolean allWaiting = true;
                 for(GameConnection conn : connections)
                 {
-                    if(!conn.waiting)
+                    if(!conn.waiting && conn.connection.isConnected())
                     {
                         ActionWaitForReady waitForReady = new ActionWaitForReady();
                         waitForReady.region = conn.playerID;
                         addToSendQueue(waitForReady);
                         conn.waiting = true;
+                        allWaiting = false;
                     }
+                }
+
+                if(allWaiting)
+                {
+                    for(GameConnection conn : connections)
+                    {
+                        ActionPlayersReady playersReady = new ActionPlayersReady();
+                        playersReady.region = conn.playerID;
+                        addToSendQueue(playersReady);
+                    }
+
+                    gameStarted = true;
                 }
             }
 
@@ -669,6 +683,7 @@ public class NetworkManager extends Listener implements Runnable
             handled = true;
 
             System.out.println("NET: Packet received from server!");
+            System.out.println(object.getClass());
             if(!validated)
             {
                 validated = handleValidation(null, connection, object);
