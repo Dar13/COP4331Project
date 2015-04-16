@@ -695,6 +695,10 @@ public class NetworkManager extends Listener implements Runnable
             }
 
             // assume authenticated, handle packet normally
+            if(object instanceof Action)
+            {
+                queuedRemoteChanges.add((Action)object);
+            }
         }
 
         // mystery packet!

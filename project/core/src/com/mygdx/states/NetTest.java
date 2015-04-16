@@ -55,8 +55,6 @@ public class NetTest extends GameState
         cam.setToOrtho(false, MyGame.V_WIDTH, MyGame.V_HEIGHT);
         Gdx.input.setInputProcessor(stage);
 
-
-
         serverButton = new TextButton("Server", skin);
         serverButton.setSize(200, 60);
         serverButton.setPosition(game.V_WIDTH / 2 - serverButton.getWidth() / 2, MyGame.V_HEIGHT * 7 / 12);
@@ -136,6 +134,7 @@ public class NetTest extends GameState
 
         if(waitForLobby)
         {
+            System.out.println("Waiting for lobby to finalize");
             stage.addActor(connecting);
             waitForLobby = false;
         }
