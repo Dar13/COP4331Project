@@ -146,6 +146,10 @@ public class NetTest extends GameState
             lobbyReady = false;
         }
 
+        if(ready.isPressed()){
+            gameStateManager.setState(GameStateManager.LEVELSELECT,0);
+        }
+
     }
 
     @Override
