@@ -101,6 +101,8 @@ public class NetworkManager extends Listener implements Runnable
         initializeManager = false;
         expectedAmountClients = MAX_CLIENTS;
 
+        lastPlayerID = 1;
+
         playerStatus = new HashMap<>();
         playerStatus.put(0, PlayerStatus.SELF);
         gameStarted = false;
@@ -498,6 +500,7 @@ public class NetworkManager extends Listener implements Runnable
 
                 if(allWaiting)
                 {
+                    System.out.println("Players are ready!");
                     for(GameConnection conn : connections)
                     {
                         ActionPlayersReady playersReady = new ActionPlayersReady();
