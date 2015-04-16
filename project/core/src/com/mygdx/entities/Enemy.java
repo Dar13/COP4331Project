@@ -259,4 +259,12 @@ public abstract class Enemy extends Entity
         return distanceTraveled;
     }
 
+    public void setVelocity(float velocity){
+        this.velocity = velocity;
+    }
+
+    public void setArmor(float armor){
+        this.armor = armor;
+    }
+
 }

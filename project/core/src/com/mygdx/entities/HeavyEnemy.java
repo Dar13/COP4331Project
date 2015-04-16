@@ -29,6 +29,7 @@ public class HeavyEnemy extends Enemy
         navigationTolerance = velocity / 2.0f;
     }
 
+
     public void draw(Batch batch, float parentAlpha)
     {
         current.draw(batch);

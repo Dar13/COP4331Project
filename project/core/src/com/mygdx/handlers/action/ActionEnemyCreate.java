@@ -12,6 +12,7 @@ public class ActionEnemyCreate extends ActionEnemyBase
 {
     public float health;
     public float armor;
+    public float velocity;
 
     public ActionEnemyCreate(Enemy newEnemy)
     {
@@ -19,6 +20,7 @@ public class ActionEnemyCreate extends ActionEnemyBase
 
         actionClass = ActionClass.ACTION_ENEMY_CREATE;
 
+        velocity = newEnemy.getVelocity();
         health = newEnemy.getHealth();
         armor = newEnemy.getArmor();
     }

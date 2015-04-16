@@ -22,8 +22,10 @@ public abstract class GameState implements Screen {
     }
     public abstract void update(float deltatime);
 
+
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width, int height)
+    {
 
     }
 }

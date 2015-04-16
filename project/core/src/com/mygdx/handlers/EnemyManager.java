@@ -70,10 +70,10 @@ public class EnemyManager extends Actor{
     protected boolean paused = false;
 
     private LinkedList<WayPoint> path;
-    private float multiplierS = 0;
-    private float multiplierA = 0;
+    private float multiplierS = 1;
+    private float multiplierA = 1;
     private float incrementer = 1;
-    private float multiplierSp = 0;
+    private float multiplierSp = 1;
     Batch batch;
 
     public int hashmapCalls = 0;
@@ -153,6 +153,8 @@ public class EnemyManager extends Actor{
     {
 
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
+        enemy.setArmor(multiplierA);
+        enemy.setVelocity(multiplierS);
         enemy.entityID = entityID;
         enemy.tempID = tempID;
 
@@ -175,7 +177,7 @@ public class EnemyManager extends Actor{
     }
 
     //Calculates the number of enemies to spawn in the next wave based on the multiplier.
-    public void NextWave(float multiplier)
+    /*public void NextWave(float multiplier)
     {
         if(currentWave < 5)
         {
@@ -199,10 +201,10 @@ public class EnemyManager extends Actor{
             this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
         }
 
-    }
+    }*/
 
     //Calculates the multiplier to be used in the next round based on player towers.
-    public float NextWaveCalculator()
+    /*public float NextWaveCalculator()
     {
         currentWave++;
         float multiplier = 0 + (gold * .001f);
@@ -242,7 +244,7 @@ public class EnemyManager extends Actor{
         incrementer = incrementer + .07f;
         multiplierSp = multiplierSp + .5f + (gold * .001f);
         return multiplier;
-    }
+    }*/
 
 
     /* Spawns new enemies based on wave number, updates the enemy health, checks to see if they are
@@ -265,8 +267,8 @@ public class EnemyManager extends Actor{
             //accumulator +=deltaTime;
             if(tick == 1)
             {
-                float multiplier = NextWaveCalculator();
-                NextWave(multiplier);
+                //float multiplier = NextWaveCalculator();
+                //NextWave(multiplier);
                 tick = 0;
             }
 
@@ -562,4 +564,37 @@ public class EnemyManager extends Actor{
         waveToBeSpawnedFast = 999;
         waveToBeSpawnedHeavy = 999;
     }
+
+    public void setWave(int waveToBeSpawnedNorm,
+                        int waveToBeSpawnedFast,
+                        int waveToBeSpawnedHeavy,
+                        float multiplierA,
+                        float multiplierS,
+                        float multiplierSp )
+    {
+        this.waveToBeSpawnedNorm = waveToBeSpawnedNorm;
+        this.waveToBeSpawnedFast = waveToBeSpawnedFast;
+        this.waveToBeSpawnedHeavy = waveToBeSpawnedHeavy;
+        this.multiplierA = multiplierA;
+        this.multiplierS = multiplierS;
+        this.multiplierSp = multiplierSp;
+        this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
+    }
+
+    public void setMultiplierA(float multiplierA)
+    {
+        this.multiplierA = multiplierA;
+    }
+
+    public void setMultiplierS(float multiplierS)
+    {
+        this.multiplierS = multiplierS;
+    }
+
+    public void setMultiplierSP(float multiplierSp)
+    {
+        this.multiplierSp = multiplierSp;
+    }
+
+
 }

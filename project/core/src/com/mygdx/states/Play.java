@@ -34,6 +34,7 @@ import com.mygdx.Debug.Debugger;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.MyInput;
 import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.WaveCalculator;
 import com.mygdx.handlers.WayPointManager;
 import com.mygdx.handlers.action.Action;
 import com.mygdx.handlers.action.ActionEnemyCreate;
@@ -96,6 +97,8 @@ public class Play extends GameState {
     private BitmapFont font;
     private Batch batch;
     public ShapeRenderer shapeRenderer;
+
+    private WaveCalculator waveCalculator;
 
     public enum SubState
     {
@@ -432,6 +435,11 @@ public class Play extends GameState {
 
     }
 
+    @Override
+    public void resize(int width, int height)
+    {
+    }
+
     public void placeATower(){
         boolean clearedForPlacement = true;
         if(rifleButton.isPressed() && towerPlacement == 0 &&
@@ -573,7 +581,11 @@ public class Play extends GameState {
 
                     if(!enemyCreate.needsID)
                     {
+                        enemyManager.setMultiplierA(enemyCreate.armor);
+                        enemyManager.setMultiplierS(enemyCreate.velocity);
+                        enemyManager.setMultiplierSP(waveCalculator.getMultiplierSpawnRate(gold));
                         enemyManager.addEnemy(enemyCreate.enemyType, enemyCreate.entityID);
+
                     }
 
                     for(Enemy enemy : enemyManager.enemyList)
@@ -605,8 +617,19 @@ public class Play extends GameState {
                     break;
                 case ACTION_TRANSFER_RESOURCES:
 
+
+                    break;
+                case ACTION_CREATE_WAVE:
+                    enemyManager.setWave(waveCalculator.getAmountNormalEnemies(),
+                            waveCalculator.getAmountFastEnemies(),
+                            waveCalculator.getAmountHeavyEnemies(),
+                            waveCalculator.getMultiplierArmor(),
+                            waveCalculator.getMultiplierVelocity(),
+                            waveCalculator.getMultiplierSpawnRate(gold));
                     break;
                 }
+
+
             }
         }
     }

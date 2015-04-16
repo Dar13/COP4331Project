@@ -60,4 +60,22 @@ public class WaveCalculator
         //System.out.println("hi");
         return i;
     }
+
+    public static float getMultiplierVelocity()
+    {
+        float multiplierV = (waveNumber * .05f);
+        return multiplierV;
+    }
+
+    public static float getMultiplierArmor()
+    {
+        float multiplierA = (waveNumber * .05f);
+        return multiplierA;
+    }
+
+    public static float getMultiplierSpawnRate(int gold)
+    {
+        float multiplierSp = (waveNumber * .5f) + (gold * .001f);
+        return multiplierSp;
+    }
 }
