@@ -1,5 +1,6 @@
 package com.mygdx.states;
 
+import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -28,6 +29,15 @@ public class WinState extends GameState {
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
+
+        //Stop all game music and game sounds
+        AssetManager.dispose();
+
+        //Load and Start End Music
+        AssetManager.loadMusic(3);
+        //AssetManager.music.play();
+        //AssetManager.music.setLooping(true);
+
         backtostart = new TextButton("Return to Menu",skin);
         backtostart.setSize(200,60);
         backtostart.setPosition(game.V_WIDTH/2-backtostart.getWidth()/2, game.V_HEIGHT/2-backtostart.getHeight()/2);
