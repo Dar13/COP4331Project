@@ -40,6 +40,9 @@ public class AssetManager {
             case 2:
                 music = Gdx.audio.newMusic(Gdx.files.internal("data/End.ogg"));
                 break;
+            case 3:
+                music = Gdx.audio.newMusic(Gdx.files.internal("data/Win.ogg"));
+                break;
             default:
                 music = Gdx.audio.newMusic(Gdx.files.internal("data/start.wav"));
                 break;
