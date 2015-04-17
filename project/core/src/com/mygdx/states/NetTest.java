@@ -97,8 +97,6 @@ public class NetTest extends GameState
             serverButton.setDisabled(true);
             serverButton.remove();
             clientButton.remove();
-           // gameStateManager.setState(GameStateManager.LEVELSELECT,0);
-          //  gameStateManager.setState(GameStateManager.PLAY,1);
         }
 
         if(clientButton.isPressed()){
@@ -109,12 +107,12 @@ public class NetTest extends GameState
             clientButton.setDisabled(true);
             serverButton.remove();
             clientButton.remove();
-           // gameStateManager.setState(GameStateManager.LEVELSELECT,0);
-            //gameStateManager.setState(GameStateManager.PLAY,2);
         }
 
         if(toMenu.isChecked())
         {
+            // reset state since network manager 'falsely initilize' (i.e., we aren't doing multiplayer)
+            networkManager.reset();
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
 
