@@ -7,6 +7,10 @@ import com.mygdx.entities.Enemy;
  */
 public class ActionEnemyEnd extends ActionEnemyBase
 {
+    public ActionEnemyEnd()
+    {
+
+    }
     /**
      * This action is created when an enemy reaches the end of the client screen.
      * The server either moves it to another screen, or decrements health accordingly.

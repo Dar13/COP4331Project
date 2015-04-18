@@ -7,6 +7,11 @@ import com.mygdx.entities.Tower;
  */
 public class ActionTowerPlaced extends ActionTowerBase
 {
+    public ActionTowerPlaced()
+    {
+
+    }
+
     public ActionTowerPlaced(Tower tower)
     {
         super(tower);

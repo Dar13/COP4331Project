@@ -11,6 +11,11 @@ public class ActionTowerBase extends ActionEntityBase
 
     public int level;
 
+    public ActionTowerBase()
+    {
+
+    }
+
     public ActionTowerBase(Tower tower)
     {
         super(tower);

@@ -11,6 +11,11 @@ public class ActionEnemyBase extends ActionEntityBase
 {
     public Enemy.Type enemyType;
 
+    public ActionEnemyBase()
+    {
+
+    }
+
     public ActionEnemyBase(Enemy enemy)
     {
         super(enemy);

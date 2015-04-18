@@ -9,6 +9,11 @@ import com.mygdx.states.GameState;
  */
 public class ActionEnemyDestroy extends ActionEnemyBase
 {
+    public ActionEnemyDestroy()
+    {
+
+    }
+
     public ActionEnemyDestroy(Enemy enemy)
     {
         super(enemy);
