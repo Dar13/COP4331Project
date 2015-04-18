@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Entity;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
@@ -782,6 +783,7 @@ public class NetworkManager extends Listener implements Runnable
             if(object instanceof Action)
             {
                 queuedRemoteChanges.add((Action)object);
+                System.out.println("NET: Packet is Action of type " + ((Action) object).actionClass);
             }
         }
 
@@ -837,7 +839,8 @@ public class NetworkManager extends Listener implements Runnable
     {
         if(syncReady())
         {
-            List<Action> tmp = queuedRemoteChanges;
+            List<Action> tmp = new ArrayList<Action>();
+            tmp.addAll(queuedRemoteChanges);
             queuedRemoteChanges = new ArrayList<Action>();
             return tmp;
         }
@@ -1029,7 +1032,10 @@ public class NetworkManager extends Listener implements Runnable
                         entityStatus.get(actionEnd.entityID).region += 1;
                         entityStatus.get(actionEnd.entityID).region %= (connections.size() + 1);
 
-                        ActionEnemyCreate actionEndCreate = new ActionEnemyCreate((EnemyStatus)entityStatus.get(actionEnd.entityID));
+                        EnemyStatus transfer = (EnemyStatus) entityStatus.get(actionEnd.entityID);
+                        transfer.velocity = actionEnd.velocity;
+
+                        ActionEnemyCreate actionEndCreate = new ActionEnemyCreate(transfer);
 
                         //add actionEndCreate to the queue that's going back out to the clients.
                         addToSendQueue(actionEndCreate);

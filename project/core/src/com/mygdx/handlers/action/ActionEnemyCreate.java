@@ -38,5 +38,6 @@ public class ActionEnemyCreate extends ActionEnemyBase
 
         health = enemyStatus.health;
         armor = enemyStatus.armor;
+        velocity = enemyStatus.velocity;
     }
 }

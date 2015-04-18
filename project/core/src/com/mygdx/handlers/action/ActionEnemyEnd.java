@@ -7,6 +7,7 @@ import com.mygdx.entities.Enemy;
  */
 public class ActionEnemyEnd extends ActionEnemyBase
 {
+    public float velocity;
     public ActionEnemyEnd()
     {
 
@@ -21,5 +22,6 @@ public class ActionEnemyEnd extends ActionEnemyBase
         super(enemy);
 
         actionClass = ActionClass.ACTION_ENEMY_END;
+        this.velocity = enemy.getVelocity();
     }
 }

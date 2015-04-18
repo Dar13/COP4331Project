@@ -583,12 +583,14 @@ public class Play extends GameState {
                         break;
                     }
 
+                    enemyManager.setPaused(false);
+
                     if(!enemyCreate.needsID)
                     {
-                        enemyManager.setMultiplierA(enemyCreate.armor);
-                        enemyManager.setMultiplierS(enemyCreate.velocity);
-                        enemyManager.setMultiplierSP(waveCalculator.getMultiplierSpawnRate(gold));
-                        enemyManager.addEnemy(enemyCreate.enemyType, enemyCreate.entityID);
+                        //enemyManager.setMultiplierA(enemyCreate.armor);
+                        //enemyManager.setMultiplierS(enemyCreate.velocity);
+                        //enemyManager.setMultiplierSP(waveCalculator.getMultiplierSpawnRate(gold));
+                        enemyManager.addEnemy(enemyCreate.enemyType, enemyCreate.entityID, enemyCreate.health, enemyCreate.armor, enemyCreate.velocity);
 
                     }
 

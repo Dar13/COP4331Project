@@ -127,7 +127,7 @@ public class EnemyManager extends Actor{
         numEnemies++;
     }
 
-    public void addEnemy(Entity.Type type, int entityID)
+    public void addEnemy(Entity.Type type, int entityID, float health, float armor, float velocity)
     {
         Enemy enemy = null;
         switch(type)
@@ -147,6 +147,9 @@ public class EnemyManager extends Actor{
         }
 
         enemy.setWayPoints(path);
+        enemy.setHealth(health);
+        enemy.setArmor(armor);
+        enemy.setVelocity(velocity);
         enemyList.add(enemy);
         numEnemies++;
     }

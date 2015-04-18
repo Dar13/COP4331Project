@@ -16,6 +16,6 @@ public class ActionEnemyDamage extends ActionEnemyBase
 
         actionClass = ActionClass.ACTION_ENEMY_DAMAGE;
 
-        damage = damage;
+        this.damage = damage;
     }
 }

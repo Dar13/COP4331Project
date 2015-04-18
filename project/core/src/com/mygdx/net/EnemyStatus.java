@@ -13,6 +13,7 @@ public class EnemyStatus extends EntityStatus
     public Enemy.Type enemyType;
     public float health;
     public float armor;
+    public float velocity;
 
     public EnemyStatus(ActionEnemyBase action)
     {

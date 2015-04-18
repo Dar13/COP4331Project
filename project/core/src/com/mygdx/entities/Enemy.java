@@ -259,6 +259,11 @@ public abstract class Enemy extends Entity
         return distanceTraveled;
     }
 
+    public void setHealth(float health)
+    {
+        this.health = health;
+    }
+
     public void setVelocity(float velocity){
         this.velocity = velocity;
     }
