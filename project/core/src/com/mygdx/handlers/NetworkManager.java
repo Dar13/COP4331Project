@@ -21,6 +21,7 @@ import com.mygdx.handlers.action.ActionTowerPlaced;
 import com.mygdx.handlers.action.ActionTowerUpgraded;
 import com.mygdx.handlers.action.ActionWaitForReady;
 import com.mygdx.handlers.action.ActionWaveEnd;
+import com.mygdx.handlers.action.ActionWaveStart;
 import com.mygdx.net.ConnectionMode;
 import com.mygdx.net.EnemyStatus;
 import com.mygdx.net.EntityStatus;
@@ -551,7 +552,6 @@ public class NetworkManager extends Listener implements Runnable
             {
                 ActionCreateWave createWave = new ActionCreateWave(currentWave);
                 numEnemies = createWave.amountTotalEnemies;
-                System.out.println("Num Enemies: " + numEnemies);
                 createWave.region = getFirstClientID();
                 currentWave++;
 
@@ -565,6 +565,17 @@ public class NetworkManager extends Listener implements Runnable
                     addToSendQueue(createWave);
                 }
 
+                for(GameConnection connection : connections)
+                {
+                    ActionWaveStart waveStart = new ActionWaveStart();
+                    waveStart.region = connection.playerID;
+                    addToSendQueue(waveStart);
+                }
+
+                ActionWaveStart waveStart = new ActionWaveStart();
+                waveStart.region = 0;
+                addToSendQueue(waveStart);
+
                 waveRunning = true;
 
                 serverWaveReady = false;
@@ -577,8 +588,6 @@ public class NetworkManager extends Listener implements Runnable
             if(numEnemies == 0 && waveRunning)
             {
                 waveRunning = false;
-
-                System.out.println("Wave ended!");
 
                 for(GameConnection conn : connections)
                 {

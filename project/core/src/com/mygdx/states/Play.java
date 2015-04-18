@@ -632,19 +632,26 @@ public class Play extends GameState {
                 case ACTION_CREATE_WAVE:
                     ActionCreateWave waveData = (ActionCreateWave)action;
 
-                    enemyManager.setWave(waveData.amountNormalEnemies,
-                                         waveData.amountFastEnemies,
-                                         waveData.amountHeavyEnemies,
-                                         waveData.armorMultiplier,
-                                         waveData.speedMultiplier,
-                                         waveData.delay);
+                    if(enemyManager != null)
+                    {
+                        enemyManager.setWave(waveData.amountNormalEnemies,
+                                             waveData.amountFastEnemies,
+                                             waveData.amountHeavyEnemies,
+                                             waveData.armorMultiplier,
+                                             waveData.speedMultiplier,
+                                             waveData.delay);
+                        enemyManager.currentWave = waveData.waveNumber;
+                    }
 
                     if(enemyManager != null)
                     {
                         enemyManager.setPaused(false);
                     }
                     break;
+                case ACTION_WAVE_START:
+                    enemyManager.setPaused(false);
 
+                    break;
                 case ACTION_WAVE_END:
                     readyButton.setVisible(true);
                     readyButton.setDisabled(false);
