@@ -28,6 +28,7 @@ public abstract class Action
         ACTION_PLAYER_READY,
         ACTION_CREATE_WAVE,
         ACTION_PLAYER_WAVE_READY,
+        ACTION_WAVE_START,
         ACTION_WAVE_END
     }
 
