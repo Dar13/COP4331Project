@@ -588,17 +588,25 @@ public class NetworkManager extends Listener implements Runnable
             if(numEnemies == 0 && waveRunning)
             {
                 waveRunning = false;
-
-                for(GameConnection conn : connections)
+                if(singleplayer)
                 {
                     ActionWaveEnd waveEnd = new ActionWaveEnd();
-                    waveEnd.region = conn.playerID;
+                    waveEnd.region = 0;
+                    queuedRemoteChanges.add(waveEnd);
+                }
+                else
+                {
+                    for (GameConnection conn : connections)
+                    {
+                        ActionWaveEnd waveEnd = new ActionWaveEnd();
+                        waveEnd.region = conn.playerID;
+                        addToSendQueue(waveEnd);
+                    }
+
+                    ActionWaveEnd waveEnd = new ActionWaveEnd();
+                    waveEnd.region = 0;
                     addToSendQueue(waveEnd);
                 }
-
-                ActionWaveEnd waveEnd = new ActionWaveEnd();
-                waveEnd.region = 0;
-                addToSendQueue(waveEnd);
             }
         }
         finally

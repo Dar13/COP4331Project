@@ -255,6 +255,7 @@ public class Play extends GameState {
                     enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
                     stage.addActor(enemyManager);
                 }
+                /*
                 if(enemyManager.isPaused())
                 {
                     if(enemyManager.currentWave == totalWaves)
@@ -268,6 +269,7 @@ public class Play extends GameState {
                     readyButton.setVisible(true);
                     readyButton.setDisabled(false);
                 }
+                */
                 stage.act(delta);
                 hub.act(delta);
                 gold -= towerManager.towerAct(delta, gold);
@@ -650,13 +652,19 @@ public class Play extends GameState {
                     break;
                 case ACTION_WAVE_START:
                     enemyManager.setPaused(false);
+                    state = SubState.PLAY;
+
+                    readyButton.setVisible(false);
+                    readyButton.setDisabled(true);
 
                     break;
                 case ACTION_WAVE_END:
+                    System.out.println("Wave ended!");
                     readyButton.setVisible(true);
                     readyButton.setDisabled(false);
 
                     enemyManager.setPaused(true);
+                    state = SubState.PAUSED;
                     break;
                 }
 
