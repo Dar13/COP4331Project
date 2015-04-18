@@ -553,8 +553,8 @@ public class EnemyManager extends Actor{
         return paused;
     }
 
-    public void setUnPaused(){
-        paused = false;
+    public void setPaused(boolean toPause){
+        paused = toPause;
     }
 
     public void LevelSelectWave(){

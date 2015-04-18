@@ -638,16 +638,18 @@ public class Play extends GameState {
                                          waveData.armorMultiplier,
                                          waveData.speedMultiplier,
                                          waveData.delay);
-                    
+
                     if(enemyManager != null)
                     {
-                        enemyManager.setUnPaused();
+                        enemyManager.setPaused(false);
                     }
                     break;
 
                 case ACTION_WAVE_END:
                     readyButton.setVisible(true);
                     readyButton.setDisabled(false);
+
+                    enemyManager.setPaused(true);
                     break;
                 }
 

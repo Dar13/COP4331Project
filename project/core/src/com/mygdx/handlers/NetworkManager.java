@@ -94,6 +94,7 @@ public class NetworkManager extends Listener implements Runnable
     // serverstate that will eventually be moved to a new class
     protected int health = 10; // should be in MyGame maybe, so client can also load?
     protected int numEnemies = 0;
+    protected boolean waveRunning = false;
     protected int lastUID = 0; // this represents the connectionID of the 'last' screen
 
     public NetworkManager(HashMap<ConnectionMode, NetworkInterface> modes)
@@ -564,11 +565,31 @@ public class NetworkManager extends Listener implements Runnable
                     addToSendQueue(createWave);
                 }
 
+                waveRunning = true;
+
                 serverWaveReady = false;
                 for(GameConnection connection : connections)
                 {
                     connection.waveReady = false;
                 }
+            }
+
+            if(numEnemies == 0 && waveRunning)
+            {
+                waveRunning = false;
+
+                System.out.println("Wave ended!");
+
+                for(GameConnection conn : connections)
+                {
+                    ActionWaveEnd waveEnd = new ActionWaveEnd();
+                    waveEnd.region = conn.playerID;
+                    addToSendQueue(waveEnd);
+                }
+
+                ActionWaveEnd waveEnd = new ActionWaveEnd();
+                waveEnd.region = 0;
+                addToSendQueue(waveEnd);
             }
         }
         finally
