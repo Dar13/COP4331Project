@@ -785,13 +785,18 @@ public class NetworkManager extends Listener implements Runnable
 
     public synchronized void reset()
     {
-        entityStatus.clear();
-
-        for(GameConnection connection : connections)
+        if(entityStatus != null)
         {
-            connection.connection.close();
+            entityStatus.clear();
         }
-        connections.clear();
+
+        if(connections != null)
+        {
+            for (GameConnection connection : connections)
+            {
+                connection.connection.close();
+            }
+        }
 
         currentWave = 1;
     }
