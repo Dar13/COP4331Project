@@ -143,9 +143,6 @@ public class Play extends GameState {
 
         map = new Actor(mapImg,0,0);
 
-        enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
-        enemyManager.setPaused(true);
-
         // load textures
         rifleTowerTexture = new Texture(TowerManager.rifleTexturePath);
         bazookaTowerTexture = new Texture(TowerManager.bazookaTexturePath);
@@ -157,7 +154,6 @@ public class Play extends GameState {
         stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
 
         shapeRenderer = new ShapeRenderer();
-
 
         towers = new LinkedList<>();
         wayPointManager = new WayPointManager(MapLoad);
@@ -217,6 +213,9 @@ public class Play extends GameState {
         hub.addActor(readyButton);
 
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, stage.getBatch());
+
+        enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
+        enemyManager.setPaused(true);
 
     }
 
