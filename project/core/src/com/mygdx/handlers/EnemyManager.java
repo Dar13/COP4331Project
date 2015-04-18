@@ -554,7 +554,7 @@ public class EnemyManager extends Actor{
         return paused;
     }
 
-    public void setPaused(){
+    public void setUnPaused(){
         paused = false;
     }
 

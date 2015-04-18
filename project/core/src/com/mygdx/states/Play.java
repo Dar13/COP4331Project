@@ -39,12 +39,12 @@ import com.mygdx.handlers.WayPointManager;
 import com.mygdx.handlers.action.Action;
 import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionHealthChanged;
+import com.mygdx.handlers.action.ActionPlayerWaveReady;
 import com.mygdx.handlers.action.ActionTowerPlaced;
 
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 
 /**
@@ -222,10 +222,7 @@ public class Play extends GameState {
             state = SubState.PLAY;
             readyButton.setVisible(false);
             readyButton.setDisabled(true);
-            if(enemyManager != null)
-            {
-                enemyManager.setPaused();
-            }
+            networkManager.addToSendQueue(new ActionPlayerWaveReady());
         }
 
         switch (state) {
@@ -626,6 +623,15 @@ public class Play extends GameState {
                             waveCalculator.getMultiplierArmor(),
                             waveCalculator.getMultiplierVelocity(),
                             waveCalculator.getMultiplierSpawnRate(gold));
+                    if(enemyManager != null)
+                    {
+                        enemyManager.setUnPaused();
+                    }
+                    break;
+
+                case ACTION_WAVE_END:
+                    readyButton.setVisible(true);
+                    readyButton.setDisabled(false);
                     break;
                 }
 

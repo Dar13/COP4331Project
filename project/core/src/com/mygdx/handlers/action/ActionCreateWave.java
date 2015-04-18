@@ -15,6 +15,7 @@ public class ActionCreateWave extends Action
     public int amountHeavyEnemies;
     public int amountFastEnemies;
     public int amountNormalEnemies;
+    public int amountTotalEnemies;
 
     public ActionCreateWave(int waveNumber)
     {
@@ -32,5 +33,7 @@ public class ActionCreateWave extends Action
         amountHeavyEnemies = WaveCalculator.getAmountHeavyEnemies();
         amountFastEnemies = WaveCalculator.getAmountFastEnemies();
         amountNormalEnemies = WaveCalculator.getAmountNormalEnemies();
+
+        amountTotalEnemies = amountFastEnemies + amountHeavyEnemies + amountNormalEnemies;
     }
 }

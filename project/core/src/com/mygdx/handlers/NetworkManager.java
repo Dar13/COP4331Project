@@ -73,6 +73,7 @@ public class NetworkManager extends Listener implements Runnable
     protected int lastPlayerID;
     protected boolean gameStarted;
     protected boolean waitingForLobby;
+    protected boolean serverWaveReady = false;
 
     // client
     protected Client client;
@@ -92,6 +93,7 @@ public class NetworkManager extends Listener implements Runnable
 
     // serverstate that will eventually be moved to a new class
     protected int health = 10; // should be in MyGame maybe, so client can also load?
+    protected int numEnemies = 0;
     protected int lastUID = 0; // this represents the connectionID of the 'last' screen
 
     public NetworkManager(HashMap<ConnectionMode, NetworkInterface> modes)
@@ -531,7 +533,7 @@ public class NetworkManager extends Listener implements Runnable
             boolean isAllReady = true;
             if(connections.isEmpty())
             {
-                isAllReady = false;
+                isAllReady = serverWaveReady;
             }
             else
             {
@@ -547,11 +549,20 @@ public class NetworkManager extends Listener implements Runnable
             if(isAllReady)
             {
                 ActionCreateWave createWave = new ActionCreateWave(currentWave);
+                numEnemies = createWave.amountTotalEnemies;
                 createWave.region = getFirstClientID();
                 currentWave++;
 
-                addToSendQueue(createWave);
+                if(singleplayer)
+                {
+                    queuedRemoteChanges.add(createWave);
+                }
+                else
+                {
+                    addToSendQueue(createWave);
+                }
 
+                serverWaveReady = false;
                 for(GameConnection connection : connections)
                 {
                     connection.waveReady = false;
@@ -892,8 +903,14 @@ public class NetworkManager extends Listener implements Runnable
         {
         case ACTION_PLAYER_WAVE_READY:
             ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
-
-            connections.get(playerReady.region).waveReady = true;
+            if(connections.size() > 0)
+            {
+                connections.get(playerReady.region).waveReady = true;
+            }
+            else
+            {
+                serverWaveReady = true;
+            }
             break;
         case ACTION_ENEMY_CREATE:
             ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
@@ -968,6 +985,7 @@ public class NetworkManager extends Listener implements Runnable
                 if (entityStatus.containsKey(actionDestroy.entityID))
                 {
                     entityStatus.remove(actionDestroy.entityID);
+                    numEnemies--;
                 }
             }
             finally
