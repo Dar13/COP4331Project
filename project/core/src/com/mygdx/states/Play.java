@@ -143,6 +143,9 @@ public class Play extends GameState {
 
         map = new Actor(mapImg,0,0);
 
+        enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
+        enemyManager.setPaused(true);
+
         // load textures
         rifleTowerTexture = new Texture(TowerManager.rifleTexturePath);
         bazookaTowerTexture = new Texture(TowerManager.bazookaTexturePath);

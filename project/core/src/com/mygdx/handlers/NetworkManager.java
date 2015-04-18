@@ -509,7 +509,7 @@ public class NetworkManager extends Listener implements Runnable
                 boolean allWaiting = true;
                 for(GameConnection conn : connections)
                 {
-                    if(conn.isValidated() && !conn.waiting && conn.connection.isConnected())
+                    if(conn.isValidated() && !conn.waiting && conn.connection.isConnected() && serverWaveReady)
                     {
                         ActionWaitForReady waitForReady = new ActionWaitForReady();
                         waitForReady.region = conn.playerID;

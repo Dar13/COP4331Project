@@ -17,6 +17,11 @@ public class ActionCreateWave extends Action
     public int amountNormalEnemies;
     public int amountTotalEnemies;
 
+    public ActionCreateWave()
+    {
+
+    }
+
     public ActionCreateWave(int waveNumber)
     {
         super();
