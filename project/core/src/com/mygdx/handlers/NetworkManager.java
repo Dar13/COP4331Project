@@ -453,6 +453,7 @@ public class NetworkManager extends Listener implements Runnable
         kryo.register(ActionPlayersReady.class);
         kryo.register(ActionTowerPlaced.class);
         kryo.register(ActionTowerUpgraded.class);
+        kryo.register(ActionPlayerWaveReady.class);
         kryo.register(ActionWaitForReady.class);
         kryo.register(ActionWaveStart.class);
         kryo.register(ActionWaveEnd.class);
@@ -883,6 +884,7 @@ public class NetworkManager extends Listener implements Runnable
                         {
                             if (connection.playerID == action.region)
                             {
+                                System.out.format("Sending: %s\n", action.actionClass);
                                 server.sendToTCP(connection.connection.getID(), action);
                             }
 

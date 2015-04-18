@@ -140,8 +140,11 @@ public class NetTest extends GameState
 
         if(lobbyReady)
         {
-            System.out.println("Ready!");
+            connecting.setVisible(false);
+            connecting.setDisabled(false);
             connecting.remove();
+            ready.setVisible(true);
+            ready.setDisabled(false);
             stage.addActor(ready);
             lobbyReady = false;
         }
