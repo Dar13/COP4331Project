@@ -38,7 +38,7 @@ public class Tutorial extends GameState {
                                      " This is a Bazooka Squad Bunker, it costs 150 gold.\n It has a high attack power, but a slower attack speed\n when compared to the rifle tower.\n It is ideal for dealing with the Tiger Tank.",
                                      " This is the Sniper Bunker, it costs 350 gold.\n It has a higher attack compared to the rifle and\n a faster attack speed when compared to the bazooka.\n It is ideal for dealing with the Fast enemies.",
                                      " This is the Mortar Team Bunker, it costs 350 gold.\n It has an attack speed between the Sniper and the\n bazooka. It's damage is slightly higher than the rifle.\n It can slow the enemies greatly. Ideal for all enemies.",
-                                     " Between every wave you will have a chance to place\n your bunkers. When you are finished press the Ready\n button in the lower left to begin a new wave.",
+                                     " Between every wave you will have a chance to place\n your bunkers. When you are finished press the Ready\n button in the lower right to begin a new wave.",
                                      " To upgrade any tower, simply click or press the\n tower you wish to upgrade and these buttons\n will appear. Each upgrade will cost the base\n cost of the tower times its next level.",
                                      " Now to the enemies.\n This is Klaus, your average Wehrmacht solder.\n He has hopes and dreams.\n But he is a Nazi and must be stopped. Poor Klaus.",
                                      " Like all enemies of his type, Klaus is slow and only\n lightly armoured. A couple of Rifle Bunker Squads\n could deal with Klaus and his friends.",
