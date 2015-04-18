@@ -550,11 +550,13 @@ public class NetworkManager extends Listener implements Runnable
             {
                 ActionCreateWave createWave = new ActionCreateWave(currentWave);
                 numEnemies = createWave.amountTotalEnemies;
+                System.out.println("Num Enemies: " + numEnemies);
                 createWave.region = getFirstClientID();
                 currentWave++;
 
                 if(singleplayer)
                 {
+                    createWave.region = 0;
                     queuedRemoteChanges.add(createWave);
                 }
                 else
@@ -899,6 +901,8 @@ public class NetworkManager extends Listener implements Runnable
             return;
         }
 
+        System.out.println("Packet type: " + change.actionClass);
+
         switch(change.actionClass)
         {
         case ACTION_PLAYER_WAVE_READY:
@@ -951,6 +955,7 @@ public class NetworkManager extends Listener implements Runnable
                     if(entityStatus.get(actionEnd.entityID).region >= connections.size())
                     {
                         health--;
+                        numEnemies--;
                         ActionHealthChanged actionHealth = new ActionHealthChanged(health);
                         if(singleplayer)
                         {

@@ -151,10 +151,9 @@ public class EnemyManager extends Actor{
 
     protected Enemy createEnemy(Entity.Type type, int entityID, int tempID, Texture north, Texture south, Texture east, Texture west)
     {
-
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
-        enemy.setArmor(multiplierA);
-        enemy.setVelocity(multiplierS);
+        enemy.applyArmorMultiplier(multiplierA);
+        enemy.applyVelocityMultiplier(multiplierS);
         enemy.entityID = entityID;
         enemy.tempID = tempID;
 

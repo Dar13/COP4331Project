@@ -2,6 +2,7 @@ package com.mygdx.states;
 
 
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.entities.Actor;
@@ -37,6 +38,7 @@ import com.mygdx.handlers.NetworkManager;
 import com.mygdx.handlers.WaveCalculator;
 import com.mygdx.handlers.WayPointManager;
 import com.mygdx.handlers.action.Action;
+import com.mygdx.handlers.action.ActionCreateWave;
 import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionHealthChanged;
 import com.mygdx.handlers.action.ActionPlayerWaveReady;
@@ -108,7 +110,7 @@ public class Play extends GameState {
     }
     private SubState state;
 
-    public Play(GameStateManager gameStateManager, NetworkManager networkManager, int MapLoad)
+    public Play(GameStateManager gameStateManager, final NetworkManager networkManager, int MapLoad)
     {
         super(gameStateManager,networkManager);
         state = SubState.SETUP;
@@ -174,7 +176,18 @@ public class Play extends GameState {
         readyButton.setSize(64, 64);
         readyButton.setPosition(game.V_WIDTH - readyButton.getWidth(),
                 0);
-        readyButton.addListener(new ClickListener());
+        readyButton.addListener(new ClickListener()
+        {
+            @Override
+            public void clicked(InputEvent event, float x, float y)
+            {
+                state = SubState.PLAY;
+                readyButton.setVisible(false);
+                readyButton.setDisabled(true);
+
+                networkManager.addToSendQueue(new ActionPlayerWaveReady());
+            }
+        });
 
         sniperButton = new TextButton("sniper",skin);
         sniperButton.setSize(64, 64);
@@ -219,10 +232,10 @@ public class Play extends GameState {
 
         placeATower();
         if(readyButton.isPressed()){
-            state = SubState.PLAY;
-            readyButton.setVisible(false);
-            readyButton.setDisabled(true);
-            networkManager.addToSendQueue(new ActionPlayerWaveReady());
+            //state = SubState.PLAY;
+            //readyButton.setVisible(false);
+            //readyButton.setDisabled(true);
+            //networkManager.addToSendQueue(new ActionPlayerWaveReady());
         }
 
         switch (state) {
@@ -617,12 +630,15 @@ public class Play extends GameState {
 
                     break;
                 case ACTION_CREATE_WAVE:
-                    enemyManager.setWave(waveCalculator.getAmountNormalEnemies(),
-                            waveCalculator.getAmountFastEnemies(),
-                            waveCalculator.getAmountHeavyEnemies(),
-                            waveCalculator.getMultiplierArmor(),
-                            waveCalculator.getMultiplierVelocity(),
-                            waveCalculator.getMultiplierSpawnRate(gold));
+                    ActionCreateWave waveData = (ActionCreateWave)action;
+
+                    enemyManager.setWave(waveData.amountNormalEnemies,
+                                         waveData.amountFastEnemies,
+                                         waveData.amountHeavyEnemies,
+                                         waveData.armorMultiplier,
+                                         waveData.speedMultiplier,
+                                         waveData.delay);
+                    
                     if(enemyManager != null)
                     {
                         enemyManager.setUnPaused();
