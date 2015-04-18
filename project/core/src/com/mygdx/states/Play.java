@@ -643,6 +643,7 @@ public class Play extends GameState {
                                              waveData.speedMultiplier,
                                              waveData.delay);
                         enemyManager.currentWave = waveData.waveNumber;
+                        enemyManager.setSpawn(true);
                     }
 
                     if(enemyManager != null)

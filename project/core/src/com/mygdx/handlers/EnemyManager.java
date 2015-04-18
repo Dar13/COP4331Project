@@ -68,6 +68,7 @@ public class EnemyManager extends Actor{
     public List<Tower> towerList;
     protected int idCounter = 0;
     protected boolean paused = false;
+    protected boolean isSpawn;
 
     private LinkedList<WayPoint> path;
     private float multiplierS = 1;
@@ -96,6 +97,7 @@ public class EnemyManager extends Actor{
         waveToBeSpawnedHeavy = waveInfoHeavy;
         this.path = path;
         this.batch = batch;
+        isSpawn = false;
 
         enemyList = new ArrayList<>();
         enemiesToBeRemoved = new ArrayList<>();
@@ -271,87 +273,8 @@ public class EnemyManager extends Actor{
                 tick = 0;
             }
 
-
-            if (currentWave > 0 && currentWave < 5)
-            {
-                timeSinceLastNorm++;
-
-                if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
-                {
-                    //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                    addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
-
-                    timeSinceLastNorm = 0;
-                    waveToBeSpawnedNorm--;
-                    totalWavesToBeSpawned--;
-                    System.out.println(totalWavesToBeSpawned);
-                }
-
-            }
-            else if (currentWave > 4 && currentWave < 10)
-            {
-                timeSinceLastNorm++;
-                timeSinceLastFast++;
-                System.out.println(waveToBeSpawnedNorm);
-                System.out.println(waveToBeSpawnedFast);
-                System.out.println(totalWavesToBeSpawned);
-
-                if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
-                {
-                    //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                    addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
-
-                    timeSinceLastNorm = 0;
-                    waveToBeSpawnedNorm--;
-                    totalWavesToBeSpawned--;
-                }
-
-                if (timeSinceLastFast > ((MyGame.fpsretrieve / 3) - multiplierSp) && waveToBeSpawnedFast > 0)
-                {
-                    //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
-                    addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
-
-                    timeSinceLastFast = 0;
-                    waveToBeSpawnedFast--;
-                    totalWavesToBeSpawned--;
-                }
-            }
-            else if (currentWave > 9)
-            {
-                timeSinceLastNorm++;
-                timeSinceLastFast++;
-                timeSinceLastHeavy++;
-
-                if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
-                {
-                    //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
-                    addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
-
-                    timeSinceLastNorm = 0;
-                    waveToBeSpawnedNorm--;
-                    totalWavesToBeSpawned--;
-                }
-
-                if (timeSinceLastFast > ((MyGame.fpsretrieve / 3) - multiplierSp) && waveToBeSpawnedFast > 0)
-                {
-                    //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
-                    addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
-
-                    timeSinceLastFast = 0;
-                    waveToBeSpawnedFast--;
-                    totalWavesToBeSpawned--;
-                }
-
-                if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
-                {
-                    //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
-                    addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
-
-                    timeSinceLastHeavy = 0;
-                    waveToBeSpawnedHeavy--;
-                    totalWavesToBeSpawned--;
-                }
-            }
+            if(isSpawn)
+                spawn();
 
             for (Tower tower : towerList)
             {
@@ -501,6 +424,90 @@ public class EnemyManager extends Actor{
         }
     }
 
+    protected void spawn()
+    {
+        if (currentWave > 0 && currentWave < 5)
+        {
+            timeSinceLastNorm++;
+
+            if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
+            {
+                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
+
+                timeSinceLastNorm = 0;
+                waveToBeSpawnedNorm--;
+                totalWavesToBeSpawned--;
+                System.out.println(totalWavesToBeSpawned);
+            }
+
+        }
+        else if (currentWave > 4 && currentWave < 10)
+        {
+            timeSinceLastNorm++;
+            timeSinceLastFast++;
+            System.out.println(waveToBeSpawnedNorm);
+            System.out.println(waveToBeSpawnedFast);
+            System.out.println(totalWavesToBeSpawned);
+
+            if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
+            {
+                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
+
+                timeSinceLastNorm = 0;
+                waveToBeSpawnedNorm--;
+                totalWavesToBeSpawned--;
+            }
+
+            if (timeSinceLastFast > ((MyGame.fpsretrieve / 3) - multiplierSp) && waveToBeSpawnedFast > 0)
+            {
+                //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
+                addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
+
+                timeSinceLastFast = 0;
+                waveToBeSpawnedFast--;
+                totalWavesToBeSpawned--;
+            }
+        }
+        else if (currentWave > 9)
+        {
+            timeSinceLastNorm++;
+            timeSinceLastFast++;
+            timeSinceLastHeavy++;
+
+            if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
+            {
+                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
+                addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
+
+                timeSinceLastNorm = 0;
+                waveToBeSpawnedNorm--;
+                totalWavesToBeSpawned--;
+            }
+
+            if (timeSinceLastFast > ((MyGame.fpsretrieve / 3) - multiplierSp) && waveToBeSpawnedFast > 0)
+            {
+                //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
+                addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
+
+                timeSinceLastFast = 0;
+                waveToBeSpawnedFast--;
+                totalWavesToBeSpawned--;
+            }
+
+            if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
+            {
+                //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
+                addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
+
+                timeSinceLastHeavy = 0;
+                waveToBeSpawnedHeavy--;
+                totalWavesToBeSpawned--;
+            }
+        }
+    }
+
     //Returns the amount of gold earned for enemies killed in the update.
     public int GetGoldEarned()
     {
@@ -578,6 +585,16 @@ public class EnemyManager extends Actor{
         this.multiplierS = multiplierS;
         this.multiplierSp = multiplierSp;
         this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
+    }
+
+    public boolean isSpawn()
+    {
+        return isSpawn;
+    }
+
+    public void setSpawn(boolean isSpawn)
+    {
+        this.isSpawn = isSpawn;
     }
 
     public void setMultiplierA(float multiplierA)
