@@ -101,6 +101,7 @@ public class Play extends GameState {
     public ShapeRenderer shapeRenderer;
 
     private WaveCalculator waveCalculator;
+    private ActionCreateWave waveData;
 
     public enum SubState
     {
@@ -214,9 +215,7 @@ public class Play extends GameState {
 
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, stage.getBatch());
 
-        enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
-        enemyManager.setPaused(true);
-
+        waveData = null;
     }
 
     @Override
@@ -231,12 +230,6 @@ public class Play extends GameState {
          */
 
         placeATower();
-        if(readyButton.isPressed()){
-            //state = SubState.PLAY;
-            //readyButton.setVisible(false);
-            //readyButton.setDisabled(true);
-            //networkManager.addToSendQueue(new ActionPlayerWaveReady());
-        }
 
         switch (state)
         {
@@ -254,23 +247,23 @@ public class Play extends GameState {
                 if(enemyManager == null)
                 {
                     enemyManager = new EnemyManager(networkManager, wayPointManager.wayPoints, stage.getBatch());
+                    enemyManager.setPaused(false);
                     stage.addActor(enemyManager);
                 }
-                /*
-                if(enemyManager.isPaused())
-                {
-                    if(enemyManager.currentWave == totalWaves)
-                    {
-                        // TODO: send this info to the Server so all clients end. Also move alot of the if-statement logic to the server?
-                        // Maybe server indeed needs to count how many enemy killed in order to send this action
-                        gameStateManager.pushState(GameStateManager.GOODEND, 0);
-                    }
 
-                    state = SubState.PAUSED;
-                    readyButton.setVisible(true);
-                    readyButton.setDisabled(false);
+                if(waveData != null)
+                {
+                    enemyManager.setSpawn(true);
+                    enemyManager.setWave(waveData.amountNormalEnemies,
+                            waveData.amountFastEnemies,
+                            waveData.amountHeavyEnemies,
+                            waveData.armorMultiplier,
+                            waveData.speedMultiplier,
+                            waveData.delay);
+                    enemyManager.currentWave = waveData.waveNumber;
+                    waveData = null;
                 }
-                */
+
                 stage.act(delta);
                 hub.act(delta);
                 gold -= towerManager.towerAct(delta, gold);
@@ -631,29 +624,12 @@ public class Play extends GameState {
 
                     break;
                 case ACTION_CREATE_WAVE:
-                    ActionCreateWave waveData = (ActionCreateWave)action;
+                    waveData = (ActionCreateWave)action;
+                    System.out.println("Parsed Create Wave Action");
 
-                    if(enemyManager != null)
-                    {
-                        enemyManager.setWave(waveData.amountNormalEnemies,
-                                             waveData.amountFastEnemies,
-                                             waveData.amountHeavyEnemies,
-                                             waveData.armorMultiplier,
-                                             waveData.speedMultiplier,
-                                             waveData.delay);
-                        enemyManager.currentWave = waveData.waveNumber;
-                        enemyManager.setSpawn(true);
-                    }
-
-                    if(enemyManager != null)
-                    {
-                        enemyManager.setPaused(false);
-                    }
                     break;
                 case ACTION_WAVE_START:
-                    enemyManager.setPaused(false);
                     state = SubState.PLAY;
-
                     readyButton.setVisible(false);
                     readyButton.setDisabled(true);
 
