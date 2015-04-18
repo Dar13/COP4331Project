@@ -17,7 +17,7 @@ public class WaveCalculator
 
     public static float getArmorMultiplier()
     {
-        return ((waveNumber * waveNumber) / 1000.0f);
+        return (1.0f + ((waveNumber * waveNumber) / 1000.0f));
     }
 
     public static float getSpeedMultiplier()
