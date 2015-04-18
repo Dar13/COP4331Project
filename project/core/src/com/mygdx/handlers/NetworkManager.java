@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.mygdx.entities.Entity;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.action.Action;
@@ -442,6 +443,7 @@ public class NetworkManager extends Listener implements Runnable
         kryo.register(GameConnection.PlayerID.class);
 
         kryo.register(Action.ActionClass.class);
+        kryo.register(Entity.Type.class);
         kryo.register(ActionCreateWave.class);
         kryo.register(ActionEnemyCreate.class);
         kryo.register(ActionEnemyDestroy.class);
@@ -452,6 +454,7 @@ public class NetworkManager extends Listener implements Runnable
         kryo.register(ActionTowerPlaced.class);
         kryo.register(ActionTowerUpgraded.class);
         kryo.register(ActionWaitForReady.class);
+        kryo.register(ActionWaveStart.class);
         kryo.register(ActionWaveEnd.class);
     }
 

@@ -89,7 +89,8 @@ public class NetTest extends GameState
     public void update(float delta)
     {
         stage.act(delta);
-        if (serverButton.isPressed()){
+        if (serverButton.isPressed())
+        {
             networkManager.prepInitialize(true,
                                           ConnectionMode.WIFI_LAN,
                                           ConnectionMode.NONE,
@@ -99,7 +100,8 @@ public class NetTest extends GameState
             clientButton.remove();
         }
 
-        if(clientButton.isPressed()){
+        if(clientButton.isPressed())
+        {
             networkManager.prepInitialize(false,
                                           ConnectionMode.WIFI_LAN,
                                           ConnectionMode.NONE,
@@ -138,12 +140,14 @@ public class NetTest extends GameState
 
         if(lobbyReady)
         {
+            System.out.println("Ready!");
             connecting.remove();
             stage.addActor(ready);
             lobbyReady = false;
         }
 
-        if(ready.isPressed()){
+        if(ready.isPressed())
+        {
             gameStateManager.setState(GameStateManager.LEVELSELECT,0);
         }
 
