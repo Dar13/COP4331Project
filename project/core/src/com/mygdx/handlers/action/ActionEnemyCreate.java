@@ -14,6 +14,11 @@ public class ActionEnemyCreate extends ActionEnemyBase
     public float armor;
     public float velocity;
 
+    public ActionEnemyCreate()
+    {
+        super();
+    }
+
     public ActionEnemyCreate(Enemy newEnemy)
     {
         super(newEnemy);

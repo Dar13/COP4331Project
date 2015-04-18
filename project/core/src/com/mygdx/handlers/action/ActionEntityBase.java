@@ -11,6 +11,11 @@ public class ActionEntityBase extends Action
     public int entityID;
     public int tempID;
 
+    public ActionEntityBase()
+    {
+
+    }
+
     public ActionEntityBase(Entity entity)
     {
         super();
