@@ -419,6 +419,7 @@ public class NetworkManager extends Listener implements Runnable
             }
         }
 
+        // special case for single player
         return 0;
     }
 
@@ -970,10 +971,8 @@ public class NetworkManager extends Listener implements Runnable
             {
                 if(entityStatus.containsKey(actionEnd.entityID))
                 {
-                    // Move enemy to next region.
-                    entityStatus.get(actionEnd.entityID).region += 1;
-
-                    if(entityStatus.get(actionEnd.entityID).region >= connections.size())
+                    // if the enemy is at region 0, then its at the end
+                    if(entityStatus.get(actionEnd.entityID).region == 0)
                     {
                         health--;
                         numEnemies--;
@@ -987,10 +986,14 @@ public class NetworkManager extends Listener implements Runnable
                             addToSendQueue(actionHealth);
                         }
                     }
-
-                    if(!connections.isEmpty())
+                    else
                     {
-                        ActionEnemyCreate actionEndCreate = new ActionEnemyCreate((EnemyStatus) entityStatus.get(actionEnd.entityID));
+                        // e.g., if we have 2 connections, there are 3 screens. if we are at region 2,
+                        // we need to send the enemy to server, or region 0. (2+1) % (2+1) = 0;
+                        entityStatus.get(actionEnd.entityID).region += 1;
+                        entityStatus.get(actionEnd.entityID).region %= (connections.size() + 1);
+
+                        ActionEnemyCreate actionEndCreate = new ActionEnemyCreate((EnemyStatus)entityStatus.get(actionEnd.entityID));
 
                         //add actionEndCreate to the queue that's going back out to the clients.
                         addToSendQueue(actionEndCreate);
