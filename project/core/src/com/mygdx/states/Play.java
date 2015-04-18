@@ -220,8 +220,6 @@ public class Play extends GameState {
     @Override
     public void update(float delta)
     {
-        handleChanges();
-
         /**
          * TODO
          * Similarly with getting the amount of gold, depending on how
@@ -238,7 +236,8 @@ public class Play extends GameState {
             //networkManager.addToSendQueue(new ActionPlayerWaveReady());
         }
 
-        switch (state) {
+        switch (state)
+        {
             case SETUP:
                 hub.act(delta);
                 stage.act(delta);
@@ -281,11 +280,9 @@ public class Play extends GameState {
                 }
                 
                 break;
-
         }
 
-
-
+        handleChanges();
     }
 
     @Override
