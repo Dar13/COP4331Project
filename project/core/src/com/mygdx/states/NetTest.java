@@ -141,7 +141,7 @@ public class NetTest extends GameState
         if(lobbyReady)
         {
             connecting.setVisible(false);
-            connecting.setDisabled(false);
+            connecting.setDisabled(true);
             connecting.remove();
             ready.setVisible(true);
             ready.setDisabled(false);

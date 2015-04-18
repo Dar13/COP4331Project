@@ -509,7 +509,7 @@ public class NetworkManager extends Listener implements Runnable
                 boolean allWaiting = true;
                 for(GameConnection conn : connections)
                 {
-                    if(!conn.waiting && conn.connection.isConnected())
+                    if(conn.isValidated() && !conn.waiting && conn.connection.isConnected())
                     {
                         ActionWaitForReady waitForReady = new ActionWaitForReady();
                         waitForReady.region = conn.playerID;
@@ -563,23 +563,32 @@ public class NetworkManager extends Listener implements Runnable
                 if(singleplayer)
                 {
                     createWave.region = 0;
+                    System.out.println("Sending wave (singleplayer?)");
                     queuedRemoteChanges.add(createWave);
                 }
                 else
                 {
+                    System.out.println("Sending wave!");
                     addToSendQueue(createWave);
                 }
 
-                for(GameConnection connection : connections)
+                if(singleplayer)
                 {
+                    queuedRemoteChanges.add(new ActionWaveStart());
+                }
+                else
+                {
+                    for (GameConnection connection : connections)
+                    {
+                        ActionWaveStart waveStart = new ActionWaveStart();
+                        waveStart.region = connection.playerID;
+                        addToSendQueue(waveStart);
+                    }
+
                     ActionWaveStart waveStart = new ActionWaveStart();
-                    waveStart.region = connection.playerID;
+                    waveStart.region = 0;
                     addToSendQueue(waveStart);
                 }
-
-                ActionWaveStart waveStart = new ActionWaveStart();
-                waveStart.region = 0;
-                addToSendQueue(waveStart);
 
                 waveRunning = true;
 
@@ -958,7 +967,7 @@ public class NetworkManager extends Listener implements Runnable
             ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
             if(connections.size() > 0)
             {
-                connections.get(playerReady.region).waveReady = true;
+                connections.get(playerReady.region - 1).waveReady = true;
             }
             else
             {
@@ -1132,7 +1141,6 @@ public class NetworkManager extends Listener implements Runnable
                 gameConnection.connection.sendTCP(idPacket);
 
                 idPacket.playerID = gameConnection.playerID;
-                System.out.println("Player ID = " + idPacket.playerID);
 
                 lastPlayerID++;
 
