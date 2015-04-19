@@ -2,7 +2,7 @@ package com.mygdx.game.desktop.net;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
-import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.net.NetworkManager;
 import com.mygdx.net.NetworkInterface;
 
 import java.net.InetAddress;

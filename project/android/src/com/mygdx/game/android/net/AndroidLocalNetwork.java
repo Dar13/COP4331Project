@@ -5,18 +5,14 @@ import android.net.wifi.WifiManager;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
-import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.net.NetworkManager;
 import com.mygdx.net.NetworkInterface;
 
 import java.math.BigInteger;
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 /**

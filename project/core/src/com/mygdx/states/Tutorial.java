@@ -1,10 +1,6 @@
 package com.mygdx.states;
 
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.mygdx.entities.Actor;
 import com.mygdx.handlers.GameStateManager;
@@ -15,10 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.handlers.AssetManager;
-import com.mygdx.handlers.NetworkManager;
-import com.mygdx.net.ConnectionMode;
-
-import java.awt.TextField;
+import com.mygdx.handlers.net.NetworkManager;
 
 
 /**

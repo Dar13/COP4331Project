@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.AssetManager;
-import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.net.NetworkManager;
 
 /**
  * Created by LordNeah on 3/22/2015.

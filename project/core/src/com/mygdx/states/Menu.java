@@ -1,9 +1,5 @@
 package com.mygdx.states;
 
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.mygdx.entities.Actor;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -12,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.handlers.AssetManager;
-import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.net.NetworkManager;
 import com.mygdx.net.ConnectionMode;
 
 

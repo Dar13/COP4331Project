@@ -1,4 +1,4 @@
-package com.mygdx.handlers;
+package com.mygdx.handlers.net;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;

@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.handlers.MyInputProcessor;
-import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.net.NetworkManager;
 import com.mygdx.net.ConnectionMode;
 import com.mygdx.net.NetworkInterface;
 

@@ -14,6 +14,7 @@ import com.mygdx.game.MyGame;
 import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionEnemyDestroy;
 import com.mygdx.handlers.action.ActionEnemyEnd;
+import com.mygdx.handlers.net.NetworkManager;
 import com.mygdx.triggers.WayPoint;
 
 import java.util.ArrayList;

@@ -34,7 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.Debug.Debugger;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.MyInput;
-import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.net.NetworkManager;
 import com.mygdx.handlers.WaveCalculator;
 import com.mygdx.handlers.WayPointManager;
 import com.mygdx.handlers.action.Action;
@@ -176,11 +176,9 @@ public class Play extends GameState {
         readyButton.setSize(64, 64);
         readyButton.setPosition(game.V_WIDTH - readyButton.getWidth(),
                 0);
-        readyButton.addListener(new ClickListener()
-        {
+        readyButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
+            public void clicked(InputEvent event, float x, float y) {
                 state = SubState.PLAY;
                 readyButton.setVisible(false);
                 readyButton.setDisabled(true);

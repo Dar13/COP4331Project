@@ -3,7 +3,7 @@ package com.mygdx.states;
 import com.mygdx.handlers.GameStateManager;
 import com.badlogic.gdx.Screen;
 import com.mygdx.game.MyGame;
-import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.net.NetworkManager;
 
 /**
  * Created by James on 3/18/2015.

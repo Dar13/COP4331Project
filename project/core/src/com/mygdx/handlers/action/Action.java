@@ -1,8 +1,5 @@
 package com.mygdx.handlers.action;
 
-import com.mygdx.entities.Entity;
-import com.mygdx.handlers.NetworkManager;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

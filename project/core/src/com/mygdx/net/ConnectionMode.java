@@ -1,7 +1,5 @@
 package com.mygdx.net;
 
-import com.mygdx.handlers.NetworkManager;
-
 /**
 * Created by NeilMoore on 4/3/2015.
 */

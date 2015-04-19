@@ -10,7 +10,7 @@ import com.mygdx.states.Play;
 import com.mygdx.states.Tutorial;
 import com.mygdx.states.WinState;
 import com.mygdx.game.MyGame;
-import com.mygdx.handlers.NetworkManager;
+import com.mygdx.handlers.net.NetworkManager;
 
 import java.util.Stack;
 
