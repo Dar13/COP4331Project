@@ -68,7 +68,7 @@ public class Menu extends GameState {
         if(singleplayer.isChecked()){
             if(!networkManager.isInitialized()) {
                 networkManager.setSingleplayer(true);
-                networkManager.prepInitialize(true,
+                networkManager.getConnectionManager().prepare(true,
                         ConnectionMode.WIFI_LAN,
                         ConnectionMode.NONE,
                         true);

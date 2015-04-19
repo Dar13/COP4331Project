@@ -10,6 +10,7 @@ import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Entity;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.ThreadSafeList;
 import com.mygdx.handlers.action.Action;
 import com.mygdx.handlers.action.ActionCreateWave;
 import com.mygdx.handlers.action.ActionEnemyCreate;
@@ -46,7 +47,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Abstraction away from low-level networking for use in the game states.
  */
-public class NetworkManager extends Listener implements Runnable
+public class NetworkManager implements Runnable
 {
     public static final int SERVER_TCP_PORT = 0xDDD;
     public static final int SERVER_UDP_PORT = 0xDDE;
@@ -54,8 +55,8 @@ public class NetworkManager extends Listener implements Runnable
     public static final int ENTITY_ID_START = 0;
 
     //These lists will hold changes temporarily until they are either sent or applied
-    private List<Action> queuedLocalChanges;
-    private List<Action> queuedRemoteChanges;
+    private ThreadSafeList<Action> queuedLocalChanges;
+    private ThreadSafeList<Action> queuedRemoteChanges;
 
     protected AtomicBoolean initialized;
     protected Boolean ready;
@@ -80,16 +81,9 @@ public class NetworkManager extends Listener implements Runnable
 
     // client
     protected Client client;
-    protected ArrayList<InetAddress> serverAddresses;
-    protected InetAddress hostAddress;
+
     protected boolean validated = false;
     protected int playerID = -1;
-
-    // techniques of connecting
-    protected ConnectionMode preferredMode;
-    protected ConnectionMode fallbackMode;
-    protected HashMap<ConnectionMode, NetworkInterface> networkInterfaces;
-    protected NetworkInterface networkInterface;
 
     // threading stuff
     protected ReentrantReadWriteLock mutex;
@@ -100,13 +94,17 @@ public class NetworkManager extends Listener implements Runnable
     protected boolean waveRunning = false;
     protected int lastUID = 0; // this represents the connectionID of the 'last' screen
 
+    // ConnectionManager now facilitates details of Connection
+    private ConnectionManager connectionManager;
+
     public NetworkManager(HashMap<ConnectionMode, NetworkInterface> modes)
     {
-        networkInterfaces = modes;
         initialized = new AtomicBoolean(false);
         ready = false;
         initializeManager = false;
         expectedAmountClients = MAX_CLIENTS;
+
+        connectionManager = new ConnectionManager(modes, MAX_CLIENTS);
 
         lastPlayerID = 1;
 
@@ -117,21 +115,8 @@ public class NetworkManager extends Listener implements Runnable
         // this is the closest to a traditional mutex I could find.
         // allows multiple reads at one time while only allowing one write lock.
         mutex = new ReentrantReadWriteLock(true);
-        queuedLocalChanges = new ArrayList<Action>();
-        queuedRemoteChanges = new ArrayList<Action>();
-    }
-
-    public HashMap<ConnectionMode, NetworkInterface> getNetworkImpls()
-    {
-        mutex.readLock().lock();
-        try
-        {
-            return networkInterfaces;
-        }
-        finally
-        {
-            mutex.readLock().unlock();
-        }
+        queuedLocalChanges = new ThreadSafeList<>();
+        queuedRemoteChanges = new ThreadSafeList<Action>();
     }
 
     public synchronized void setSingleplayer(boolean value)
@@ -142,25 +127,6 @@ public class NetworkManager extends Listener implements Runnable
     public boolean getSingleplayer()
     {
         return singleplayer;
-    }
-
-    public void prepInitialize(boolean isServer,
-                               ConnectionMode primaryMode,
-                               ConnectionMode fallbackMode,
-                               boolean initializeNow)
-    {
-        mutex.writeLock().lock();
-        try
-        {
-            this.isServer = isServer;
-            this.preferredMode = primaryMode;
-            this.fallbackMode = fallbackMode;
-            this.initializeManager = initializeNow;
-        }
-        finally
-        {
-            mutex.writeLock().unlock();
-        }
     }
 
     public void setInitializeFlag(boolean flag)
@@ -179,78 +145,36 @@ public class NetworkManager extends Listener implements Runnable
     public boolean initialize()
     {
         System.out.println("NET: Initializing NetworkManager");
-        mutex.writeLock().lock();
-        try
+
+        if(isServer == null)
         {
-            // make sure primary mode isn't nu ll, secondary mode is nullable.
-            if (isServer == null || this.preferredMode == null)
-            {
-                initialized.set(false);
-                return false;
-            }
-
-            // this can't be null so ignore any warnings that it can be.
-            if (isServer)
-            {
-                // setup class members for server stuff.
-                connections = new ArrayList<>();
-
-                server = new Server();
-                server.addListener(this);
-
-                entityStatus = new HashMap<>();
-            }
-            else
-            {
-                client = new Client();
-                client.addListener(this);
-            }
-
-            networkInterface = networkInterfaces.get(this.preferredMode);
-
-            if (networkInterface != null)
-            {
-                serverAddresses = networkInterface.setup(client, server);
-
-                // check to see if primary mode failed to setup properly
-                if (!networkInterface.isReady())
-                {
-                    // switch to fallback connection mode
-                    networkInterface = networkInterfaces.get(fallbackMode);
-
-                    if (networkInterface == null)
-                    {
-                        // invalid fallback
-                        System.out.println("NET: Selected fallback connection mode is not supported");
-                        return false;
-                    }
-                    else
-                    {
-                        serverAddresses = networkInterface.setup(client, server);
-                        if (!networkInterface.isReady())
-                        {
-                            // fallback failed
-                            System.out.println("NET: Fallback mode failed to initialize");
-                            initialized.set(false);
-                            return false;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                System.out.println("NET: Selected connection mode is not supported.");
-                initialized.set(false);
-                return false;
-            }
-
-            initialized.set(true);
-            return true;
+            initialized.set(false);
+            return false;
         }
-        finally
+
+        // this can't be null so ignore any warnings that it can be.
+        if (isServer)
         {
-            mutex.writeLock().unlock();
+            // setup class members for server stuff.
+            connections = new ArrayList<>();
+
+            server = new Server();
+            server.addListener(connectionManager);
+
+            entityStatus = new HashMap<>();
         }
+
+        else
+        {
+            client = new Client();
+            client.addListener(connectionManager);
+        }
+
+        boolean connectionInitStatus = connectionManager.initConnection(client, server);
+
+        initialized.set(connectionInitStatus);
+        return connectionInitStatus;
+
     }
 
     public boolean isInitialized()
@@ -284,35 +208,9 @@ public class NetworkManager extends Listener implements Runnable
         }
     }
 
-    public synchronized void setHostAddress(InetAddress addr)
-    {
-        mutex.writeLock().lock();
-        try
-        {
-            hostAddress = addr;
-        }
-        finally
-        {
-            mutex.writeLock().unlock();
-        }
-    }
-
     public synchronized int getPlayerID()
     {
         return playerID;
-    }
-
-    public synchronized InetAddress getHostAddress()
-    {
-        mutex.readLock().lock();
-        try
-        {
-            return hostAddress;
-        }
-        finally
-        {
-            mutex.readLock().unlock();
-        }
     }
 
     /**
@@ -639,53 +537,10 @@ public class NetworkManager extends Listener implements Runnable
      */
     private boolean setupClient()
     {
-        // if hostAddress isn't set and servers aren't found,
-        // return false to force it to wait until it's set.
-        if(getHostAddress() == null && serverAddresses == null)
-        {
+        Client tempClient;
+        if((tempClient = connectionManager.setupClient(client)) == null)
             return false;
-        }
-
-        // if the client isn't connected, attempt to connect. Will repeat infinitely at the moment.
-        if (!client.isConnected())
-        {
-            try
-            {
-                client.start();
-                if(getHostAddress() != null)
-                {
-                    client.connect(5000, hostAddress, SERVER_TCP_PORT, SERVER_UDP_PORT);
-                }
-
-                if(!client.isConnected() && serverAddresses != null)
-                {
-                    for(InetAddress address : serverAddresses)
-                    {
-                        try
-                        {
-                            client.connect(5000, address, SERVER_TCP_PORT, SERVER_UDP_PORT);
-                        }
-                        catch(SocketTimeoutException e)
-                        {
-                            System.out.println("NET: Client timed out trying to connect to host.");
-                            System.out.println("NET: Attempting next host.");
-                        }
-                    }
-                }
-            }
-            catch (SocketTimeoutException et)
-            {
-                System.out.println("NET: Client timed out trying to connect to host. Retrying...");
-                return false;
-            }
-            catch (IOException e)
-            {
-                System.out.println("NET: Exception during client connection. Not retrying. Maybe.");
-                e.printStackTrace();
-                return false; // non-recoverable error so terminate the thread
-            }
-        }
-
+        client = tempClient;
         return true;
     }
 
@@ -700,33 +555,7 @@ public class NetworkManager extends Listener implements Runnable
         }
     }
 
-    @Override
-    public void connected(Connection connection)
-    {
-        if(isServer)
-        {
-            if(connections.size() < expectedAmountClients)
-            {
-                GameConnection gameConnection = new GameConnection();
-                gameConnection.connection = connection;
-                connections.add(gameConnection);
-            }
-            else
-            {
-                // don't need anymore connections. (rethink if we ever do chromecast stuff)
-                connection.close();
-                System.out.println("NET: Closing connection. ID = " + connection.getID());
-            }
-        }
-        else
-        {
-            // send validation packet
-            GameConnection.ClientAuth authPacket = new GameConnection.ClientAuth();
-            client.sendTCP(authPacket);
 
-            System.out.println("NET: Connected to server! Connection ID = " + connection.getID());
-        }
-    }
 
     @Override
     public void received(Connection connection, Object object)
@@ -859,6 +688,7 @@ public class NetworkManager extends Listener implements Runnable
             mutex.readLock().lock();
             try
             {
+
                 for(Action action : queuedLocalChanges)
                 {
                     client.sendTCP(action);
@@ -945,7 +775,7 @@ public class NetworkManager extends Listener implements Runnable
         // if we are a client, we just take the new changes and leave
         if(!isServer)
         {
-            queuedRemoteChanges.addAll(actions);
+            queuedRemoteChanges.addAll(actions.get);
             return;
         }
 
@@ -1186,4 +1016,8 @@ public class NetworkManager extends Listener implements Runnable
     }
 
 
+    public ConnectionManager getConnectionManager()
+    {
+        return connectionManager;
+    }
 }
