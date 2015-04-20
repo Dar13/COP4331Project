@@ -838,6 +838,7 @@ public class NetworkManager extends Listener implements Runnable
         mutex.writeLock().lock();
         try
         {
+            action.region = playerID;
             queuedLocalChanges.add(action);
         }
         finally
