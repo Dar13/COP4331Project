@@ -109,6 +109,7 @@ public class NetworkManager extends Listener implements Runnable
         expectedAmountClients = MAX_CLIENTS;
 
         lastPlayerID = 1;
+        playerID = 0;
 
         playerStatus = new HashMap<>();
         playerStatus.put(0, PlayerStatus.SELF);
@@ -569,6 +570,7 @@ public class NetworkManager extends Listener implements Runnable
             {
                 if(serverWaveReady)
                 {
+                    System.out.format("serverWaveReady: %s\n", serverWaveReady);
                     for (GameConnection connection : connections)
                     {
                         if (!connection.waveReady)
@@ -851,14 +853,20 @@ public class NetworkManager extends Listener implements Runnable
         mutex.writeLock().lock();
         try
         {
-            queuedLocalChanges.add(action);
+            if(isServer)
+            {
+                receiveChange(action);
+            }
+            else
+            {
+                queuedLocalChanges.add(action);
+            }
         }
         finally
         {
             mutex.writeLock().unlock();
         }
     }
-
 
     /**
      * This method is to be called from within the Game State to request the updates that were
@@ -928,13 +936,24 @@ public class NetworkManager extends Listener implements Runnable
                                 System.out.format("Sending: %s\n", action.actionClass);
                                 server.sendToTCP(connection.connection.getID(), action);
                             }
-
-                            // Server is always playerID = 0
-                            if(action.region == 0)
-                            {
-                                queuedRemoteChanges.add(action);
-                            }
                         }
+
+                        // Server is always playerID = 0
+
+                        if(action.region == 0)
+                        {
+                            /*
+                            System.out.format("Sending server: %s\n", action.actionClass);
+                            switch(action.actionClass)
+                            {
+                            case ACTION_PLAYER_WAVE_READY:
+                                serverWaveReady = true;
+                                break;
+                            }
+                            */
+                            queuedRemoteChanges.add(action);
+                        }
+
                     }
                 }
                 queuedLocalChanges.clear();
@@ -997,6 +1016,7 @@ public class NetworkManager extends Listener implements Runnable
         {
         case ACTION_PLAYER_WAVE_READY:
             ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
+            System.out.format("Wave Ready region = %d\n", playerReady.region);
             if(connections.size() > 0 && playerReady.region > 0)
             {
                 connections.get(playerReady.region - 1).waveReady = true;
