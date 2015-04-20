@@ -516,15 +516,28 @@ public class NetworkManager extends Listener implements Runnable
 
             if(connections.size() == 1 && !gameStarted)
             {
+                System.out.println("NET: checking for WaitForReady send ");
                 boolean allWaiting = true;
                 for(GameConnection conn : connections)
                 {
-                    if(conn.isValidated() && !conn.waiting && conn.connection.isConnected() && serverWaveReady)
+                    System.out.println("NET: Checking connection validation: " + conn.isValidated() + " Waiting: " + conn.waiting);
+
+                    if(conn.waiting)
                     {
+                        continue;
+                    }
+
+                    if(conn.isValidated() && !conn.waiting && conn.connection.isConnected())
+                    {
+                        System.out.println("NET: Inside condition to send WaitForReady");
                         ActionWaitForReady waitForReady = new ActionWaitForReady();
                         waitForReady.region = conn.playerID;
                         addToSendQueue(waitForReady);
                         conn.waiting = true;
+                        allWaiting = false;
+                    }
+                    else
+                    {
                         allWaiting = false;
                     }
                 }
