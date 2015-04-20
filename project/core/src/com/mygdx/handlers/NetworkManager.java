@@ -984,7 +984,7 @@ public class NetworkManager extends Listener implements Runnable
         {
         case ACTION_PLAYER_WAVE_READY:
             ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
-            if(connections.size() > 0)
+            if(connections.size() > 0 && playerReady.region > 0)
             {
                 connections.get(playerReady.region - 1).waveReady = true;
             }
