@@ -564,6 +564,10 @@ public class NetworkManager extends Listener implements Runnable
                         }
                     }
                 }
+                else
+                {
+                    isAllReady = false;
+                }
             }
 
             if(isAllReady)
