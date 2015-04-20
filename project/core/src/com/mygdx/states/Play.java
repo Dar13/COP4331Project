@@ -588,6 +588,8 @@ public class Play extends GameState {
                         break;
                     }
 
+                    System.out.println("PLAY: Received EnemyCreate -- Velocity = " + enemyCreate.velocity);
+
                     enemyManager.setPaused(false);
 
                     if(!enemyCreate.needsID)

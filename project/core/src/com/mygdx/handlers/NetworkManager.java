@@ -990,6 +990,7 @@ public class NetworkManager extends Listener implements Runnable
             ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
             actionCreate.entityID = lastEntityID + 1;
             lastEntityID++;
+            System.out.println("NET: Parsing EnemyCreate -- Velocity = " + actionCreate.velocity);
 
             mutex.writeLock().lock();
             try
@@ -1042,7 +1043,7 @@ public class NetworkManager extends Listener implements Runnable
                         entityStatus.get(actionEnd.entityID).region %= (connections.size() + 1);
 
                         EnemyStatus transfer = (EnemyStatus) entityStatus.get(actionEnd.entityID);
-                        transfer.velocity = actionEnd.velocity;
+                        //transfer.velocity = actionEnd.velocity;
 
                         ActionEnemyCreate actionEndCreate = new ActionEnemyCreate(transfer);
 
