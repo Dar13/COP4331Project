@@ -36,6 +36,7 @@ public class MyGame extends ApplicationAdapter
     public MyGame(HashMap<ConnectionMode, NetworkInterface> networkImpls, boolean inAndroid)
     {
         networkManager = new NetworkManager(networkImpls);
+
         this.inAndroid = true;
     }
 

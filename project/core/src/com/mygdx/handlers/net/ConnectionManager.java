@@ -26,7 +26,7 @@ public class ConnectionManager extends Listener
     protected ConnectionMode fallbackMode;
     protected HashMap<ConnectionMode, NetworkInterface> networkInterfaces;
     protected NetworkInterface networkInterface;
-    protected ThreadSafeList connections;
+    protected ArrayList<GameConnection> connections;
     protected ArrayList<InetAddress> serverAddresses;
 
     protected int expectedNumClients;
@@ -38,6 +38,10 @@ public class ConnectionManager extends Listener
 
     protected InetAddress hostAddress;
 
+    protected boolean validated;
+
+    private static final String LOG_TAG = "ConnectionManager";
+
     public ConnectionManager(HashMap<ConnectionMode, NetworkInterface> modes, int maxClients, NetworkManager nm)
     {
         networkInterfaces = modes;
@@ -45,6 +49,8 @@ public class ConnectionManager extends Listener
         expectedNumClients = maxClients;
         isServer = false;
         initializeNow = false;
+        validated = false;
+        connections = new ArrayList<>();
     }
 
     public boolean prepare(boolean isServer, ConnectionMode primary, ConnectionMode fallbackMode, boolean initializeNow)
@@ -65,6 +71,11 @@ public class ConnectionManager extends Listener
         {
             initialized = false;
             return false;
+        }
+
+        if(client == null)
+        {
+            connections = new ArrayList<>();
         }
 
         networkInterface = networkInterfaces.get(this.preferredMode);
@@ -162,6 +173,11 @@ public class ConnectionManager extends Listener
         return client;
     }
 
+    public ArrayList<GameConnection> getConnections()
+    {
+        return connections;
+    }
+
     @Override
     public void connected(Connection connection)
     {
@@ -234,18 +250,18 @@ public class ConnectionManager extends Listener
             System.out.println(object.getClass());
             if(!validated)
             {
-                validated = handleValidation(null, connection, object);
+                validated = parent.handleValidation(null, connection, object);
             }
 
             if(object instanceof GameConnection.PlayerID)
             {
-                playerID = ((GameConnection.PlayerID) object).playerID;
+                parent.setPlayerID(((GameConnection.PlayerID) object).playerID);
             }
 
             // assume authenticated, handle packet normally
             if(object instanceof Action)
             {
-                queuedRemoteChanges.add((Action)object);
+                parent.getQueueManager().addToReceivedQueue((Action)object, parent);
                 System.out.println("NET: Packet is Action of type " + ((Action) object).actionClass);
             }
         }
@@ -255,6 +271,17 @@ public class ConnectionManager extends Listener
         {
             System.out.println("NET: Unknown packet received. Connection ID = " + connection.getID());
             System.out.println("NET: Unknown packet source = " + connection.getRemoteAddressTCP());
+        }
+    }
+
+    public void reset()
+    {
+        if(connections != null)
+        {
+            for (GameConnection connection : connections)
+            {
+                connection.connection.close();
+            }
         }
     }
 

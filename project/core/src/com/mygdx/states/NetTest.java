@@ -91,9 +91,13 @@ public class NetTest extends GameState
             queueCallbackStatus.set(QueueCallbackStatus.CALLBACK_STATUS_PENDING_REQUEST.ordinal());
             networkManager.fetchChanges(this);
         }
+
         stage.act(delta);
+
         if (serverButton.isPressed())
         {
+            networkManager.setIsServer(true);
+            networkManager.initialize();
             networkManager.getConnectionManager().prepare(true,
                                           ConnectionMode.WIFI_LAN,
                                           ConnectionMode.NONE,
@@ -105,10 +109,9 @@ public class NetTest extends GameState
 
         if(clientButton.isPressed())
         {
-            networkManager.getConnectionManager().prepare(false,
-                                          ConnectionMode.WIFI_LAN,
-                                          ConnectionMode.NONE,
-                                          true);
+            networkManager.setIsServer(false);
+            networkManager.initialize();
+
             clientButton.setDisabled(true);
             serverButton.remove();
             clientButton.remove();

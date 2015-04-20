@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Entity;
 import com.mygdx.entities.Tower;
@@ -50,12 +51,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Abstraction away from low-level networking for use in the game states.
  */
-public class NetworkManager implements QueueCallback
+public class NetworkManager implements Runnable, QueueCallback
 {
     public static final int SERVER_TCP_PORT = 0xDDD;
     public static final int SERVER_UDP_PORT = 0xDDE;
     public static final int MAX_CLIENTS = 4;
     public static final int ENTITY_ID_START = 0;
+    private static final String LOG_TAG = "NetworkManager";
 
     protected AtomicBoolean initialized;
     protected Boolean ready;
@@ -66,7 +68,6 @@ public class NetworkManager implements QueueCallback
     protected Boolean isServer;
     protected Server server;
     protected int uidCounter = 1; // All connections have UID >= 1
-    protected ArrayList<GameConnection> connections;
     protected int expectedAmountClients;
 
     protected int lastEntityID = ENTITY_ID_START;
@@ -77,6 +78,9 @@ public class NetworkManager implements QueueCallback
     protected boolean gameStarted;
     protected boolean waitingForLobby;
     protected boolean serverWaveReady = false;
+
+    protected AtomicInteger outputQueueStatus;
+    protected AtomicInteger inputQueueStatus;
 
     // client
     protected Client client;
@@ -108,7 +112,6 @@ public class NetworkManager implements QueueCallback
         ready = false;
         initializeManager = false;
         expectedAmountClients = MAX_CLIENTS;
-
         connectionManager = new ConnectionManager(modes, MAX_CLIENTS, this);
 
         lastPlayerID = 1;
@@ -121,9 +124,12 @@ public class NetworkManager implements QueueCallback
         // allows multiple reads at one time while only allowing one write lock.
         mutex = new ReentrantReadWriteLock(true);
         queueManager = new QueueManager(this);
+
+        inputQueueStatus = new AtomicInteger(QueueCallbackStatus.CALLBACK_STATUS_NO_REQUEST.ordinal());
+        outputQueueStatus = new AtomicInteger(QueueCallbackStatus.CALLBACK_STATUS_NO_OUTPUT.ordinal());
     }
 
-    public synchronized void setSingleplayer(boolean value)
+    public void setSingleplayer(boolean value)
     {
         singleplayer = value;
     }
@@ -133,65 +139,56 @@ public class NetworkManager implements QueueCallback
         return singleplayer;
     }
 
-    public void setInitializeFlag(boolean flag)
+    public void initialize()
     {
-        mutex.writeLock().lock();
-        try
+        new Thread(new Runnable()
         {
-            initializeManager = flag;
-        }
-        finally
-        {
-            mutex.writeLock().unlock();
-        }
-    }
+            @Override
+            public void run()
+            {
+                System.out.println("NET: Initializing NetworkManager");
 
-    public boolean initialize()
-    {
-        System.out.println("NET: Initializing NetworkManager");
+                if(isServer == null)
+                {
+                    initialized.set(false);
+                    System.out.println("NET: Initialization failed, isServer is null");
+                }
 
-        if(isServer == null)
-        {
-            initialized.set(false);
-            return false;
-        }
+                // this can't be null so ignore any warnings that it can be.
+                if (isServer)
+                {
+                    server = new Server();
+                    server.addListener(connectionManager);
 
-        // this can't be null so ignore any warnings that it can be.
-        if (isServer)
-        {
-            // setup class members for server stuff.
-            connections = new ArrayList<>();
+                    entityStatus = new HashMap<>();
+                }
 
-            server = new Server();
-            server.addListener(connectionManager);
+                else
+                {
+                    client = new Client();
+                    client.addListener(connectionManager);
+                }
 
-            entityStatus = new HashMap<>();
-        }
+                connectionManager.prepare(true,
+                        ConnectionMode.WIFI_LAN,
+                        ConnectionMode.NONE,
+                        true);
 
-        else
-        {
-            client = new Client();
-            client.addListener(connectionManager);
-        }
+                connectionManager.initConnection(client, server);
 
-        boolean connectionInitStatus = connectionManager.initConnection(client, server);
-
-        initialized.set(connectionInitStatus);
-        return connectionInitStatus;
-
+                initialized.set(true);
+            }
+        }).start();
     }
 
     public boolean isInitialized()
     {
-        mutex.readLock().lock();
-        try
-        {
-            return initialized.get();
-        }
-        finally
-        {
-            mutex.readLock().unlock();
-        }
+        return initialized.get();
+    }
+
+    public QueueManager getQueueManager()
+    {
+        return queueManager;
     }
 
     public void setExpectedAmountClients(int amount)
@@ -201,20 +198,17 @@ public class NetworkManager implements QueueCallback
 
     public int getExpectedAmountClients()
     {
-        mutex.readLock().lock();
-        try
-        {
-            return expectedAmountClients;
-        }
-        finally
-        {
-            mutex.readLock().unlock();
-        }
+        return expectedAmountClients;
     }
 
-    public synchronized int getPlayerID()
+    public int getPlayerID()
     {
         return playerID;
+    }
+
+    public void setPlayerID(int playerID)
+    {
+        this.playerID = playerID;
     }
 
     /**
@@ -231,25 +225,14 @@ public class NetworkManager implements QueueCallback
     @Override
     public void run()
     {
-        // wait for initialization
-        while (!isInitialized())
+        while(!isInitialized())
         {
-            if(initializeManager)
-            {
-                initialize();
-            }
-
-            // sleep for 5 milliseconds
             try
             {
                 Thread.sleep(50);
-            }
-            catch (InterruptedException e)
+            } catch (InterruptedException e)
             {
-                // not really sure how to handle this.
-                // terminate?
-                System.out.println("NET: Interrupt caught while waiting for initialization.");
-                return;
+                e.printStackTrace();
             }
         }
 
@@ -299,7 +282,11 @@ public class NetworkManager implements QueueCallback
                 ready = true;
             }
 
-            sendLocalChanges();
+            if(outputQueueStatus.get() == QueueCallbackStatus.CALLBACK_STATUS_NO_REQUEST.ordinal())
+            {
+                outputQueueStatus.set(QueueCallbackStatus.CALLBACK_STATUS_PENDING_REQUEST.ordinal());
+                queueManager.fetchWhenNotEmpty(this, QueueManager.QueueID.QUEUE_ID_SEND);
+            }
 
             if (isServer)
             {
@@ -312,6 +299,11 @@ public class NetworkManager implements QueueCallback
                 runClient();
             }
         }
+    }
+
+    public void setIsServer(boolean isServer)
+    {
+        this.isServer = isServer;
     }
 
     public int getFirstClientID()
@@ -362,11 +354,6 @@ public class NetworkManager implements QueueCallback
         kryo.register(ActionWaveEnd.class);
     }
 
-    public boolean syncReady()
-    {
-        return true;
-    }
-
     private boolean setupServer()
     {
         // bind server socket to the port and do other initialization as needed.
@@ -393,143 +380,140 @@ public class NetworkManager implements QueueCallback
      */
     private void runServer()
     {
-        mutex.writeLock().lock();
-        try
+        ArrayList<GameConnection> connections = connectionManager.getConnections();
+
+        if(!gameStarted)
         {
-            if(!gameStarted)
+            System.out.println("NET: Server waiting to start game");
+            if(!waitingForLobby)
             {
-                if(!waitingForLobby)
+                System.out.println("Server waiting for lobby");
+                ActionWaitForReady waitForReady = new ActionWaitForReady();
+                waitForReady.region = 0;
+                addToSendQueue(waitForReady);
+                waitingForLobby = true;
+            }
+        }
+
+        if(connections.size() == 1 && !gameStarted)
+        {
+            boolean allWaiting = true;
+            for(GameConnection conn : connections)
+            {
+                if(conn.isValidated() && !conn.waiting && conn.connection.isConnected() && serverWaveReady)
                 {
                     ActionWaitForReady waitForReady = new ActionWaitForReady();
-                    waitForReady.region = 0;
+                    waitForReady.region = conn.playerID;
                     addToSendQueue(waitForReady);
-                    waitingForLobby = true;
+                    conn.waiting = true;
+                    allWaiting = false;
                 }
             }
 
-            if(connections.size() == 1 && !gameStarted)
+            if(allWaiting)
             {
-                boolean allWaiting = true;
+                System.out.println("Players are ready!");
                 for(GameConnection conn : connections)
                 {
-                    if(conn.isValidated() && !conn.waiting && conn.connection.isConnected() && serverWaveReady)
-                    {
-                        ActionWaitForReady waitForReady = new ActionWaitForReady();
-                        waitForReady.region = conn.playerID;
-                        addToSendQueue(waitForReady);
-                        conn.waiting = true;
-                        allWaiting = false;
-                    }
+                    ActionPlayersReady playersReady = new ActionPlayersReady();
+                    playersReady.region = conn.playerID;
+                    addToSendQueue(playersReady);
                 }
 
-                if(allWaiting)
+                ActionPlayersReady playersReady = new ActionPlayersReady();
+                playersReady.region = 0;
+                addToSendQueue(playersReady);
+
+                gameStarted = true;
+            }
+        }
+
+        boolean isAllReady = true;
+        if(connections.isEmpty())
+        {
+            isAllReady = serverWaveReady;
+        }
+        else
+        {
+            for (GameConnection connection : connections)
+            {
+                if (!connection.waveReady)
                 {
-                    System.out.println("Players are ready!");
-                    for(GameConnection conn : connections)
-                    {
-                        ActionPlayersReady playersReady = new ActionPlayersReady();
-                        playersReady.region = conn.playerID;
-                        addToSendQueue(playersReady);
-                    }
-
-                    ActionPlayersReady playersReady = new ActionPlayersReady();
-                    playersReady.region = 0;
-                    addToSendQueue(playersReady);
-
-                    gameStarted = true;
+                    isAllReady = false;
                 }
             }
+        }
 
-            boolean isAllReady = true;
-            if(connections.isEmpty())
+        if(isAllReady)
+        {
+            ActionCreateWave createWave = new ActionCreateWave(currentWave);
+            numEnemies = createWave.amountTotalEnemies;
+            createWave.region = getFirstClientID();
+            currentWave++;
+
+            if(singleplayer)
             {
-                isAllReady = serverWaveReady;
+                createWave.region = 0;
+                System.out.println("Sending wave (singleplayer?)");
+                queueManager.addToReceivedQueue(createWave, null);
+            }
+            else
+            {
+                System.out.println("Sending wave!");
+                addToSendQueue(createWave);
+            }
+
+            if(singleplayer)
+            {
+                queueManager.addToReceivedQueue(new ActionWaveStart(), null);
             }
             else
             {
                 for (GameConnection connection : connections)
                 {
-                    if (!connection.waveReady)
-                    {
-                        isAllReady = false;
-                    }
-                }
-            }
-
-            if(isAllReady)
-            {
-                ActionCreateWave createWave = new ActionCreateWave(currentWave);
-                numEnemies = createWave.amountTotalEnemies;
-                createWave.region = getFirstClientID();
-                currentWave++;
-
-                if(singleplayer)
-                {
-                    createWave.region = 0;
-                    System.out.println("Sending wave (singleplayer?)");
-                    queuedRemoteChanges.add(createWave);
-                }
-                else
-                {
-                    System.out.println("Sending wave!");
-                    addToSendQueue(createWave);
-                }
-
-                if(singleplayer)
-                {
-                    queuedRemoteChanges.add(new ActionWaveStart());
-                }
-                else
-                {
-                    for (GameConnection connection : connections)
-                    {
-                        ActionWaveStart waveStart = new ActionWaveStart();
-                        waveStart.region = connection.playerID;
-                        addToSendQueue(waveStart);
-                    }
-
                     ActionWaveStart waveStart = new ActionWaveStart();
-                    waveStart.region = 0;
+                    waveStart.region = connection.playerID;
                     addToSendQueue(waveStart);
                 }
 
-                waveRunning = true;
-
-                serverWaveReady = false;
-                for(GameConnection connection : connections)
-                {
-                    connection.waveReady = false;
-                }
+                ActionWaveStart waveStart = new ActionWaveStart();
+                waveStart.region = 0;
+                addToSendQueue(waveStart);
             }
 
-            if(numEnemies == 0 && waveRunning)
-            {
-                waveRunning = false;
-                if(singleplayer)
-                {
-                    ActionWaveEnd waveEnd = new ActionWaveEnd();
-                    waveEnd.region = 0;
-                    queuedRemoteChanges.add(waveEnd);
-                }
-                else
-                {
-                    for (GameConnection conn : connections)
-                    {
-                        ActionWaveEnd waveEnd = new ActionWaveEnd();
-                        waveEnd.region = conn.playerID;
-                        addToSendQueue(waveEnd);
-                    }
+            waveRunning = true;
 
+            serverWaveReady = false;
+            for(GameConnection connection : connections)
+            {
+                connection.waveReady = false;
+            }
+        }
+
+        if(numEnemies == 0 && waveRunning)
+        {
+            waveRunning = false;
+            if(singleplayer)
+            {
+                ActionWaveEnd waveEnd = new ActionWaveEnd();
+                waveEnd.region = 0;
+                queueManager.addToReceivedQueue(waveEnd, null);
+            }
+            else
+            {
+                for (GameConnection conn : connections)
+                {
                     ActionWaveEnd waveEnd = new ActionWaveEnd();
-                    waveEnd.region = 0;
+                    waveEnd.region = conn.playerID;
                     addToSendQueue(waveEnd);
                 }
+
+                ActionWaveEnd waveEnd = new ActionWaveEnd();
+                waveEnd.region = 0;
+                addToSendQueue(waveEnd);
             }
         }
-        finally
-        {
-            mutex.writeLock().unlock();
-        }
+
     }
 
     /**
@@ -559,25 +543,12 @@ public class NetworkManager implements QueueCallback
         }
     }
 
-
-
-
-
-    public synchronized void reset()
+    public void reset()
     {
         if(entityStatus != null)
-        {
             entityStatus.clear();
-        }
 
-        if(connections != null)
-        {
-            for (GameConnection connection : connections)
-            {
-                connection.connection.close();
-            }
-        }
-
+        connectionManager.reset();
         currentWave = 1;
     }
 
@@ -587,15 +558,7 @@ public class NetworkManager implements QueueCallback
      */
     public void addToSendQueue(Action action)
     {
-        mutex.writeLock().lock();
-        try
-        {
-            queuedLocalChanges.add(action);
-        }
-        finally
-        {
-            mutex.writeLock().unlock();
-        }
+        queueManager.addToSendQueue(action, null);
     }
 
 
@@ -611,48 +574,29 @@ public class NetworkManager implements QueueCallback
     /**
      * This should be called locally by our sync function, whatever form that takes
      */
-    private void sendLocalChanges()
+    private void sendLocalChanges(ArrayList<Action> queuedLocalChanges)
     {
+
         if(!isServer)
         {
-            mutex.readLock().lock();
-            try
-            {
-
                 for(Action action : queuedLocalChanges)
                 {
                     client.sendTCP(action);
                 }
-            }
-            finally
-            {
-                mutex.readLock().unlock();
-            }
-
-            mutex.writeLock().lock();
-            try
-            {
-                queuedLocalChanges.clear();
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
         }
+
         else
         {
-            mutex.writeLock().lock();
-            try
-            {
-                if(connections.isEmpty() || singleplayer)
+                if(connectionManager.getConnections().isEmpty() || singleplayer)
                 {
-                    receiveChanges(queuedLocalChanges);
+                    queueManager.addAllSendToReceived();
                 }
+
                 else
                 {
                     for (Action action : queuedLocalChanges)
                     {
-                        for (GameConnection connection : connections)
+                        for (GameConnection connection : connectionManager.getConnections())
                         {
                             if (connection.playerID == action.region)
                             {
@@ -663,38 +607,23 @@ public class NetworkManager implements QueueCallback
                             // Server is always playerID = 0
                             if(action.region == 0)
                             {
-                                queuedRemoteChanges.add(action);
+                                queueManager.addToReceivedQueue(action, null);
                             }
                         }
                     }
                 }
-                queuedLocalChanges.clear();
             }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
-        }
-        /**
-         * TODO: implement this method with Kryonet, Pseudocode follows:
-         *  if (local changes are not empty or being written)
-         *      send the local change queue to Kryonet
-         */
+
+        queueManager.clear(QueueManager.QueueID.QUEUE_ID_SEND);
+        outputQueueStatus.set(QueueCallbackStatus.CALLBACK_STATUS_NO_REQUEST.ordinal());
     }
 
     /**
      * This method should be called from whatever callback we use when changes come in from the
      * network
      */
-    private synchronized void receiveChanges(List<Action> changes)
+    /*private synchronized void receiveChanges(List<Action> changes)
     {
-        /**
-         * TODO: this method is implementation dependent, but should look roughly like the following:
-         * if (isServer)
-         *     check received changes for coherency with master state
-         *     push valid changes to send queue (so they can be sent back out to other clients)
-         * add all changes to update queue, so game can read them in when needed
-         */
         if(changes == null)
         {
             return;
@@ -713,12 +642,10 @@ public class NetworkManager implements QueueCallback
         {
             receiveChange(change);
         }
-    }
+    }*/
 
     public void receiveChange(Action change)
     {
-        queueManager.addToReceivedQueue(change, this);
-
         if(change == null)
         {
             return;
@@ -728,48 +655,39 @@ public class NetworkManager implements QueueCallback
 
         switch(change.actionClass)
         {
-        case ACTION_PLAYER_WAVE_READY:
-            ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
-            if(connections.size() > 0)
-            {
-                connections.get(playerReady.region - 1).waveReady = true;
-            }
-            else
-            {
-                serverWaveReady = true;
-            }
-            break;
-        case ACTION_ENEMY_CREATE:
-            ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
-            actionCreate.entityID = lastEntityID + 1;
-            lastEntityID++;
+            case ACTION_PLAYER_WAVE_READY:
+                ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
+                if(connectionManager.getConnections().size() > 0)
+                    connectionManager.getConnections().get(playerReady.region - 1).waveReady = true;
+                else
+                {
+                    serverWaveReady = true;
+                }
+                break;
 
-            mutex.writeLock().lock();
-            try
-            {
+            case ACTION_ENEMY_CREATE:
+                ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
+                actionCreate.entityID = lastEntityID + 1;
+                lastEntityID++;
+
                 entityStatus.put(actionCreate.entityID, new EnemyStatus(actionCreate));
 
                 if(singleplayer)
                 {
-                    queuedRemoteChanges.add(actionCreate);
+                    queueManager.addToReceivedQueue(actionCreate, null);
                 }
+
                 else
                 {
                     addToSendQueue(actionCreate);
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
 
-            break;
-        case ACTION_ENEMY_END:
-            ActionEnemyEnd actionEnd = (ActionEnemyEnd)change;
+                break;
 
-            mutex.writeLock().lock();
-            try
-            {
+            case ACTION_ENEMY_END:
+                ActionEnemyEnd actionEnd = (ActionEnemyEnd)change;
+
+
                 if(entityStatus.containsKey(actionEnd.entityID))
                 {
                     // if the enemy is at region 0, then its at the end
@@ -778,21 +696,23 @@ public class NetworkManager implements QueueCallback
                         health--;
                         numEnemies--;
                         ActionHealthChanged actionHealth = new ActionHealthChanged(health);
+
                         if(singleplayer)
                         {
-                            queuedRemoteChanges.add(actionHealth);
+                            queueManager.addToReceivedQueue(actionEnd, null);
                         }
                         else
                         {
                             addToSendQueue(actionHealth);
                         }
                     }
+
                     else
                     {
                         // e.g., if we have 2 connections, there are 3 screens. if we are at region 2,
                         // we need to send the enemy to server, or region 0. (2+1) % (2+1) = 0;
                         entityStatus.get(actionEnd.entityID).region += 1;
-                        entityStatus.get(actionEnd.entityID).region %= (connections.size() + 1);
+                        entityStatus.get(actionEnd.entityID).region %= (connectionManager.getConnections().size() + 1);
 
                         EnemyStatus transfer = (EnemyStatus) entityStatus.get(actionEnd.entityID);
                         transfer.velocity = actionEnd.velocity;
@@ -803,62 +723,44 @@ public class NetworkManager implements QueueCallback
                         addToSendQueue(actionEndCreate);
                     }
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
-            break;
-        case ACTION_ENEMY_DESTROY:
-            ActionEnemyDestroy actionDestroy = (ActionEnemyDestroy)change;
+                break;
 
-            mutex.writeLock().lock();
-            try
-            {
+            case ACTION_ENEMY_DESTROY:
+                ActionEnemyDestroy actionDestroy = (ActionEnemyDestroy)change;
+
+
                 if (entityStatus.containsKey(actionDestroy.entityID))
                 {
                     entityStatus.remove(actionDestroy.entityID);
                     numEnemies--;
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
-            break;
-        case ACTION_ENEMY_DAMAGE:
-            // ignore for now
-            break;
-        case ACTION_TOWER_PLACED:
-            ActionTowerPlaced actionTowerPlaced = (ActionTowerPlaced)change;
+                break;
 
-            actionTowerPlaced.entityID = lastEntityID + 1;
-            lastEntityID++;
+            case ACTION_ENEMY_DAMAGE:
+                // ignore for now
+                break;
 
-            mutex.writeLock().lock();
-            try
-            {
+            case ACTION_TOWER_PLACED:
+                ActionTowerPlaced actionTowerPlaced = (ActionTowerPlaced)change;
+
+                actionTowerPlaced.entityID = lastEntityID + 1;
+                lastEntityID++;
+
                 entityStatus.put(actionTowerPlaced.entityID, new TowerStatus(actionTowerPlaced));
+
                 if(singleplayer)
                 {
-                    queuedRemoteChanges.add(actionTowerPlaced);
+                    queueManager.addToReceivedQueue(actionTowerPlaced, null);
                 }
                 else
                 {
                     addToSendQueue(actionTowerPlaced);
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
-            break;
-        case ACTION_TOWER_UPGRADED:
-            ActionTowerUpgraded actionTowerUpgraded = (ActionTowerUpgraded)change;
+                break;
 
-            mutex.writeLock().lock();
-            try
-            {
+            case ACTION_TOWER_UPGRADED:
+                ActionTowerUpgraded actionTowerUpgraded = (ActionTowerUpgraded)change;
+
                 if(entityStatus.containsKey(actionTowerUpgraded.entityID))
                 {
                     TowerStatus towerStatus = (TowerStatus)entityStatus.get(actionTowerUpgraded.entityID);
@@ -872,7 +774,7 @@ public class NetworkManager implements QueueCallback
                         actionTowerUpgraded.level = towerStatus.level;
                         if(singleplayer)
                         {
-                            queuedRemoteChanges.add(actionTowerUpgraded);
+                            queueManager.addToReceivedQueue(actionTowerUpgraded, null);
                         }
                         else
                         {
@@ -880,14 +782,11 @@ public class NetworkManager implements QueueCallback
                         }
                     }
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
 
-            break;
+                break;
         }
+
+
     }
 
     protected boolean handleValidation(GameConnection gameConnection, Connection connection, Object object)
@@ -960,8 +859,13 @@ public class NetworkManager implements QueueCallback
     }
 
     @Override
-    public void retrieved(Object o)
+    public void retrieved(Object o, QueueManager.QueueID queueID)
     {
-
+        switch(queueID)
+        {
+            case QUEUE_ID_SEND:
+                sendLocalChanges((ArrayList<Action>) o);
+                break;
+        }
     }
 }

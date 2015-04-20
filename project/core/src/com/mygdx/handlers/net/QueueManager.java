@@ -4,6 +4,8 @@ import com.mygdx.handlers.QueueCallback;
 import com.mygdx.handlers.ThreadSafeList;
 import com.mygdx.handlers.action.Action;
 
+import java.util.ArrayList;
+
 /**
  * Created by rob on 4/19/15.
  */
@@ -14,6 +16,7 @@ public class QueueManager
         QUEUE_ID_SEND,
         QUEUE_ID_RECEIVE
     }
+    private static final String LOG_TAG = "QueueManager";
 
     private static ThreadSafeList<Action> toSend = new ThreadSafeList<>();
     private static ThreadSafeList<Action> received = new ThreadSafeList<>();
@@ -25,9 +28,19 @@ public class QueueManager
         this.networkManager = networkManager;
     }
 
+    public void addAllSendToReceived()
+    {
+        new SendQueueLooper().start();
+    }
+
+    public void addToSendQueue(Action action, QueueCallback callback)
+    {
+        new ReceivedObjectHandler(action, callback, QueueID.QUEUE_ID_SEND);
+    }
+
     public void addToReceivedQueue(Action action, QueueCallback callback)
     {
-        new ReceivedObjectHandler(action, callback).start();
+        new ReceivedObjectHandler(action, callback, QueueID.QUEUE_ID_RECEIVE).start();
     }
 
     public void fetchQueue(QueueCallback callback, QueueID id)
@@ -40,22 +53,47 @@ public class QueueManager
         new FetchWhenNotEmpty(callback, id);
     }
 
+    public void clear(QueueID queueID)
+    {
+        switch (queueID)
+        {
+            case QUEUE_ID_RECEIVE:
+                received.clear();
+                break;
+            case QUEUE_ID_SEND:
+                toSend.clear();
+                break;
+        }
+    }
+
     protected class ReceivedObjectHandler extends Thread implements Runnable
     {
         Object obj;
         QueueCallback callback;
+        QueueID queueID;
 
-        public ReceivedObjectHandler(Object obj, QueueCallback callback)
+        public ReceivedObjectHandler(Object obj, QueueCallback callback, QueueID queueID)
         {
             this.obj = obj;
             this.callback = callback;
+            this.queueID = queueID;
         }
 
         @Override
         public void run()
         {
-            received.add((Action) obj);
-            callback.addCompleted();
+            switch(queueID)
+            {
+                case QUEUE_ID_RECEIVE:
+                    received.add((Action) obj);
+                    break;
+                case QUEUE_ID_SEND:
+                    toSend.add((Action) obj);
+                    break;
+            }
+
+            if(callback != null)
+                callback.addCompleted();
         }
     }
 
@@ -76,10 +114,11 @@ public class QueueManager
             switch(id)
             {
                 case QUEUE_ID_RECEIVE:
-                    callback.retrieved(received.getAsyncCopy());
+                    callback.retrieved(received.getAsyncCopy(), QueueID.QUEUE_ID_RECEIVE);
                     break;
                 case QUEUE_ID_SEND:
-                    callback.retrieved(toSend.getAsyncCopy());
+                    callback.retrieved(toSend.getAsyncCopy(), QueueID.QUEUE_ID_SEND);
+                    break;
             }
         }
     }
@@ -112,7 +151,7 @@ public class QueueManager
                             System.out.println("Queue Manager: Retrieval Thread was Interrupted");
                         }
                     }
-                    callback.retrieved(received.getAsyncCopy());
+                    callback.retrieved(received.getAsyncCopy(), QueueID.QUEUE_ID_RECEIVE);
                     break;
 
                 case QUEUE_ID_SEND:
@@ -129,7 +168,21 @@ public class QueueManager
                             System.out.println("Queue Manager: Retrieval Thread was Interrupted");
                         }
                     }
-                    callback.retrieved(toSend.getAsyncCopy());
+                    callback.retrieved(toSend.getAsyncCopy(), QueueID.QUEUE_ID_SEND);
+                    break;
+            }
+        }
+    }
+
+    protected class SendQueueLooper extends Thread implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            ArrayList<Action> temp = toSend.getAsyncCopy();
+            for(Action action : temp)
+            {
+                received.add(action);
             }
         }
     }

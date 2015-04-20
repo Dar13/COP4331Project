@@ -6,6 +6,7 @@ import com.mygdx.game.MyGame;
 import com.mygdx.handlers.QueueCallback;
 import com.mygdx.handlers.action.Action;
 import com.mygdx.handlers.net.NetworkManager;
+import com.mygdx.handlers.net.QueueManager;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,7 +49,7 @@ public abstract class GameState implements Screen, QueueCallback {
     }
 
     @Override
-    public void retrieved(Object o)
+    public void retrieved(Object o, QueueManager.QueueID id)
     {
         changes = (ArrayList<Action>) o;
         queueCallbackStatus.set(QueueCallbackStatus.CALLBACK_STATUS_RESULTS_WAITING.ordinal());
