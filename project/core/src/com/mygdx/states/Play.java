@@ -16,6 +16,7 @@ import com.mygdx.entities.SniperTower;
 import com.mygdx.entities.Tower;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
+import com.mygdx.handlers.QueueCallback;
 import com.mygdx.handlers.TowerManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -45,6 +46,7 @@ import com.mygdx.handlers.action.ActionPlayerWaveReady;
 import com.mygdx.handlers.action.ActionTowerPlaced;
 
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,7 +54,8 @@ import java.util.List;
 /**
  * Created by James on 3/18/2015.
  */
-public class Play extends GameState {
+public class Play extends GameState
+{
 
     private int gold = 500;
     private int health = 10;
@@ -197,7 +200,6 @@ public class Play extends GameState {
         mortarButton.setPosition(sniperButton.getX(), sniperButton.getY() - 64);
         mortarButton.addListener(new ClickListener());
 
-
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.scale(.01f);
@@ -228,6 +230,12 @@ public class Play extends GameState {
          */
 
         placeATower();
+
+        if(queueCallbackStatus.get() == QueueCallbackStatus.CALLBACK_STATUS_NO_REQUEST.ordinal())
+        {
+            networkManager.fetchChanges(this);
+            queueCallbackStatus.set(QueueCallbackStatus.CALLBACK_STATUS_PENDING_REQUEST.ordinal());
+        }
 
         switch (state)
         {
@@ -275,7 +283,8 @@ public class Play extends GameState {
                 break;
         }
 
-        handleChanges();
+        if(queueCallbackStatus.get() == QueueCallbackStatus.CALLBACK_STATUS_RESULTS_WAITING.ordinal())
+            handleChanges();
     }
 
     @Override
@@ -565,7 +574,6 @@ public class Play extends GameState {
 
     public void handleChanges()
     {
-        List<Action> changes = networkManager.fetchChanges();
         if(changes != null && !changes.isEmpty())
         {
             for(Action action : changes)
@@ -647,6 +655,9 @@ public class Play extends GameState {
 
             }
         }
+
+        changes = null;
+        queueCallbackStatus.set(QueueCallbackStatus.CALLBACK_STATUS_NO_REQUEST.ordinal());
     }
 
 

@@ -10,6 +10,7 @@ import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Entity;
 import com.mygdx.entities.Tower;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.QueueCallback;
 import com.mygdx.handlers.ThreadSafeList;
 import com.mygdx.handlers.action.Action;
 import com.mygdx.handlers.action.ActionCreateWave;
@@ -32,6 +33,7 @@ import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
 import com.mygdx.net.PlayerStatus;
 import com.mygdx.net.TowerStatus;
+import com.mygdx.states.GameState;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,21 +44,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Abstraction away from low-level networking for use in the game states.
  */
-public class NetworkManager implements Runnable
+public class NetworkManager implements QueueCallback
 {
     public static final int SERVER_TCP_PORT = 0xDDD;
     public static final int SERVER_UDP_PORT = 0xDDE;
     public static final int MAX_CLIENTS = 4;
     public static final int ENTITY_ID_START = 0;
-
-    //These lists will hold changes temporarily until they are either sent or applied
-    private ThreadSafeList<Action> queuedLocalChanges;
-    private ThreadSafeList<Action> queuedRemoteChanges;
 
     protected AtomicBoolean initialized;
     protected Boolean ready;
@@ -97,6 +96,12 @@ public class NetworkManager implements Runnable
     // ConnectionManager now facilitates details of Connection
     private ConnectionManager connectionManager;
 
+    protected QueueManager queueManager;
+
+    protected AtomicInteger queueStatus;
+
+    protected boolean remoteChangesReady;
+
     public NetworkManager(HashMap<ConnectionMode, NetworkInterface> modes)
     {
         initialized = new AtomicBoolean(false);
@@ -104,7 +109,7 @@ public class NetworkManager implements Runnable
         initializeManager = false;
         expectedAmountClients = MAX_CLIENTS;
 
-        connectionManager = new ConnectionManager(modes, MAX_CLIENTS);
+        connectionManager = new ConnectionManager(modes, MAX_CLIENTS, this);
 
         lastPlayerID = 1;
 
@@ -115,8 +120,7 @@ public class NetworkManager implements Runnable
         // this is the closest to a traditional mutex I could find.
         // allows multiple reads at one time while only allowing one write lock.
         mutex = new ReentrantReadWriteLock(true);
-        queuedLocalChanges = new ThreadSafeList<>();
-        queuedRemoteChanges = new ThreadSafeList<Action>();
+        queueManager = new QueueManager(this);
     }
 
     public synchronized void setSingleplayer(boolean value)
@@ -557,72 +561,7 @@ public class NetworkManager implements Runnable
 
 
 
-    @Override
-    public void received(Connection connection, Object object)
-    {
-        //System.out.println("NET: Packet received!");
-        boolean handled = false;
 
-        if(isServer)
-        {
-            // Might want to change to hashmap<id, connection> and have the connection ID or some other UID
-            // embedded in the packet itself. Not sure if its worth it, as the connections list should
-            // fairly small (n < [4,8,12,16])
-            for (GameConnection gameConnection : connections)
-            {
-                if (gameConnection.connection.getID() == connection.getID())
-                {
-                    handled = true;
-
-                    if (!gameConnection.isValidated())
-                    {
-                        handleValidation(gameConnection, null, object);
-                        System.out.println("NET: TCP Packet received from Connection! ID = " + gameConnection.connection.getID());
-                    }
-                    else
-                    {
-                        // handle normally.
-                        if(object instanceof Action)
-                        {
-                            Action action = (Action)object;
-                            action.region = gameConnection.playerID;
-                            receiveChange(action);
-                        }
-                    }
-                }
-            }
-        }
-        else // client packet handling
-        {
-            handled = true;
-
-            System.out.println("NET: Packet received from server!");
-            System.out.println(object.getClass());
-            if(!validated)
-            {
-                validated = handleValidation(null, connection, object);
-            }
-
-            if(object instanceof GameConnection.PlayerID)
-            {
-                playerID = ((GameConnection.PlayerID) object).playerID;
-            }
-
-            // assume authenticated, handle packet normally
-            if(object instanceof Action)
-            {
-                queuedRemoteChanges.add((Action)object);
-                System.out.println("NET: Packet is Action of type " + ((Action) object).actionClass);
-            }
-        }
-
-        // mystery packet!
-        if(!handled)
-        {
-            System.out.println("NET: Unknown packet received. Connection ID = " + connection.getID());
-            System.out.println("NET: Unknown packet source = " + connection.getRemoteAddressTCP());
-        }
-    }
 
     public synchronized void reset()
     {
@@ -664,18 +603,9 @@ public class NetworkManager implements Runnable
      * This method is to be called from within the Game State to request the updates that were
      * received by the network manager
      */
-    public synchronized List<Action> fetchChanges()
+    public void fetchChanges(QueueCallback callback)
     {
-        if(syncReady())
-        {
-            List<Action> tmp = new ArrayList<Action>();
-            tmp.addAll(queuedRemoteChanges);
-            queuedRemoteChanges = new ArrayList<Action>();
-            return tmp;
-        }
-
-        else
-            return null;
+        queueManager.fetchWhenNotEmpty(callback, QueueManager.QueueID.QUEUE_ID_RECEIVE);
     }
 
     /**
@@ -785,8 +715,10 @@ public class NetworkManager implements Runnable
         }
     }
 
-    private synchronized void receiveChange(Action change)
+    public void receiveChange(Action change)
     {
+        queueManager.addToReceivedQueue(change, this);
+
         if(change == null)
         {
             return;
@@ -1019,5 +951,17 @@ public class NetworkManager implements Runnable
     public ConnectionManager getConnectionManager()
     {
         return connectionManager;
+    }
+
+    @Override
+    public void addCompleted()
+    {
+
+    }
+
+    @Override
+    public void retrieved(Object o)
+    {
+
     }
 }

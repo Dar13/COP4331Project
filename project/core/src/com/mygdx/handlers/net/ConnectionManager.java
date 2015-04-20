@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.handlers.ThreadSafeList;
+import com.mygdx.handlers.action.Action;
 import com.mygdx.net.ConnectionMode;
 import com.mygdx.net.GameConnection;
 import com.mygdx.net.NetworkInterface;
@@ -33,12 +34,14 @@ public class ConnectionManager extends Listener
 
     protected Client client;
     protected Server server;
+    protected NetworkManager parent;
 
     protected InetAddress hostAddress;
 
-    public ConnectionManager(HashMap<ConnectionMode, NetworkInterface> modes, int maxClients)
+    public ConnectionManager(HashMap<ConnectionMode, NetworkInterface> modes, int maxClients, NetworkManager nm)
     {
         networkInterfaces = modes;
+        parent = nm;
         expectedNumClients = maxClients;
         isServer = false;
         initializeNow = false;
@@ -184,6 +187,74 @@ public class ConnectionManager extends Listener
             client.sendTCP(authPacket);
 
             System.out.println("NET: Connected to server! Connection ID = " + connection.getID());
+        }
+    }
+
+    @Override
+    public void received(Connection connection, Object object)
+    {
+        //System.out.println("NET: Packet received!");
+        boolean handled = false;
+
+        if(isServer)
+        {
+            // Might want to change to hashmap<id, connection> and have the connection ID or some other UID
+            // embedded in the packet itself. Not sure if its worth it, as the connections list should
+            // fairly small (n < [4,8,12,16])
+            for (GameConnection gameConnection : connections)
+            {
+                if (gameConnection.connection.getID() == connection.getID())
+                {
+                    handled = true;
+
+                    if (!gameConnection.isValidated())
+                    {
+                        parent.handleValidation(gameConnection, null, object);
+                        System.out.println("NET: TCP Packet received from Connection! ID = " + gameConnection.connection.getID());
+                    }
+                    else
+                    {
+                        // handle normally.
+                        if(object instanceof Action)
+                        {
+                            Action action = (Action)object;
+                            action.region = gameConnection.playerID;
+                            parent.receiveChange(action);
+                        }
+                    }
+                }
+            }
+        }
+
+        else // client packet handling
+        {
+            handled = true;
+
+            System.out.println("NET: Packet received from server!");
+            System.out.println(object.getClass());
+            if(!validated)
+            {
+                validated = handleValidation(null, connection, object);
+            }
+
+            if(object instanceof GameConnection.PlayerID)
+            {
+                playerID = ((GameConnection.PlayerID) object).playerID;
+            }
+
+            // assume authenticated, handle packet normally
+            if(object instanceof Action)
+            {
+                queuedRemoteChanges.add((Action)object);
+                System.out.println("NET: Packet is Action of type " + ((Action) object).actionClass);
+            }
+        }
+
+        // mystery packet!
+        if(!handled)
+        {
+            System.out.println("NET: Unknown packet received. Connection ID = " + connection.getID());
+            System.out.println("NET: Unknown packet source = " + connection.getRemoteAddressTCP());
         }
     }
 

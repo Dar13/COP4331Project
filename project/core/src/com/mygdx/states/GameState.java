@@ -3,15 +3,23 @@ package com.mygdx.states;
 import com.mygdx.handlers.GameStateManager;
 import com.badlogic.gdx.Screen;
 import com.mygdx.game.MyGame;
+import com.mygdx.handlers.QueueCallback;
+import com.mygdx.handlers.action.Action;
 import com.mygdx.handlers.net.NetworkManager;
+
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by James on 3/18/2015.
  */
-public abstract class GameState implements Screen {
+public abstract class GameState implements Screen, QueueCallback {
     protected GameStateManager gameStateManager;
     protected NetworkManager networkManager;
     protected MyGame game;
+
+    protected AtomicInteger queueCallbackStatus;
+    protected ArrayList<Action> changes;
 
     protected GameState(GameStateManager gameStateManager,
                         NetworkManager networkManager){
@@ -19,6 +27,10 @@ public abstract class GameState implements Screen {
         this.networkManager = networkManager;
 
         game = gameStateManager.getGame();
+
+        changes = null;
+
+        queueCallbackStatus = new AtomicInteger(QueueCallbackStatus.CALLBACK_STATUS_NO_REQUEST.ordinal());
     }
     public abstract void update(float deltatime);
 
@@ -27,5 +39,18 @@ public abstract class GameState implements Screen {
     public void resize(int width, int height)
     {
 
+    }
+
+    @Override
+    public void addCompleted()
+    {
+
+    }
+
+    @Override
+    public void retrieved(Object o)
+    {
+        changes = (ArrayList<Action>) o;
+        queueCallbackStatus.set(QueueCallbackStatus.CALLBACK_STATUS_RESULTS_WAITING.ordinal());
     }
 }

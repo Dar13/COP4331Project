@@ -86,10 +86,15 @@ public class NetTest extends GameState
     @Override
     public void update(float delta)
     {
+        if(queueCallbackStatus.get() == QueueCallbackStatus.CALLBACK_STATUS_NO_REQUEST.ordinal())
+        {
+            queueCallbackStatus.set(QueueCallbackStatus.CALLBACK_STATUS_PENDING_REQUEST.ordinal());
+            networkManager.fetchChanges(this);
+        }
         stage.act(delta);
         if (serverButton.isPressed())
         {
-            networkManager.prepInitialize(true,
+            networkManager.getConnectionManager().prepare(true,
                                           ConnectionMode.WIFI_LAN,
                                           ConnectionMode.NONE,
                                           true);
@@ -100,7 +105,7 @@ public class NetTest extends GameState
 
         if(clientButton.isPressed())
         {
-            networkManager.prepInitialize(false,
+            networkManager.getConnectionManager().prepare(false,
                                           ConnectionMode.WIFI_LAN,
                                           ConnectionMode.NONE,
                                           true);
@@ -116,18 +121,22 @@ public class NetTest extends GameState
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
 
-        List<Action> actions = networkManager.fetchChanges();
-        for(Action action : actions)
+        if(queueCallbackStatus.get() == QueueCallbackStatus.CALLBACK_STATUS_RESULTS_WAITING.ordinal())
         {
-            if(action instanceof ActionWaitForReady)
+            for (Action action : changes)
             {
-                waitForLobby = true;
-            }
+                if (action instanceof ActionWaitForReady)
+                {
+                    waitForLobby = true;
+                }
 
-            if(action instanceof ActionPlayersReady)
-            {
-                lobbyReady = true;
+                if (action instanceof ActionPlayersReady)
+                {
+                    lobbyReady = true;
+                }
             }
+            queueCallbackStatus.set(QueueCallbackStatus.CALLBACK_STATUS_NO_REQUEST.ordinal());
+            changes = null;
         }
 
         if(waitForLobby)

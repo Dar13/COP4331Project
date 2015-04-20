@@ -23,6 +23,7 @@ public class ThreadSafeList<E>
     public void add(E add)
     {
         list.add(add);
+        notifyAll();
     }
 
     public E get(int index)
@@ -33,6 +34,11 @@ public class ThreadSafeList<E>
     public int size()
     {
         return list.size();
+    }
+
+    public boolean isEmpty()
+    {
+        return list.isEmpty();
     }
 
     public void clear()
