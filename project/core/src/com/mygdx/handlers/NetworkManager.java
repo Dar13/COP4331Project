@@ -409,6 +409,15 @@ public class NetworkManager extends Listener implements Runnable
                 // client is waiting for packets to come in.
                 runClient();
             }
+
+            try
+            {
+                Thread.sleep(1);
+            }
+            catch(InterruptedException e)
+            {
+                System.out.println("Thread was interrupted.");
+            }
         }
     }
 
@@ -962,7 +971,7 @@ public class NetworkManager extends Listener implements Runnable
             return;
         }
 
-        System.out.println("Packet type: " + change.actionClass);
+        System.out.println("Received: " + change.actionClass);
 
         switch(change.actionClass)
         {

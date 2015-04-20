@@ -409,8 +409,7 @@ public class EnemyManager extends Actor{
             // netcode
             CheckEnemiesAtEnd();
 
-
-            if (totalWavesToBeSpawned == 0 && enemyList.size() == 0)
+            if (totalWavesToBeSpawned == 0 && enemyList.size() == 0 && isSpawn)
             {
                 /**
                  * TODO: would we need to capture a signal from the network manager here instead?
@@ -563,7 +562,8 @@ public class EnemyManager extends Actor{
         return paused;
     }
 
-    public void setPaused(boolean toPause){
+    public void setPaused(boolean toPause)
+    {
         paused = toPause;
     }
 
@@ -588,6 +588,13 @@ public class EnemyManager extends Actor{
         this.multiplierS = multiplierS;
         this.multiplierSp = multiplierSp;
         this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
+
+        // Otherwise EnemyManager wasn't unpausing due to the timing of when it was
+        // receiving the ActionCreateWave packet.
+        if(paused && isSpawn)
+        {
+            paused = false;
+        }
     }
 
     public boolean isSpawn()
