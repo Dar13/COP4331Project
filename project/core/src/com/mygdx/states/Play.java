@@ -185,12 +185,10 @@ public class Play extends GameState {
                 readyButton.setVisible(false);
                 readyButton.setDisabled(true);
 
-                if(enemyManager != null)
-                {
-                    //enemyManager.setPaused(false);
-                }
+                ActionPlayerWaveReady waveReady = new ActionPlayerWaveReady();
+                waveReady.region = networkManager.getPlayerID();
 
-                networkManager.addToSendQueue(new ActionPlayerWaveReady());
+                networkManager.addToSendQueue(waveReady);
             }
         });
 
