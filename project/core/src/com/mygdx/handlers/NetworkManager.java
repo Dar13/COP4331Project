@@ -554,11 +554,14 @@ public class NetworkManager extends Listener implements Runnable
             }
             else
             {
-                for (GameConnection connection : connections)
+                if(serverWaveReady)
                 {
-                    if (!connection.waveReady)
+                    for (GameConnection connection : connections)
                     {
-                        isAllReady = false;
+                        if (!connection.waveReady)
+                        {
+                            isAllReady = false;
+                        }
                     }
                 }
             }
