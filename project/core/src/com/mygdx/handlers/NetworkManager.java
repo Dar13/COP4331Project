@@ -839,6 +839,7 @@ public class NetworkManager extends Listener implements Runnable
         }
 
         currentWave = 1;
+        health = 10;
     }
 
     /**

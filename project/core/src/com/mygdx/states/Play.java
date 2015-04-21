@@ -285,6 +285,7 @@ public class Play extends GameState {
                 {
                     //Stop all game music and game sounds
                     AssetManager.dispose();
+                    networkManager.reset();
                     gameStateManager.setState(GameStateManager.BADEND, 0);
                 }
                 
