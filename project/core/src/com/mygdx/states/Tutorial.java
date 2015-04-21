@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.mygdx.entities.Actor;
+import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
@@ -74,6 +75,8 @@ public class Tutorial extends GameState {
         background = new Actor(Tutorial1, 0, 0);
         stage.addActor(background);
 
+        AssetManager.loadSound(1);
+
         Return = new TextButton("Menu",skin);
         Return.setSize(60, 60);
         Return.setPosition(game.V_WIDTH - 130, 5);
@@ -96,6 +99,7 @@ public class Tutorial extends GameState {
             background.setSprite(texturearray[text]);
         }
         if(Return.isChecked()){
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
     }

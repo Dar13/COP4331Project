@@ -3,6 +3,7 @@ package com.mygdx.states;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.mygdx.entities.Actor;
+import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
@@ -36,6 +37,11 @@ public class Credits extends GameState {
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
+
+        AssetManager.loadMusic(4);
+        AssetManager.music.play();
+        AssetManager.music.setLooping(true);
+
         Actor map = new Actor(Map, 0, 0);
         stage.addActor(map);
         wayPointManager = new WayPointManager(5);

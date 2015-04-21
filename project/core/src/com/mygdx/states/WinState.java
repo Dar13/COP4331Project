@@ -30,13 +30,11 @@ public class WinState extends GameState {
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
-        //Stop all game music and game sounds
-        AssetManager.dispose();
-
-        //Load and Start End Music
+        //Load and Start Win Music
         AssetManager.loadMusic(3);
-        //AssetManager.music.play();
-        //AssetManager.music.setLooping(true);
+        AssetManager.music.play();
+        AssetManager.music.setLooping(true);
+        AssetManager.loadSound(3);
 
         backtostart = new TextButton("Return to Menu",skin);
         backtostart.setSize(200,60);
@@ -59,9 +57,11 @@ public class WinState extends GameState {
     public void update(float delta) {
         stage.act(delta);
         if(backtostart.isChecked()){
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
         if(endlessReplay.isChecked()){
+            AssetManager.sound.play();
             gameStateManager.popState();
         }
     }

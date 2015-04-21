@@ -81,12 +81,15 @@ public class Menu extends GameState {
         }
         if(multiplayer.isChecked())
         {
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.NET, 0);
         }
         if(tutorial.isChecked()){
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.TUTORIAL, 0);
         }
         if(credits.isChecked()){
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.CREDITS, 0);
         }
     }

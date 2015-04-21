@@ -19,9 +19,6 @@ public class AssetManager {
 
     public static void loadSound(int soundID)
     {
-        if (sound != null) {
-            //sound.dispose();
-        }
         switch(soundID){
             case 1:
                 sound = Gdx.audio.newSound(Gdx.files.internal("data/M1.ogg"));
@@ -52,6 +49,9 @@ public class AssetManager {
                 break;
             case 3:
                 music = Gdx.audio.newMusic(Gdx.files.internal("data/Win.ogg"));
+                break;
+            case 4:
+                music = Gdx.audio.newMusic(Gdx.files.internal("data/WinClean.ogg"));
                 break;
             default:
                 music = Gdx.audio.newMusic(Gdx.files.internal("data/M1.ogg"));
