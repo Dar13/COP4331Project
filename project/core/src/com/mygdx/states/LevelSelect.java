@@ -2,6 +2,7 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.entities.Actor;
+import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
@@ -34,6 +35,9 @@ public class LevelSelect extends GameState {
         stage = new MyStage();
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
+
+        AssetManager.loadSound(2);
+
         Actor map = new Actor(Map, 0, 0);
         stage.addActor(map);
         wayPointManager = new WayPointManager(5);
@@ -76,15 +80,19 @@ public class LevelSelect extends GameState {
     @Override
     public void update(float delta) {
         if(easy.isChecked()){
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.PLAY, 1);
         }
         if(medium.isChecked()) {
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.PLAY, 2);
         }
         if(hard.isChecked()) {
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.PLAY, 3);
         }
         if(insane.isChecked()) {
+            AssetManager.sound.play();
             gameStateManager.setState(GameStateManager.PLAY, 4);
         }
         if(toMenu.isChecked()){

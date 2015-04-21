@@ -3,6 +3,7 @@ package com.mygdx.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Miguel on 3/20/2015.
@@ -19,20 +20,29 @@ public class AssetManager {
     public static void loadSound(int soundID)
     {
         if (sound != null) {
-            sound.dispose();
+            //sound.dispose();
         }
         switch(soundID){
             case 1:
-                sound = Gdx.audio.newSound(Gdx.files.internal("data/start.wav"));
+                sound = Gdx.audio.newSound(Gdx.files.internal("data/M1.ogg"));
+                break;
+            case 2:
+                sound = Gdx.audio.newSound(Gdx.files.internal("data/Ping.ogg"));
+                break;
+            case 3:
+                sound = Gdx.audio.newSound(Gdx.files.internal("data/Reload.ogg"));
                 break;
             default:
-                sound = Gdx.audio.newSound(Gdx.files.internal("data/start.wav"));
+                sound = Gdx.audio.newSound(Gdx.files.internal("data/M1.ogg"));
                 break;
         }
     }
 
     public static void loadMusic(int musicID)
     {
+        if (music != null) {
+            music.dispose();
+        }
         switch(musicID){
             case 1:
                 music = Gdx.audio.newMusic(Gdx.files.internal("data/MainMenu.ogg"));
@@ -44,7 +54,7 @@ public class AssetManager {
                 music = Gdx.audio.newMusic(Gdx.files.internal("data/Win.ogg"));
                 break;
             default:
-                music = Gdx.audio.newMusic(Gdx.files.internal("data/start.wav"));
+                music = Gdx.audio.newMusic(Gdx.files.internal("data/M1.ogg"));
                 break;
         }
     }

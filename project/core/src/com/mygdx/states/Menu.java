@@ -35,11 +35,10 @@ public class Menu extends GameState {
         Gdx.input.setInputProcessor(stage);
         Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
-
         /* Menu Music */
         AssetManager.loadMusic(1);
-        //AssetManager.music.play();
-        //AssetManager.music.setLooping(true);
+        AssetManager.music.play();
+        AssetManager.music.setLooping(true);
         AssetManager.loadSound(1);
 
         singleplayer = new TextButton("Single Player",skin);
@@ -77,8 +76,8 @@ public class Menu extends GameState {
                         ConnectionMode.NONE,
                         true);
             }
-            gameStateManager.setState(GameStateManager.LEVELSELECT, 0);
             AssetManager.sound.play();
+            gameStateManager.setState(GameStateManager.LEVELSELECT, 0);
         }
         if(multiplayer.isChecked())
         {

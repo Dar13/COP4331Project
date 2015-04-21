@@ -15,6 +15,7 @@ import com.mygdx.entities.MortarTower;
 import com.mygdx.entities.RifleTower;
 import com.mygdx.entities.SniperTower;
 import com.mygdx.entities.Tower;
+import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.handlers.TowerManager;
@@ -282,6 +283,8 @@ public class Play extends GameState {
 
                 if(health <= 0)
                 {
+                    //Stop all game music and game sounds
+                    AssetManager.dispose();
                     gameStateManager.setState(GameStateManager.BADEND, 0);
                 }
                 
