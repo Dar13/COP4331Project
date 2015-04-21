@@ -26,6 +26,7 @@ public class EnemyStatus extends EntityStatus
             health = create.health;
             armor = create.armor;
             velocity = create.velocity;
+            uniqueID = ((ActionEnemyCreate) action).entityID;
         }
 
         // other types

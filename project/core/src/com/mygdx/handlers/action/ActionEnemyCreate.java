@@ -23,6 +23,8 @@ public class ActionEnemyCreate extends ActionEnemyBase
     {
         super(newEnemy);
 
+        this.needsID = needsID;
+
         actionClass = ActionClass.ACTION_ENEMY_CREATE;
 
         velocity = newEnemy.getVelocity();

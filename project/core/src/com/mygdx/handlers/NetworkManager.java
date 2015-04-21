@@ -51,7 +51,7 @@ public class NetworkManager extends Listener implements Runnable
     public static final int SERVER_TCP_PORT = 0xDDD;
     public static final int SERVER_UDP_PORT = 0xDDE;
     public static final int MAX_CLIENTS = 4;
-    public static final int ENTITY_ID_START = 0;
+    public static final int ENTITY_ID_START = 1024;
 
     //These lists will hold changes temporarily until they are either sent or applied
     private List<Action> queuedLocalChanges;
@@ -517,11 +517,9 @@ public class NetworkManager extends Listener implements Runnable
 
             if(connections.size() == 1 && !gameStarted)
             {
-                System.out.println("NET: checking for WaitForReady send ");
                 boolean allWaiting = true;
                 for(GameConnection conn : connections)
                 {
-                    System.out.println("NET: Checking connection validation: " + conn.isValidated() + " Waiting: " + conn.waiting);
 
                     if(conn.waiting)
                     {
@@ -530,7 +528,6 @@ public class NetworkManager extends Listener implements Runnable
 
                     if(conn.isValidated() && !conn.waiting && conn.connection.isConnected())
                     {
-                        System.out.println("NET: Inside condition to send WaitForReady");
                         ActionWaitForReady waitForReady = new ActionWaitForReady();
                         waitForReady.region = conn.playerID;
                         addToSendQueue(waitForReady);
@@ -851,9 +848,10 @@ public class NetworkManager extends Listener implements Runnable
     public void addToSendQueue(Action action)
     {
         mutex.writeLock().lock();
+        //System.out.println("Adding to queue: " + action.actionClass + "Region: "+action.region);
         try
         {
-            if(isServer)
+            if(isServer && action.region == 0)
             {
                 receiveChange(action);
             }
@@ -1014,167 +1012,182 @@ public class NetworkManager extends Listener implements Runnable
 
         switch(change.actionClass)
         {
-        case ACTION_PLAYER_WAVE_READY:
-            ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
-            System.out.format("Wave Ready region = %d\n", playerReady.region);
-            if(connections.size() > 0 && playerReady.region > 0)
-            {
-                connections.get(playerReady.region - 1).waveReady = true;
-            }
-            else
-            {
-                serverWaveReady = true;
-            }
-            break;
-        case ACTION_ENEMY_CREATE:
-            ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
-            actionCreate.entityID = lastEntityID + 1;
-            lastEntityID++;
-            System.out.println("NET: Parsing EnemyCreate -- Velocity = " + actionCreate.velocity);
+            case ACTION_PLAYER_WAVE_READY:
+                ActionPlayerWaveReady playerReady = (ActionPlayerWaveReady)change;
 
-            mutex.writeLock().lock();
-            try
-            {
-                entityStatus.put(actionCreate.entityID, new EnemyStatus(actionCreate));
-
-                if(singleplayer)
+                if(connections.size() > 0 && playerReady.region > 0)
                 {
-                    queuedRemoteChanges.add(actionCreate);
+                    connections.get(playerReady.region - 1).waveReady = true;
                 }
                 else
                 {
-                    addToSendQueue(actionCreate);
+                    serverWaveReady = true;
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
+                break;
+            case ACTION_WAVE_END:
+                if(isServer)
+                    queuedRemoteChanges.add(change);
+                break;
+            case ACTION_ENEMY_CREATE:
+                ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
 
-            break;
-        case ACTION_ENEMY_END:
-            ActionEnemyEnd actionEnd = (ActionEnemyEnd)change;
+                actionCreate.entityID = lastEntityID + 1;
+                lastEntityID++;
 
-            mutex.writeLock().lock();
-            try
-            {
-                if(entityStatus.containsKey(actionEnd.entityID))
+                //System.out.println("NET: Parsing EnemyCreate -- Velocity = " + actionCreate.velocity);
+
+                mutex.writeLock().lock();
+                try
                 {
-                    // if the enemy is at region 0, then its at the end
-                    if(entityStatus.get(actionEnd.entityID).region == 0)
+                    entityStatus.put(actionCreate.entityID, new EnemyStatus(actionCreate));
+
+                    if(singleplayer)
                     {
-                        health--;
-                        numEnemies--;
-                        ActionHealthChanged actionHealth = new ActionHealthChanged(health);
-                        if(singleplayer)
-                        {
-                            queuedRemoteChanges.add(actionHealth);
-                        }
-                        else
-                        {
-                            addToSendQueue(actionHealth);
-                        }
+                        queuedRemoteChanges.add(actionCreate);
                     }
                     else
                     {
-                        // e.g., if we have 2 connections, there are 3 screens. if we are at region 2,
-                        // we need to send the enemy to server, or region 0. (2+1) % (2+1) = 0;
-                        entityStatus.get(actionEnd.entityID).region += 1;
-                        entityStatus.get(actionEnd.entityID).region %= (connections.size() + 1);
-
-                        EnemyStatus transfer = (EnemyStatus) entityStatus.get(actionEnd.entityID);
-                        //transfer.velocity = actionEnd.velocity;
-
-                        ActionEnemyCreate actionEndCreate = new ActionEnemyCreate(transfer);
-
-                        //add actionEndCreate to the queue that's going back out to the clients.
-                        addToSendQueue(actionEndCreate);
+                        addToSendQueue(actionCreate);
                     }
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
-            break;
-        case ACTION_ENEMY_DESTROY:
-            ActionEnemyDestroy actionDestroy = (ActionEnemyDestroy)change;
-
-            mutex.writeLock().lock();
-            try
-            {
-                if (entityStatus.containsKey(actionDestroy.entityID))
+                finally
                 {
-                    entityStatus.remove(actionDestroy.entityID);
-                    numEnemies--;
+                    mutex.writeLock().unlock();
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
-            break;
-        case ACTION_ENEMY_DAMAGE:
-            // ignore for now
-            break;
-        case ACTION_TOWER_PLACED:
-            ActionTowerPlaced actionTowerPlaced = (ActionTowerPlaced)change;
 
-            actionTowerPlaced.entityID = lastEntityID + 1;
-            lastEntityID++;
-
-            mutex.writeLock().lock();
-            try
-            {
-                entityStatus.put(actionTowerPlaced.entityID, new TowerStatus(actionTowerPlaced));
-                if(singleplayer)
+                break;
+            case ACTION_ENEMY_END:
+                ActionEnemyEnd actionEnd = (ActionEnemyEnd)change;
+                mutex.writeLock().lock();
+                try
                 {
-                    queuedRemoteChanges.add(actionTowerPlaced);
-                }
-                else
-                {
-                    addToSendQueue(actionTowerPlaced);
-                }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
-            break;
-        case ACTION_TOWER_UPGRADED:
-            ActionTowerUpgraded actionTowerUpgraded = (ActionTowerUpgraded)change;
-
-            mutex.writeLock().lock();
-            try
-            {
-                if(entityStatus.containsKey(actionTowerUpgraded.entityID))
-                {
-                    TowerStatus towerStatus = (TowerStatus)entityStatus.get(actionTowerUpgraded.entityID);
-                    towerStatus.level++;
-
-                    if(towerStatus.level > Tower.MAX_LEVEL)
+                    if(entityStatus.containsKey(actionEnd.entityID))
                     {
-                        towerStatus.level = Tower.MAX_LEVEL;
-                        entityStatus.put(actionTowerUpgraded.level, towerStatus);
-
-                        actionTowerUpgraded.level = towerStatus.level;
-                        if(singleplayer)
+                        // if the enemy is at region 0, then its at the end
+                        if(entityStatus.get(actionEnd.entityID).region == 0)
                         {
-                            queuedRemoteChanges.add(actionTowerUpgraded);
+                            health--;
+                            numEnemies--;
+                            for(GameConnection connection : connections)
+                            {
+                                ActionHealthChanged actionHealth = new ActionHealthChanged(health);
+                                actionHealth.region = connection.playerID;
+                                addToSendQueue(actionHealth);
+                            }
+
+                            ActionHealthChanged actionHealth = new ActionHealthChanged(health);
+                            actionHealth.region = 0;
+                            queuedRemoteChanges.add(actionHealth);
+
+
                         }
                         else
                         {
-                            addToSendQueue(actionTowerUpgraded);
+                            // e.g., if we have 2 connections, there are 3 screens. if we are at region 2,
+                            // we need to send the enemy to server, or region 0. (2+1) % (2+1) = 0;
+                            entityStatus.get(actionEnd.entityID).region += 1;
+                            entityStatus.get(actionEnd.entityID).region %= (connections.size() + 1);
+
+                            EnemyStatus transfer = (EnemyStatus) entityStatus.get(actionEnd.entityID);
+                            //transfer.velocity = actionEnd.velocity;
+
+                            ActionEnemyCreate actionEndCreate = new ActionEnemyCreate(transfer);
+                            actionEndCreate.needsID = false;
+                            if(actionEndCreate.region == 0)
+                                queuedRemoteChanges.add(actionEndCreate);
+                                //add actionEndCreate to the queue that's going back out to the clients.
+                            else
+                                addToSendQueue(actionEndCreate);
                         }
                     }
                 }
-            }
-            finally
-            {
-                mutex.writeLock().unlock();
-            }
+                finally
+                {
+                    mutex.writeLock().unlock();
+                }
+                break;
+            case ACTION_ENEMY_DESTROY:
+                ActionEnemyDestroy actionDestroy = (ActionEnemyDestroy)change;
 
-            break;
+                mutex.writeLock().lock();
+                try
+                {
+                    if (entityStatus.containsKey(actionDestroy.entityID))
+                    {
+                        entityStatus.remove(actionDestroy.entityID);
+                        numEnemies--;
+                    }
+                }
+                finally
+                {
+                    mutex.writeLock().unlock();
+                }
+                break;
+            case ACTION_ENEMY_DAMAGE:
+                // ignore for now
+                break;
+            case ACTION_TOWER_PLACED:
+                ActionTowerPlaced actionTowerPlaced = (ActionTowerPlaced)change;
+
+                actionTowerPlaced.entityID = lastEntityID + 1;
+                lastEntityID++;
+
+                mutex.writeLock().lock();
+                try
+                {
+                    entityStatus.put(actionTowerPlaced.entityID, new TowerStatus(actionTowerPlaced));
+                    if(singleplayer)
+                    {
+                        queuedRemoteChanges.add(actionTowerPlaced);
+                    }
+                    else
+                    {
+                        addToSendQueue(actionTowerPlaced);
+                    }
+                }
+                finally
+                {
+                    mutex.writeLock().unlock();
+                }
+                break;
+            case ACTION_PLAYER_READY:
+                if(change.region == 0)
+                    queuedRemoteChanges.add(change);
+                break;
+            case ACTION_TOWER_UPGRADED:
+                ActionTowerUpgraded actionTowerUpgraded = (ActionTowerUpgraded)change;
+
+                mutex.writeLock().lock();
+                try
+                {
+                    if(entityStatus.containsKey(actionTowerUpgraded.entityID))
+                    {
+                        TowerStatus towerStatus = (TowerStatus)entityStatus.get(actionTowerUpgraded.entityID);
+                        towerStatus.level++;
+
+                        if(towerStatus.level > Tower.MAX_LEVEL)
+                        {
+                            towerStatus.level = Tower.MAX_LEVEL;
+                            entityStatus.put(actionTowerUpgraded.level, towerStatus);
+
+                            actionTowerUpgraded.level = towerStatus.level;
+                            if(singleplayer)
+                            {
+                                queuedRemoteChanges.add(actionTowerUpgraded);
+                            }
+                            else
+                            {
+                                addToSendQueue(actionTowerUpgraded);
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    mutex.writeLock().unlock();
+                }
+
+                break;
         }
     }
 
