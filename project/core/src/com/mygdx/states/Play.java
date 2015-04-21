@@ -4,6 +4,7 @@ package com.mygdx.states;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.entities.Actor;
 import com.mygdx.entities.BazookaTower;
@@ -78,6 +79,8 @@ public class Play extends GameState {
     private TextButton sniperButton;
     private TextButton mortarButton;
     private TextButton readyButton;
+    private Label UILabel;
+
 
 
     private MyStage stage;
@@ -160,13 +163,13 @@ public class Play extends GameState {
         wayPointManager = new WayPointManager(MapLoad);
         towerManager = new TowerManager(towers);
 
-        rifleButton = new TextButton("rifle",skin);
+        rifleButton = new TextButton("Rifle",skin);
         rifleButton.setSize(64, 64);
         rifleButton.setPosition(game.V_WIDTH - rifleButton.getWidth(),
-                game.V_HEIGHT - rifleButton.getHeight());
+                game.V_HEIGHT - rifleButton.getHeight() - 32);
         rifleButton.addListener(new ClickListener());
 
-        bazookaButton = new TextButton("bazooka",skin);
+        bazookaButton = new TextButton("Bazooka",skin);
         bazookaButton.setSize(64, 64);
         bazookaButton.setPosition(rifleButton.getX(), rifleButton.getY() - 64);
         bazookaButton.addListener(new ClickListener());
@@ -192,16 +195,20 @@ public class Play extends GameState {
             }
         });
 
-        sniperButton = new TextButton("sniper",skin);
+        sniperButton = new TextButton("Sniper",skin);
         sniperButton.setSize(64, 64);
         sniperButton.setPosition(bazookaButton.getX(), bazookaButton.getY() - 64);
         sniperButton.addListener(new ClickListener());
 
-        mortarButton = new TextButton("mortar",skin);
+        mortarButton = new TextButton("Mortar",skin);
         mortarButton.setSize(64, 64);
         mortarButton.setPosition(sniperButton.getX(), sniperButton.getY() - 64);
         mortarButton.addListener(new ClickListener());
 
+        UILabel = new Label("Health: " + health + "         Gold: " + gold + "             Wave: " + 0, skin);
+        UILabel.setSize(704, 32);
+        UILabel.setPosition(0, MyGame.V_HEIGHT - 32);
+        UILabel.setAlignment(1);
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -215,6 +222,7 @@ public class Play extends GameState {
         hub.addActor(sniperButton);
         hub.addActor(mortarButton);
         hub.addActor(readyButton);
+        hub.addActor(UILabel);
 
         debugger = new Debugger(wayPointManager.wayPoints, towerManager.towerList, stage.getBatch());
 
@@ -326,9 +334,7 @@ public class Play extends GameState {
                     batch.end();
                 }
                 batch.begin();
-                font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
-                font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
-                font.draw(batch, "Wave: 0", 192, MyGame.V_HEIGHT - 10);
+                UILabel.setText("Health: " + health + "         Gold: " + gold + "             Wave: " + 0);
                 debugger.setBatch(batch);
                 //towerManager.draw(batch, 1);
                 batch.end();
@@ -365,9 +371,7 @@ public class Play extends GameState {
                     batch.end();
                 }
                 batch.begin();
-                font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
-                font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
-                font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
+                UILabel.setText("Health: " + health + "         Gold: " + gold + "             Wave: " + enemyManager.currentWave);
                 debugger.setBatch(batch);
                 //towerManager.draw(batch, 1);
                 batch.end();
@@ -406,9 +410,7 @@ public class Play extends GameState {
                     batch.end();
                 }
                 batch.begin();
-                font.draw(batch, "Health: " + health, 0, MyGame.V_HEIGHT - 10);
-                font.draw(batch, "Gold: " + gold, 96, MyGame.V_HEIGHT - 10);
-                font.draw(batch, "Wave: " + enemyManager.currentWave, 192, MyGame.V_HEIGHT - 10);
+                UILabel.setText("Health: " + health + "         Gold: " + gold + "             Wave: " + enemyManager.currentWave);
                 batch.end();
                 for(Enemy enemy : enemyManager.enemyList)
                 {

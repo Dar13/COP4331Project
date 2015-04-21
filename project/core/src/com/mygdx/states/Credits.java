@@ -1,6 +1,7 @@
 package com.mygdx.states;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.mygdx.entities.Actor;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class Credits extends GameState {
     private MyStage stage;
-    private TextButton textField;
+    private Label textField;
     private TextButton toMenu;
     private Texture Map = new Texture("Maps/SubMenuMap.png");
     private WayPointManager wayPointManager;
@@ -42,10 +43,10 @@ public class Credits extends GameState {
         enemyManager.LevelSelectWave();
         stage.addActor(enemyManager);
 
-        textField = new TextButton(credittext,skin);
+        textField = new Label(credittext,skin);
         textField.setSize(400, 300);
         textField.setPosition(game.V_WIDTH/2-textField.getWidth()/2, game.V_HEIGHT - 365);
-        textField.setDisabled(true);
+        textField.setAlignment(1);
         stage.addActor(textField);
 
         toMenu = new TextButton("Menu", skin);

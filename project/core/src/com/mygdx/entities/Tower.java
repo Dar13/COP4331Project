@@ -122,25 +122,25 @@ public abstract class Tower extends Entity
                 int gold1 = 0;
                 switch (this.type) {
                     case TOWER_BAZOOKA:
-                        if (gold >= towerLevel * BazookaTower.PRICE) {
+                        if (gold >= towerLevel * BazookaTower.PRICE && towerLevel < 7) {
                             gold1 = towerLevel * BazookaTower.PRICE;
                             upgrade(DAMAGE_MULTIPLIER_BAZOOKA, RANGE_MULTIPLIER_BAZOOKA);
                         }
                         break;
                     case TOWER_RIFLE:
-                        if (gold >= towerLevel * RifleTower.PRICE) {
+                        if (gold >= towerLevel * RifleTower.PRICE && towerLevel < 7) {
                             gold1 = towerLevel * RifleTower.PRICE;
                             upgrade(DAMAGE_MULTIPLIER_RIFLE, RANGE_MULTIPLIER_RIFLE);
                         }
                         break;
                     case TOWER_SNIPER:
-                        if (gold >= towerLevel * SniperTower.PRICE) {
+                        if (gold >= towerLevel * SniperTower.PRICE && towerLevel < 7) {
                             gold1 = towerLevel * SniperTower.PRICE;
                             upgrade(DAMAGE_MULTIPLIER_SNIPER, RANGE_MULTIPLIER_SNIPER);
                         }
                         break;
                     case TOWER_MORTAR:
-                        if (gold >= towerLevel * MortarTower.PRICE) {
+                        if (gold >= towerLevel * MortarTower.PRICE && towerLevel < 7) {
                             gold1 = towerLevel * MortarTower.PRICE;
                             upgrade(DAMAGE_MULTIPLIER_MORTAR, RANGE_MULTIPLIER_MORTAR);
                         }
@@ -241,7 +241,7 @@ public abstract class Tower extends Entity
             case ENEMY_FAST:
                 return damage;
             case ENEMY_HEAVY:
-                return (damage / 3);
+                return (damage / 5);
             }
             break;
 
@@ -253,7 +253,7 @@ public abstract class Tower extends Entity
             case ENEMY_FAST:
                 return damage;
             case ENEMY_HEAVY:
-                return (damage / 2);
+                return (damage / 5);
             }
             break;
         case TOWER_MORTAR:
