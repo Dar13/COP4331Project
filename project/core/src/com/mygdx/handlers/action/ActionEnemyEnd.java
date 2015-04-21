@@ -8,6 +8,7 @@ import com.mygdx.entities.Enemy;
 public class ActionEnemyEnd extends ActionEnemyBase
 {
     public float velocity;
+    public float health;
     public ActionEnemyEnd()
     {
 
@@ -23,5 +24,6 @@ public class ActionEnemyEnd extends ActionEnemyBase
 
         actionClass = ActionClass.ACTION_ENEMY_END;
         this.velocity = enemy.getVelocity();
+        this.health = enemy.getHealth();
     }
 }

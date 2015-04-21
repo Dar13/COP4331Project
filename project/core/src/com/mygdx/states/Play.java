@@ -597,7 +597,7 @@ public class Play extends GameState {
                         break;
                     }
 
-                    System.out.println("PLAY: Received EnemyCreate -- Velocity = " + enemyCreate.velocity);
+                    System.out.println("PLAY: Received EnemyCreate -- Velocity = " + enemyCreate.velocity  + "   Health = " + enemyCreate.health);
 
                     enemyManager.setPaused(false);
 
