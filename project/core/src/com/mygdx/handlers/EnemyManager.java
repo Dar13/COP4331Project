@@ -134,12 +134,15 @@ public class EnemyManager extends Actor{
         {
         case ENEMY_NORMAL:
             enemy = createEnemy(type, entityID, -1, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW);
+            enemy.setHealth(health);
             break;
         case ENEMY_FAST:
             enemy = createEnemy(type, entityID, -1, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW);
+            enemy.setHealth(health);
             break;
         case ENEMY_HEAVY:
             enemy = createEnemy(type, entityID, -1, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW);
+            enemy.setHealth(health);
             break;
         default:
             // Failed to add enemy, incorrect type.
