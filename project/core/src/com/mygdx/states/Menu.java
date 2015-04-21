@@ -67,10 +67,13 @@ public class Menu extends GameState {
 
    }
     @Override
-    public void update(float delta) {
-        if(singleplayer.isChecked()){
-            if(!networkManager.isInitialized()) {
-                networkManager.setSingleplayer(true);
+    public void update(float delta)
+    {
+        if(singleplayer.isChecked())
+        {
+            networkManager.setSingleplayer(true);
+            if(!networkManager.isInitialized())
+            {
                 networkManager.prepInitialize(true,
                         ConnectionMode.WIFI_LAN,
                         ConnectionMode.NONE,
