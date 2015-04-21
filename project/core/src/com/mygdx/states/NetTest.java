@@ -4,16 +4,15 @@ package com.mygdx.states;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.entities.Actor;
 import com.mygdx.handlers.EnemyManager;
 import com.mygdx.handlers.GameStateManager;
 import com.mygdx.UI.MyStage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygdx.game.MyGame;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.handlers.WayPointManager;
@@ -42,8 +41,6 @@ public class NetTest extends GameState
 
     private OrthographicCamera cam;
     private Texture Map = new Texture("Maps/SubMenuMap.png");
-    private WayPointManager wayPointManager;
-    private EnemyManager enemyManager;
     private Skin skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
 
     public NetTest(GameStateManager gameStateManager, final NetworkManager networkManager)
@@ -60,20 +57,23 @@ public class NetTest extends GameState
         serverButton.setPosition(game.V_WIDTH / 2 - serverButton.getWidth() / 2, MyGame.V_HEIGHT * 7 / 12);
         serverButton.addListener(new ClickListener());
 
-        stage.addActor(serverButton);
 
         clientButton = new TextButton("Client", skin);
         clientButton.setSize(200, 60);
         clientButton.setPosition(game.V_WIDTH / 2 - serverButton.getWidth() / 2, serverButton.getY() - 65);
         clientButton.addListener(new ClickListener());
-        stage.addActor(clientButton);
+
 
         toMenu = new TextButton("Menu", skin);
         toMenu.setSize(200, 60);
         toMenu.setPosition(game.V_WIDTH / 2 - toMenu.getWidth() / 2, clientButton.getY() - 65);
         toMenu.addListener(new ClickListener());
-        stage.addActor(toMenu);
 
+        Actor map = new Actor(Map, 0, 0);
+        stage.addActor(map);
+        stage.addActor(toMenu);
+        stage.addActor(clientButton);
+        stage.addActor(serverButton);
 
         connecting = new TextButton("Connecting please wait...", skin);
         connecting.setSize(200, 60);

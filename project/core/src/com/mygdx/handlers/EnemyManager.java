@@ -572,6 +572,7 @@ public class EnemyManager extends Actor{
         waveToBeSpawnedNorm = 999;
         waveToBeSpawnedFast = 999;
         waveToBeSpawnedHeavy = 999;
+        totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
     }
 
     public void setWave(int waveToBeSpawnedNorm,

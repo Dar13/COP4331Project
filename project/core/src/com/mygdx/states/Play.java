@@ -81,6 +81,7 @@ public class Play extends GameState {
     private TextButton mortarButton;
     private TextButton readyButton;
     private Label UILabel;
+    private Label UILabel2;
 
 
 
@@ -211,6 +212,10 @@ public class Play extends GameState {
         UILabel.setPosition(0, MyGame.V_HEIGHT - 32);
         UILabel.setAlignment(1);
 
+        UILabel2 = new Label("",skin);
+        UILabel2.setSize(64, 224);
+        UILabel2.setPosition(640, 0);
+
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.scale(.01f);
@@ -218,6 +223,7 @@ public class Play extends GameState {
 
         stage.addActor(map);
         stage.addActor(towerManager);
+        hub.addActor(UILabel2);
         hub.addActor(rifleButton);
         hub.addActor(bazookaButton);
         hub.addActor(sniperButton);
@@ -285,7 +291,6 @@ public class Play extends GameState {
                 {
                     //Stop all game music and game sounds
                     AssetManager.dispose();
-                    networkManager.reset();
                     gameStateManager.setState(GameStateManager.BADEND, 0);
                 }
                 
