@@ -1093,6 +1093,7 @@ public class NetworkManager extends Listener implements Runnable
                             //transfer.velocity = actionEnd.velocity;
 
                             ActionEnemyCreate actionEndCreate = new ActionEnemyCreate(transfer);
+                            actionEndCreate.health = actionEnd.health;
                             actionEndCreate.needsID = false;
                             if(actionEndCreate.region == 0)
                                 queuedRemoteChanges.add(actionEndCreate);
