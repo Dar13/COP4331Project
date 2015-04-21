@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mygdx.handlers.AssetManager;
 import com.mygdx.handlers.NetworkManager;
 import com.mygdx.net.ConnectionMode;
 
@@ -74,12 +73,6 @@ public class Tutorial extends GameState {
         skin = new Skin(Gdx.files.internal("UiData/uiskin.json"));
         background = new Actor(Tutorial1, 0, 0);
         stage.addActor(background);
-
-        /* Menu Music */
-        AssetManager.loadMusic(1);
-        //AssetManager.music.play();
-        //AssetManager.music.setLooping(true);
-        AssetManager.loadSound(1);
 
         Return = new TextButton("Menu",skin);
         Return.setSize(60, 60);
