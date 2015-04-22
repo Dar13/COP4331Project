@@ -67,6 +67,12 @@ public class MyGame extends ApplicationAdapter
     @Override
     public void render()
     {
+        if(!networkThread.isAlive())
+        {
+            System.out.println("NET: Starting a new NetworkManager thread.");
+            networkThread = new Thread(networkManager);
+            networkThread.start();
+        }
 
         if(Gdx.graphics.getDeltaTime() < fps)
         {

@@ -61,6 +61,7 @@ public class NetworkManager extends Listener implements Runnable
     protected Boolean ready;
     protected boolean initializeManager;
     protected boolean singleplayer = false;
+    protected AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     // server
     protected Boolean isServer;
@@ -99,6 +100,7 @@ public class NetworkManager extends Listener implements Runnable
     protected int numEnemies = 0;
     protected boolean waveRunning = false;
     protected int lastUID = 0; // this represents the connectionID of the 'last' screen
+    private AtomicBoolean run = new AtomicBoolean(true);
 
     public NetworkManager(HashMap<ConnectionMode, NetworkInterface> modes)
     {
@@ -179,16 +181,19 @@ public class NetworkManager extends Listener implements Runnable
 
     public boolean initialize()
     {
-        System.out.println("NET: Initializing NetworkManager");
         mutex.writeLock().lock();
         try
         {
-            // make sure primary mode isn't nu ll, secondary mode is nullable.
+            // make sure primary mode isn't null, secondary mode is nullable.
+            // isServer can be null on first start up or after reset(), which is called when
+            // transitioning between states.
             if (isServer == null || this.preferredMode == null)
             {
                 initialized.set(false);
                 return false;
             }
+
+            System.out.println("[NET] Initializing NetworkManager");
 
             // this can't be null so ignore any warnings that it can be.
             if (isServer)
@@ -222,7 +227,7 @@ public class NetworkManager extends Listener implements Runnable
                     if (networkInterface == null)
                     {
                         // invalid fallback
-                        System.out.println("NET: Selected fallback connection mode is not supported");
+                        System.out.println("[NET] Selected fallback connection mode is not supported");
                         return false;
                     }
                     else
@@ -231,7 +236,7 @@ public class NetworkManager extends Listener implements Runnable
                         if (!networkInterface.isReady())
                         {
                             // fallback failed
-                            System.out.println("NET: Fallback mode failed to initialize");
+                            System.out.println("[NET] Fallback mode failed to initialize");
                             initialized.set(false);
                             return false;
                         }
@@ -240,7 +245,7 @@ public class NetworkManager extends Listener implements Runnable
             }
             else
             {
-                System.out.println("NET: Selected connection mode is not supported.");
+                System.out.println("[NET] Selected connection mode is not supported.");
                 initialized.set(false);
                 return false;
             }
@@ -330,6 +335,9 @@ public class NetworkManager extends Listener implements Runnable
     @Override
     public void run()
     {
+        // Ensure we don't accidentally shutdown the thread again.
+        shuttingDown.set(false);
+
         // wait for initialization
         while (!isInitialized())
         {
@@ -347,14 +355,14 @@ public class NetworkManager extends Listener implements Runnable
             {
                 // not really sure how to handle this.
                 // terminate?
-                System.out.println("NET: Interrupt caught while waiting for initialization.");
+                System.out.println("[NET] Interrupt caught while waiting for initialization.");
                 return;
             }
         }
 
-        boolean run = true;
+        run.set(true);
 
-        while (run)
+        while (run.get())
         {
             if (!ready)
             {
@@ -366,8 +374,8 @@ public class NetworkManager extends Listener implements Runnable
                     mutex.writeLock().lock();
                     try
                     {
-                        run = setupServer();
-                        if (!run)
+                        run.set(setupServer());
+                        if (!run.get())
                         {
                             continue;
                         }
@@ -382,8 +390,8 @@ public class NetworkManager extends Listener implements Runnable
                     mutex.writeLock().lock();
                     try
                     {
-                        run = setupClient();
-                        if (!run)
+                        run.set(setupClient());
+                        if (!run.get())
                         {
                             continue;
                         }
@@ -400,15 +408,23 @@ public class NetworkManager extends Listener implements Runnable
 
             sendLocalChanges();
 
-            if (isServer)
+            try
             {
-                // server is sending packets out and waiting for incoming connections.
-                runServer();
+                if (isServer)
+                {
+                    // server is sending packets out and waiting for incoming connections.
+                    runServer();
+                }
+                else
+                {
+                    // client is waiting for packets to come in.
+                    runClient();
+                }
             }
-            else
+            catch(NullPointerException e)
             {
-                // client is waiting for packets to come in.
-                runClient();
+                // thread is shutting down
+                continue;
             }
 
             try
@@ -417,9 +433,11 @@ public class NetworkManager extends Listener implements Runnable
             }
             catch(InterruptedException e)
             {
-                System.out.println("Thread was interrupted.");
+                System.out.println("[NET] Thread was interrupted.");
             }
         }
+
+        System.out.println("[NET] Thread ending.");
     }
 
     public int getFirstClientID()
@@ -439,6 +457,12 @@ public class NetworkManager extends Listener implements Runnable
     public void registerPackets()
     {
         Kryo kryo = null;
+
+        // Check for the thread shutting down.
+        if(shuttingDown.get())
+        {
+            return;
+        }
 
         if(isServer)
         {
@@ -486,7 +510,7 @@ public class NetworkManager extends Listener implements Runnable
         }
         catch (IOException e)
         {
-            System.out.println("NET: Server failed to bind to TCP port " + SERVER_TCP_PORT +
+            System.out.println("[NET] Server failed to bind to TCP port " + SERVER_TCP_PORT +
                                " and UDP port " + SERVER_UDP_PORT);
             e.printStackTrace();
             return false; // non-recoverable error so terminate the thread
@@ -542,7 +566,7 @@ public class NetworkManager extends Listener implements Runnable
 
                 if(allWaiting)
                 {
-                    System.out.println("Players are ready!");
+                    System.out.println("[NET] Players are ready!");
                     for(GameConnection conn : connections)
                     {
                         ActionPlayersReady playersReady = new ActionPlayersReady();
@@ -567,7 +591,6 @@ public class NetworkManager extends Listener implements Runnable
             {
                 if(serverWaveReady)
                 {
-                    System.out.format("serverWaveReady: %s\n", serverWaveReady);
                     for (GameConnection connection : connections)
                     {
                         if (!connection.waveReady)
@@ -592,12 +615,10 @@ public class NetworkManager extends Listener implements Runnable
                 if(singleplayer)
                 {
                     createWave.region = 0;
-                    System.out.println("Sending wave (singleplayer?)");
                     queuedRemoteChanges.add(createWave);
                 }
                 else
                 {
-                    System.out.println("Sending wave!");
                     addToSendQueue(createWave);
                 }
 
@@ -695,20 +716,20 @@ public class NetworkManager extends Listener implements Runnable
                         }
                         catch(SocketTimeoutException e)
                         {
-                            System.out.println("NET: Client timed out trying to connect to host.");
-                            System.out.println("NET: Attempting next host.");
+                            System.out.println("[NET] Client timed out trying to connect to host.");
+                            System.out.println("[NET] Attempting next host.");
                         }
                     }
                 }
             }
             catch (SocketTimeoutException et)
             {
-                System.out.println("NET: Client timed out trying to connect to host. Retrying...");
+                System.out.println("[NET] Client timed out trying to connect to host. Retrying...");
                 return false;
             }
             catch (IOException e)
             {
-                System.out.println("NET: Exception during client connection. Not retrying. Maybe.");
+                System.out.println("[NET] Exception during client connection. Not retrying. Maybe.");
                 e.printStackTrace();
                 return false; // non-recoverable error so terminate the thread
             }
@@ -731,6 +752,13 @@ public class NetworkManager extends Listener implements Runnable
     @Override
     public void connected(Connection connection)
     {
+        // Check to see if the thread is shutting down and refuse the connection.
+        if(shuttingDown.get())
+        {
+            connection.close();
+            return;
+        }
+
         if(isServer)
         {
             if(connections.size() < expectedAmountClients)
@@ -743,7 +771,7 @@ public class NetworkManager extends Listener implements Runnable
             {
                 // don't need anymore connections. (rethink if we ever do chromecast stuff)
                 connection.close();
-                System.out.println("NET: Closing connection. ID = " + connection.getID());
+                System.out.println("[NET] Closing connection. ID = " + connection.getID());
             }
         }
         else
@@ -752,7 +780,7 @@ public class NetworkManager extends Listener implements Runnable
             GameConnection.ClientAuth authPacket = new GameConnection.ClientAuth();
             client.sendTCP(authPacket);
 
-            System.out.println("NET: Connected to server! Connection ID = " + connection.getID());
+            System.out.println("[NET] Connected to server! Connection ID = " + connection.getID());
         }
     }
 
@@ -761,6 +789,12 @@ public class NetworkManager extends Listener implements Runnable
     {
         //System.out.println("NET: Packet received!");
         boolean handled = false;
+
+        // Check if the thread is shutting down.
+        if(shuttingDown.get())
+        {
+            return;
+        }
 
         if(isServer)
         {
@@ -776,7 +810,6 @@ public class NetworkManager extends Listener implements Runnable
                     if (!gameConnection.isValidated())
                     {
                         handleValidation(gameConnection, null, object);
-                        System.out.println("NET: TCP Packet received from Connection! ID = " + gameConnection.connection.getID());
                     }
                     else
                     {
@@ -795,8 +828,8 @@ public class NetworkManager extends Listener implements Runnable
         {
             handled = true;
 
-            System.out.println("NET: Packet received from server!");
-            System.out.println(object.getClass());
+            System.out.println("[NET] Packet received from server.");
+
             if(!validated)
             {
                 validated = handleValidation(null, connection, object);
@@ -818,8 +851,8 @@ public class NetworkManager extends Listener implements Runnable
         // mystery packet!
         if(!handled)
         {
-            System.out.println("NET: Unknown packet received. Connection ID = " + connection.getID());
-            System.out.println("NET: Unknown packet source = " + connection.getRemoteAddressTCP());
+            System.out.println("[NET] Unknown packet received. Connection ID = " + connection.getID());
+            System.out.println("[NET] Unknown packet source = " + connection.getRemoteAddressTCP());
         }
     }
 
@@ -838,8 +871,26 @@ public class NetworkManager extends Listener implements Runnable
             }
         }
 
+        if(client != null)
+        {
+            client.close();
+            client = null;
+        }
+
+        if(server != null)
+        {
+            server.close();
+            server = null;
+        }
+
         currentWave = 1;
         health = 10;
+
+        initialized.set(false);
+        isServer = null;
+
+        run.set(false);
+        shuttingDown.set(true);
     }
 
     /**
@@ -852,6 +903,13 @@ public class NetworkManager extends Listener implements Runnable
         //System.out.println("Adding to queue: " + action.actionClass + "Region: "+action.region);
         try
         {
+            // Check to see if the thread is shutting down
+            if(shuttingDown.get())
+            {
+                return;
+            }
+
+            // Process action packet specially if it's from the server and going to the server.
             if(isServer && action.region == 0)
             {
                 receiveChange(action);
@@ -890,6 +948,13 @@ public class NetworkManager extends Listener implements Runnable
      */
     private void sendLocalChanges()
     {
+        // Check for if the thread is shutting down, as that means the internal state has changed
+        // drastically.
+        if(shuttingDown.get())
+        {
+            return;
+        }
+
         if(!isServer)
         {
             mutex.readLock().lock();
@@ -932,7 +997,7 @@ public class NetworkManager extends Listener implements Runnable
                         {
                             if (connection.playerID == action.region)
                             {
-                                System.out.format("Sending: %s\n", action.actionClass);
+                                System.out.format("[NET] Sending: %s\n", action.actionClass);
                                 server.sendToTCP(connection.connection.getID(), action);
                             }
                         }
@@ -941,15 +1006,6 @@ public class NetworkManager extends Listener implements Runnable
 
                         if(action.region == 0)
                         {
-                            /*
-                            System.out.format("Sending server: %s\n", action.actionClass);
-                            switch(action.actionClass)
-                            {
-                            case ACTION_PLAYER_WAVE_READY:
-                                serverWaveReady = true;
-                                break;
-                            }
-                            */
                             queuedRemoteChanges.add(action);
                         }
 
@@ -989,6 +1045,12 @@ public class NetworkManager extends Listener implements Runnable
 
         List<Action> actions = new ArrayList<>(changes);
 
+        // Check to see if the thread is shutting down.
+        if(shuttingDown.get())
+        {
+            return;
+        }
+
         // if we are a client, we just take the new changes and leave
         if(!isServer)
         {
@@ -1009,7 +1071,7 @@ public class NetworkManager extends Listener implements Runnable
             return;
         }
 
-        System.out.println("Received: " + change.actionClass);
+        System.out.println("[NET] Received: " + change.actionClass);
 
         switch(change.actionClass)
         {
@@ -1026,8 +1088,15 @@ public class NetworkManager extends Listener implements Runnable
                 }
                 break;
             case ACTION_WAVE_END:
+                if(shuttingDown.get())
+                {
+                    return;
+                }
+
                 if(isServer)
+                {
                     queuedRemoteChanges.add(change);
+                }
                 break;
             case ACTION_ENEMY_CREATE:
                 ActionEnemyCreate actionCreate = (ActionEnemyCreate)change;
@@ -1220,12 +1289,12 @@ public class NetworkManager extends Listener implements Runnable
                 ActionWaitForReady actionWaitReady = new ActionWaitForReady();
                 addToSendQueue(actionWaitReady);
 
-                System.out.println("NET: Client auth key = " + authPacket.key);
+                System.out.println("[NET] Client auth key = " + authPacket.key);
                 return true;
             }
             else
             {
-                System.out.println("NET: Client failed authentication. Allowing retries...");
+                System.out.println("[NET] Client failed authentication. Allowing retries...");
                 return false;
             }
         }
@@ -1237,7 +1306,7 @@ public class NetworkManager extends Listener implements Runnable
             if(authPacket.key != MyGame.VERSION)
             {
                 // ERROR, invalid server
-                System.out.println("NET: Incompatible server detected. Key = " + authPacket.key);
+                System.out.println("[NET] Incompatible server detected. Key = " + authPacket.key);
                 gameConnection.connection.close();
                 return false;
             }
