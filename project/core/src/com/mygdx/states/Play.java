@@ -119,6 +119,8 @@ public class Play extends GameState {
     public Play(GameStateManager gameStateManager, final NetworkManager networkManager, int MapLoad)
     {
         super(gameStateManager,networkManager);
+        AssetManager.loadSound(1);
+
         state = SubState.SETUP;
         stage = new MyStage();
         hub = new Stage(new StretchViewport(MyGame.V_WIDTH,MyGame.V_HEIGHT));
@@ -648,6 +650,7 @@ public class Play extends GameState {
                     break;
                 case ACTION_WAVE_START:
                     state = SubState.PLAY;
+                    AssetManager.sound.play();
                     readyButton.setVisible(false);
                     readyButton.setDisabled(true);
 
