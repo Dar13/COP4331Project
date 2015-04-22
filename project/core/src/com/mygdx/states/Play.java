@@ -170,7 +170,7 @@ public class Play extends GameState {
         rifleButton = new TextButton("Rifle",skin);
         rifleButton.setSize(64, 64);
         rifleButton.setPosition(game.V_WIDTH - rifleButton.getWidth(),
-                game.V_HEIGHT - rifleButton.getHeight() - 32);
+                                game.V_HEIGHT - rifleButton.getHeight() - 32);
         rifleButton.addListener(new ClickListener());
 
         bazookaButton = new TextButton("Bazooka",skin);
@@ -182,7 +182,7 @@ public class Play extends GameState {
         readyButton = new TextButton("Ready",skin);
         readyButton.setSize(64, 64);
         readyButton.setPosition(game.V_WIDTH - readyButton.getWidth(),
-                0);
+                                0);
         readyButton.addListener(new ClickListener()
         {
             @Override
@@ -464,7 +464,6 @@ public class Play extends GameState {
         boolean clearedForPlacement = true;
         if(rifleButton.isPressed() && towerPlacement == 0 &&
                 gold >= RifleTower.PRICE){
-            System.out.println("test - rifle button");
             towerToBePlaced = new Sprite(rifleTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
             towerToBePlaced.setPosition(MyInput.x ,MyInput.y);
@@ -474,8 +473,8 @@ public class Play extends GameState {
 
         // bazooka button handling
         if(bazookaButton.isPressed() && towerPlacement==0 &&
-                gold >= BazookaTower.PRICE){
-            System.out.println("test - bazooka button");
+           gold >= BazookaTower.PRICE)
+        {
             towerToBePlaced = new Sprite(bazookaTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
             towerToBePlaced.setPosition(MyInput.x, MyInput.y);
@@ -484,8 +483,8 @@ public class Play extends GameState {
         }
 
         if(sniperButton.isPressed() && towerPlacement==0 &&
-                gold >= SniperTower.PRICE){
-            System.out.println("test - sniper button");
+           gold >= SniperTower.PRICE)
+        {
             towerToBePlaced = new Sprite(sniperTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
             towerToBePlaced.setPosition(MyInput.x, MyInput.y);
@@ -494,8 +493,8 @@ public class Play extends GameState {
         }
 
         if(mortarButton.isPressed() && towerPlacement==0 &&
-                gold >= MortarTower.PRICE){
-            System.out.println("test - mortar button");
+                gold >= MortarTower.PRICE)
+        {
             towerToBePlaced = new Sprite(mortarTowerTexture);
             towerToBePlacedS = new Sprite(towerShadowTexture);
             towerToBePlaced.setPosition(MyInput.x, MyInput.y);
@@ -503,10 +502,14 @@ public class Play extends GameState {
             mortar = 1;
         }
 
-        if(towerPlacement == 1) {
-            if (wayPointManager.WithinAny(towerToBePlaced.getX(), towerToBePlaced.getY()) || towerManager.onAnotherTower(towerToBePlaced.getX(), towerToBePlaced.getY())) {
+        if(towerPlacement == 1)
+        {
+            if (wayPointManager.WithinAny(towerToBePlaced.getX(), towerToBePlaced.getY()) || towerManager.onAnotherTower(towerToBePlaced.getX(), towerToBePlaced.getY()))
+            {
                 clearedForPlacement = false;
-            } else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480 || towerToBePlaced.getX() + 32 > 640 || towerToBePlaced.getY() + 32 > 480 || towerToBePlaced.getY() < 0) {
+            }
+            else if (towerToBePlaced.getX() > 640 || towerToBePlaced.getY() > 480 || towerToBePlaced.getX() + 32 > 640 || towerToBePlaced.getY() + 32 > 480 || towerToBePlaced.getY() < 0)
+            {
                 clearedForPlacement = false;
             }
 
@@ -525,10 +528,6 @@ public class Play extends GameState {
             System.out.println(stageCoordinates);
             if(Rifle == 1)
             {
-                /*
-                towerManager.addRifleTower(stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).x,
-                                           stage.screenToStageCoordinates(new Vector2(MyInput.x,MyInput.y)).y);
-                                           */
                 towerManager.addTower(Tower.Type.TOWER_RIFLE, MyInput.x, MyInput.y);
                 towerPlacement--;
                 Rifle--;
@@ -576,7 +575,7 @@ public class Play extends GameState {
 
     }
 
-    public void decrimentGold(int sub)
+    public void decrementGold(int sub)
     {
         gold = gold - sub;
     }
@@ -599,17 +598,13 @@ public class Play extends GameState {
                         break;
                     }
 
-                    System.out.println("PLAY: Received EnemyCreate -- Velocity = " + enemyCreate.velocity  + "   Health = " + enemyCreate.health);
+                    System.out.println("[PLAY] Received EnemyCreate : Velocity = " + enemyCreate.velocity + "   Health = " + enemyCreate.health);
 
                     enemyManager.setPaused(false);
 
                     if(!enemyCreate.needsID)
                     {
-                        //enemyManager.setMultiplierA(enemyCreate.armor);
-                        //enemyManager.setMultiplierS(enemyCreate.velocity);
-                        //enemyManager.setMultiplierSP(waveCalculator.getMultiplierSpawnRate(gold));
                         enemyManager.addEnemy(enemyCreate.enemyType, enemyCreate.entityID, enemyCreate.health, enemyCreate.armor, enemyCreate.velocity);
-
                     }
 
                     for(Enemy enemy : enemyManager.enemyList)
@@ -645,7 +640,6 @@ public class Play extends GameState {
                     break;
                 case ACTION_CREATE_WAVE:
                     waveData = (ActionCreateWave)action;
-                    System.out.println("Parsed Create Wave Action");
 
                     break;
                 case ACTION_WAVE_START:
@@ -656,7 +650,6 @@ public class Play extends GameState {
 
                     break;
                 case ACTION_WAVE_END:
-                    System.out.println("Wave ended!");
                     readyButton.setVisible(true);
                     readyButton.setDisabled(false);
 

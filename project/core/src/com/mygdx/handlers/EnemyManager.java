@@ -440,7 +440,6 @@ public class EnemyManager extends Actor{
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
                 totalWavesToBeSpawned--;
-                System.out.println(totalWavesToBeSpawned);
             }
 
         }
@@ -448,9 +447,6 @@ public class EnemyManager extends Actor{
         {
             timeSinceLastNorm++;
             timeSinceLastFast++;
-            System.out.println(waveToBeSpawnedNorm);
-            System.out.println(waveToBeSpawnedFast);
-            System.out.println(totalWavesToBeSpawned);
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {

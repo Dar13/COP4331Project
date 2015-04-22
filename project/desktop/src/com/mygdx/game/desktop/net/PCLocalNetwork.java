@@ -25,8 +25,7 @@ public class PCLocalNetwork implements NetworkInterface
     @Override
     public java.util.ArrayList<java.net.InetAddress> setup(Client client, Server server)
     {
-        System.out.println("Thread ID: " + Thread.currentThread().getId());
-        System.out.println("NET: Network interface setting up!");
+        System.out.println("[NET] Network interface setting up!");
         if(client != null)
         {
             List<InetAddress> addresses = client.discoverHosts(NetworkManager.SERVER_UDP_PORT, 5000);

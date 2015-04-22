@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
 import com.mygdx.entities.Enemy;
 import com.mygdx.entities.Entity;
 import com.mygdx.entities.Tower;
@@ -194,6 +195,8 @@ public class NetworkManager extends Listener implements Runnable
             }
 
             System.out.println("[NET] Initializing NetworkManager");
+
+            Log.set(Log.LEVEL_WARN);
 
             // this can't be null so ignore any warnings that it can be.
             if (isServer)

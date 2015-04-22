@@ -52,16 +52,6 @@ public class MyGame extends ApplicationAdapter
         networkThread.start();
         System.out.println("Main Thread ID: " + Thread.currentThread().getId());
         System.out.println("Network Thread ID: " + networkThread.getId());
-        /*
-        boolean success = networkManager.initialize(true,
-                NetworkManager.ConnectionMode.WIFI_LAN,
-                null);
-
-        if (!success)
-        {
-            System.out.println("NET: Initialize failed.");
-        }
-        */
     }
 
     @Override
@@ -86,7 +76,7 @@ public class MyGame extends ApplicationAdapter
             }
             catch (InterruptedException e)
             {
-                System.out.print("Error...");
+                System.out.print("Main thread interrupted.");
                 e.printStackTrace();
             }
         }
