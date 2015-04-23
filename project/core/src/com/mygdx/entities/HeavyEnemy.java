@@ -21,7 +21,7 @@ public class HeavyEnemy extends Enemy
         North = TextureRegion.split(north, 32, 32);
         East = TextureRegion.split(east, 32, 32);
         West = TextureRegion.split(west, 32, 32);
-        this.current = new Sprite(east);
+        this.current = new Sprite(South[0][0]);
 
         velocity = BASE_VELOCITY;
         armor = BASE_ARMOR;
