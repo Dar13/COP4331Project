@@ -60,7 +60,7 @@ public abstract class Enemy extends Entity
         velocity *= mult;
 
         // reset navigation tolerance
-        navigationTolerance = velocity / 2.0f;
+        navigationTolerance = velocity / 2.5f;
     }
 
     public void applyArmorMultiplier(float mult)

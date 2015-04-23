@@ -159,6 +159,7 @@ public class EnemyManager extends Actor{
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
         enemy.applyArmorMultiplier(multiplierA);
         enemy.applyVelocityMultiplier(multiplierS);
+        enemy.setWayPoints(path);
         enemy.entityID = entityID;
         enemy.tempID = tempID;
 
@@ -179,76 +180,6 @@ public class EnemyManager extends Actor{
             }
         }
     }
-
-    //Calculates the number of enemies to spawn in the next wave based on the multiplier.
-    /*public void NextWave(float multiplier)
-    {
-        if(currentWave < 5)
-        {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int) multiplier);
-            this.totalWavesToBeSpawned = waveToBeSpawnedNorm;
-            System.out.println(totalWavesToBeSpawned);
-        }
-
-        else if(currentWave > 5 && currentWave < 10)
-        {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int) multiplier);
-            this.waveToBeSpawnedFast = waveInfoFast;
-            this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast;
-        }
-
-        else if(currentWave > 9)
-        {
-            this.waveToBeSpawnedNorm = waveInfoNorm * (1 + (int)multiplier);
-            this.waveToBeSpawnedFast = waveInfoFast * (1 + (int)(multiplier / 2));
-            this.waveToBeSpawnedHeavy = waveInfoHeavy * (1 + (int)(multiplier / 3));
-            this.totalWavesToBeSpawned = waveToBeSpawnedNorm + waveToBeSpawnedFast + waveToBeSpawnedHeavy;
-        }
-
-    }*/
-
-    //Calculates the multiplier to be used in the next round based on player towers.
-    /*public float NextWaveCalculator()
-    {
-        currentWave++;
-        float multiplier = 0 + (gold * .001f);
-        multiplierS = (currentWave * .05f) + (gold * .001f);
-        multiplierA = currentWave * .05f + (gold * .001f);
-        for(Tower tower : towerList)
-        {
-            switch(tower.type)
-            {
-            case TOWER_RIFLE:
-                multiplier = multiplier + .25f;
-                multiplierS = multiplierS + .01f;
-                multiplierA = multiplierA + .05f;
-                multiplierSp = multiplierSp + .1f;
-                break;
-            case TOWER_BAZOOKA:
-                multiplier = multiplier + .5f;
-                multiplierS = multiplierS + .02f;
-                multiplierA = multiplierA + .15f;
-                multiplierSp = multiplierSp + .1f;
-                break;
-            case TOWER_SNIPER:
-                multiplier = multiplier + 1;
-                multiplierS = multiplierS + .04f;
-                multiplierA = multiplierA + .17f;
-                multiplierSp = multiplierSp + .1f;
-                break;
-            case TOWER_MORTAR:
-                multiplier = multiplier + 1.3f;
-                multiplierS = multiplierS + .04f;
-                multiplierA = multiplierA + .17f;
-                multiplierSp = multiplierSp + .1f;
-                break;
-            }
-        }
-
-        incrementer = incrementer + .07f;
-        multiplierSp = multiplierSp + .5f + (gold * .001f);
-        return multiplier;
-    }*/
 
 
     /* Spawns new enemies based on wave number, updates the enemy health, checks to see if they are
@@ -271,8 +202,7 @@ public class EnemyManager extends Actor{
             //accumulator +=deltaTime;
             if(tick == 1)
             {
-                //float multiplier = NextWaveCalculator();
-                //NextWave(multiplier);
+
                 tick = 0;
             }
 
