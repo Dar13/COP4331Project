@@ -51,7 +51,7 @@ public class NetworkManager extends Listener implements Runnable
 {
     public static final int SERVER_TCP_PORT = 0xDDD;
     public static final int SERVER_UDP_PORT = 0xDDE;
-    public static final int MAX_CLIENTS = 4;
+    public static final int MAX_CLIENTS = 2;
     public static final int ENTITY_ID_START = 1024;
 
     //These lists will hold changes temporarily until they are either sent or applied
@@ -79,6 +79,8 @@ public class NetworkManager extends Listener implements Runnable
     protected boolean gameStarted;
     protected boolean waitingForLobby;
     protected boolean serverWaveReady = false;
+
+    protected int destroyed = 0;
 
     // client
     protected Client client;
@@ -196,7 +198,7 @@ public class NetworkManager extends Listener implements Runnable
 
             System.out.println("[NET] Initializing NetworkManager");
 
-            Log.set(Log.LEVEL_WARN);
+            Log.set(Log.LEVEL_INFO);
 
             // this can't be null so ignore any warnings that it can be.
             if (isServer)
@@ -542,7 +544,7 @@ public class NetworkManager extends Listener implements Runnable
                 }
             }
 
-            if(connections.size() == 1 && !gameStarted)
+            if(connections.size() == MAX_CLIENTS && !gameStarted)
             {
                 boolean allWaiting = true;
                 for(GameConnection conn : connections)
@@ -613,7 +615,8 @@ public class NetworkManager extends Listener implements Runnable
                 ActionCreateWave createWave = new ActionCreateWave(currentWave);
                 numEnemies = createWave.amountTotalEnemies;
                 createWave.region = getFirstClientID();
-                currentWave++;
+
+                destroyed = 0;
 
                 if(singleplayer)
                 {
@@ -635,16 +638,18 @@ public class NetworkManager extends Listener implements Runnable
                     {
                         ActionWaveStart waveStart = new ActionWaveStart();
                         waveStart.region = connection.playerID;
+                        waveStart.waveNumber = currentWave;
                         addToSendQueue(waveStart);
                     }
 
                     ActionWaveStart waveStart = new ActionWaveStart();
+                    waveStart.waveNumber = currentWave;
                     waveStart.region = 0;
                     addToSendQueue(waveStart);
                 }
 
                 waveRunning = true;
-
+                currentWave++;
                 serverWaveReady = false;
                 for(GameConnection connection : connections)
                 {
@@ -764,7 +769,7 @@ public class NetworkManager extends Listener implements Runnable
 
         if(isServer)
         {
-            if(connections.size() < expectedAmountClients)
+            if(connections.size() < MAX_CLIENTS)
             {
                 GameConnection gameConnection = new GameConnection();
                 gameConnection.connection = connection;
@@ -970,6 +975,7 @@ public class NetworkManager extends Listener implements Runnable
             {
                 for(Action action : queuedLocalChanges)
                 {
+                    System.out.println("[NET] Client sending packet: " + action.actionClass);
                     client.sendTCP(action);
                 }
             }
@@ -1079,7 +1085,7 @@ public class NetworkManager extends Listener implements Runnable
             return;
         }
 
-        System.out.println("[NET] Received: " + change.actionClass);
+        System.out.println("[NET] Received: " + change.actionClass + " from player = " + change.region);
 
         switch(change.actionClass)
         {
@@ -1101,6 +1107,10 @@ public class NetworkManager extends Listener implements Runnable
                     return;
                 }
 
+                System.out.println("-----------------------------------------------------------");
+                System.out.println("---------------- WAVE ENDED -------------------------------");
+                System.out.println("-----------------------------------------------------------");
+
                 if(isServer)
                 {
                     queuedRemoteChanges.add(change);
@@ -1118,6 +1128,8 @@ public class NetworkManager extends Listener implements Runnable
                 try
                 {
                     entityStatus.put(actionCreate.entityID, new EnemyStatus(actionCreate));
+
+                    System.out.println("[NET] Enemy created. Entity ID = " + actionCreate.entityID);
 
                     if(singleplayer)
                     {
@@ -1157,7 +1169,7 @@ public class NetworkManager extends Listener implements Runnable
                             actionHealth.region = 0;
                             queuedRemoteChanges.add(actionHealth);
 
-
+                            destroyed++;
                         }
                         else
                         {
@@ -1191,10 +1203,17 @@ public class NetworkManager extends Listener implements Runnable
                 mutex.writeLock().lock();
                 try
                 {
+                    System.out.println("[NET] Enemy destroyed: " + actionDestroy.entityID + "," + actionDestroy.tempID);
                     if (entityStatus.containsKey(actionDestroy.entityID))
                     {
                         entityStatus.remove(actionDestroy.entityID);
                         numEnemies--;
+
+                        destroyed++;
+                    }
+                    else
+                    {
+                        System.out.println("[NET] Entity not found! Entity ID = " + actionDestroy.entityID);
                     }
                 }
                 finally
@@ -1268,6 +1287,8 @@ public class NetworkManager extends Listener implements Runnable
 
                 break;
         }
+
+        System.out.println("Number of enemies left: " + numEnemies + " | Number destroyed: " + destroyed);
     }
 
     protected boolean handleValidation(GameConnection gameConnection, Connection connection, Object object)

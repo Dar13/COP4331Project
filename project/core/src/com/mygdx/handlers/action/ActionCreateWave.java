@@ -40,5 +40,7 @@ public class ActionCreateWave extends Action
         amountNormalEnemies = WaveCalculator.getAmountNormalEnemies();
 
         amountTotalEnemies = amountFastEnemies + amountHeavyEnemies + amountNormalEnemies;
+
+        System.out.println("[WAVE] Total enemies: " + amountTotalEnemies);
     }
 }

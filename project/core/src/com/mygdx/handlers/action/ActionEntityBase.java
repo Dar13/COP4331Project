@@ -30,6 +30,7 @@ public class ActionEntityBase extends Action
     {
         super();
 
+        region = entityStatus.region;
         entityID = entityStatus.uniqueID;
         needsID = false;
     }

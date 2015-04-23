@@ -26,7 +26,7 @@ public class MyGame extends ApplicationAdapter
     private GameStateManager gameStateManager;
    // private GameStateManager gameStateManager;
 
-    private float fps = 1f/60f;
+    private float fps = 1f/30f;
 
 
     private NetworkManager networkManager;

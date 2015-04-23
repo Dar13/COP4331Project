@@ -5,6 +5,8 @@ package com.mygdx.handlers.action;
  */
 public class ActionWaveStart extends Action
 {
+    public int waveNumber;
+
     public ActionWaveStart()
     {
         super();

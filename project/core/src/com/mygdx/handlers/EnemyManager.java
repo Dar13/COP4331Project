@@ -367,6 +367,8 @@ public class EnemyManager extends Actor{
                 //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
                 addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
+                System.out.println("[EM] Enemy spawned. Normal left = " + waveToBeSpawnedNorm);
+
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
                 totalWavesToBeSpawned--;
@@ -383,6 +385,9 @@ public class EnemyManager extends Actor{
                 //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
                 addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
+                System.out.println("[EM] Enemy spawned. Normal left = " + waveToBeSpawnedNorm);
+                System.out.println("[EM] Enemy spawned. Fast left = " + waveToBeSpawnedFast);
+
                 timeSinceLastNorm = 0;
                 waveToBeSpawnedNorm--;
                 totalWavesToBeSpawned--;
@@ -392,6 +397,9 @@ public class EnemyManager extends Actor{
             {
                 //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
                 addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
+
+                System.out.println("[EM] Enemy spawned. Normal left = " + waveToBeSpawnedNorm);
+                System.out.println("[EM] Enemy spawned. Fast left = " + waveToBeSpawnedFast);
 
                 timeSinceLastFast = 0;
                 waveToBeSpawnedFast--;

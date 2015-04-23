@@ -45,6 +45,7 @@ import com.mygdx.handlers.action.ActionEnemyCreate;
 import com.mygdx.handlers.action.ActionHealthChanged;
 import com.mygdx.handlers.action.ActionPlayerWaveReady;
 import com.mygdx.handlers.action.ActionTowerPlaced;
+import com.mygdx.handlers.action.ActionWaveStart;
 
 
 import java.util.LinkedList;
@@ -647,6 +648,8 @@ public class Play extends GameState {
                     AssetManager.sound.play();
                     readyButton.setVisible(false);
                     readyButton.setDisabled(true);
+
+                    enemyManager.currentWave = ((ActionWaveStart)action).waveNumber;
 
                     break;
                 case ACTION_WAVE_END:
