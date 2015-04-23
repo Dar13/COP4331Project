@@ -861,6 +861,11 @@ public class NetworkManager extends Listener implements Runnable
 
     public synchronized void reset()
     {
+        if(!initialized.get())
+        {
+            return;
+        }
+
         if(entityStatus != null)
         {
             entityStatus.clear();

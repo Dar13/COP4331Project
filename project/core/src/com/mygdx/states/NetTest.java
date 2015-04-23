@@ -111,9 +111,9 @@ public class NetTest extends GameState
             clientButton.remove();
         }
 
-        if(toMenu.isChecked())
+        if(toMenu.isPressed())
         {
-            // reset state since network manager 'falsely initilize' (i.e., we aren't doing multiplayer)
+            // reset state since network manager 'falsely initialize' (i.e., we aren't doing multiplayer)
             networkManager.reset();
             gameStateManager.setState(GameStateManager.MENU, 0);
         }
