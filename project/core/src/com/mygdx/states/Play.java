@@ -262,6 +262,10 @@ public class Play extends GameState {
             case PAUSED:
                 hub.act(delta);
                 stage.act(delta);
+                if (enemyManager.currentWave == totalWaves)
+                {
+                    gameStateManager.setState(GameStateManager.GOODEND, 0);
+                }
                 gold -= towerManager.towerAct(delta, gold);
                 break;
             case PLAY:
