@@ -338,7 +338,6 @@ public class EnemyManager extends Actor{
             enemiesToBeRemoved.clear();
 
             // netcode
-            CheckEnemiesAtEnd();
 
             if (totalWavesToBeSpawned == 0 && enemyList.size() == 0 && isSpawn)
             {
@@ -356,6 +355,9 @@ public class EnemyManager extends Actor{
                 tick = 1;
             }
         }
+
+        CheckEnemiesAtEnd();
+
     }
 
     protected void spawn()
