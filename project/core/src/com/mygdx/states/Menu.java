@@ -48,7 +48,7 @@ public class Menu extends GameState {
         AssetManager.loadSound(1);
 
 
-        title = new Actor(new Texture("Title/title.png"),-220,-150);
+        title = new Actor(new Texture("Title/title2.png"),-220,-150);
         hub.addActor(title);
         ((OrthographicCamera) hub.getCamera()).zoom =1.54f;
 
