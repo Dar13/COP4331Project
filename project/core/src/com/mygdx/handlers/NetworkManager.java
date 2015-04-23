@@ -544,7 +544,7 @@ public class NetworkManager extends Listener implements Runnable
                 }
             }
 
-            if(connections.size() == MAX_CLIENTS && !gameStarted)
+            if(connections.size() > 0 && !gameStarted)
             {
                 boolean allWaiting = true;
                 for(GameConnection conn : connections)
@@ -1011,7 +1011,7 @@ public class NetworkManager extends Listener implements Runnable
                         {
                             if (connection.playerID == action.region)
                             {
-                                System.out.format("[NET] Sending: %s\n", action.actionClass);
+                                System.out.format("[NET] Sending: %s to player = %d\n", action.actionClass, action.region);
                                 server.sendToTCP(connection.connection.getID(), action);
                             }
                         }

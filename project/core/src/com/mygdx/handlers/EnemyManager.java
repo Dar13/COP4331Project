@@ -175,6 +175,7 @@ public class EnemyManager extends Actor{
             Enemy enemy = iterator.next();
             if(enemy.entityID == id)
             {
+                System.out.println("[EM] Destroying enemy. EntityID = " + enemy.entityID);
                 networkManager.addToSendQueue(new ActionEnemyDestroy(enemy));
                 enemiesToBeRemoved.add(enemy);
             }
@@ -350,6 +351,7 @@ public class EnemyManager extends Actor{
                  * if the client was the spawner client, and then we would need another separate loop
                  * if they were an acceptor client.
                  */
+                System.out.println("[EM] Pausing!");
                 paused = true;
                 tick = 1;
             }
