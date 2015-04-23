@@ -119,7 +119,7 @@ public class Play extends GameState {
     public Play(GameStateManager gameStateManager, final NetworkManager networkManager, int MapLoad)
     {
         super(gameStateManager,networkManager);
-        AssetManager.loadSound(1);
+        AssetManager.loadSound(3);
 
         state = SubState.SETUP;
         stage = new MyStage();
