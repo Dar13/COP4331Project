@@ -147,6 +147,7 @@ public class EnemyManager extends Actor{
         }
 
         enemy.setWayPoints(path);
+        enemy.setCurrentWayPoint();
         enemy.setHealth(health);
         enemy.setArmor(armor);
         enemy.setVelocity(velocity);
@@ -159,7 +160,6 @@ public class EnemyManager extends Actor{
         Enemy enemy = EnemyFactory.createEnemy(type, north, south, east, west, 0, 0);
         enemy.applyArmorMultiplier(multiplierA);
         enemy.applyVelocityMultiplier(multiplierS);
-        enemy.setWayPoints(path);
         enemy.entityID = entityID;
         enemy.tempID = tempID;
 

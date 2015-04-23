@@ -25,7 +25,6 @@ public abstract class Enemy extends Entity
     protected WayPoint.Direction heading;
     protected List<WayPoint> wayPoints;
     protected int currentWayPoint;
-    protected int currenttick;
     protected boolean navigationFinished;
     protected float distanceTraveled;
 
@@ -60,7 +59,7 @@ public abstract class Enemy extends Entity
         velocity *= mult;
 
         // reset navigation tolerance
-        navigationTolerance = velocity / 2.5f;
+        navigationTolerance = velocity / 1.5f;
     }
 
     public void applyArmorMultiplier(float mult)
@@ -244,6 +243,8 @@ public abstract class Enemy extends Entity
         health += amount;
     }
 
+    public void setCurrentWayPoint(){this.currentWayPoint = 0;}
+
     public boolean isAlive()
     {
         return (health > 0.0f);
@@ -266,6 +267,7 @@ public abstract class Enemy extends Entity
 
     public void setVelocity(float velocity){
         this.velocity = velocity;
+        navigationTolerance = velocity / 1.5f;
     }
 
     public void setArmor(float armor){
