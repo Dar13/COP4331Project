@@ -368,7 +368,6 @@ public class EnemyManager extends Actor{
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
-                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
                 addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
                 System.out.println("[EM] Enemy spawned. Normal left = " + waveToBeSpawnedNorm);
@@ -386,7 +385,6 @@ public class EnemyManager extends Actor{
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
-                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
                 addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
                 System.out.println("[EM] Enemy spawned. Normal left = " + waveToBeSpawnedNorm);
@@ -399,7 +397,6 @@ public class EnemyManager extends Actor{
 
             if (timeSinceLastFast > ((MyGame.fpsretrieve / 3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
-                //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
                 addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
 
                 System.out.println("[EM] Enemy spawned. Normal left = " + waveToBeSpawnedNorm);
@@ -418,7 +415,6 @@ public class EnemyManager extends Actor{
 
             if (timeSinceLastNorm > ((MyGame.fpsretrieve / 2) - multiplierSp) && waveToBeSpawnedNorm > 0)
             {
-                //AddEnemy(NormEnemy, NullLayer, 3, 1, path);
                 addEnemy(Entity.Type.ENEMY_NORMAL, NormEnemyN, NormEnemyS, NormEnemyE, NormEnemyW, path);
 
                 timeSinceLastNorm = 0;
@@ -428,7 +424,6 @@ public class EnemyManager extends Actor{
 
             if (timeSinceLastFast > ((MyGame.fpsretrieve / 3) - multiplierSp) && waveToBeSpawnedFast > 0)
             {
-                //AddFastEnemy(FastEnemy, NullLayer, 6, 1, path);
                 addEnemy(Entity.Type.ENEMY_FAST, FastEnemyN, FastEnemyS, FastEnemyE, FastEnemyW, path);
 
                 timeSinceLastFast = 0;
@@ -438,7 +433,6 @@ public class EnemyManager extends Actor{
 
             if (timeSinceLastHeavy > ((MyGame.fpsretrieve * 3) - multiplierSp) && waveToBeSpawnedHeavy > 0)
             {
-                //AddHeavyEnemy(TigerBase, TigerTurret, .5f, 15, path);
                 addEnemy(Entity.Type.ENEMY_HEAVY, TigerBaseN, TigerBaseS, TigerBaseE, TigerBaseW, path);
 
                 timeSinceLastHeavy = 0;
